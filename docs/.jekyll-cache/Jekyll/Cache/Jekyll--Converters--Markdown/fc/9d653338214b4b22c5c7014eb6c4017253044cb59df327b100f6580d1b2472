@@ -1,0 +1,106 @@
+I"6<p>The DSO-NUS CTF was my first local competition of 2021 :).
+I had honestly expected that I would not solve any challenges, seeing as to how this CTF was also targeted at university students.
+However, my teammate and I managed to pull through and clinch 10th place!</p>
+
+<p><img src="/assets/Images/DSO-NUS-ctf/results.png" alt="" />
+<img src="/assets/Images/DSO-NUS-ctf/solves.png" alt="" /></p>
+
+<h1 id="writeups">Writeups</h1>
+<p>Also, I made writeups the following challenges:</p>
+<ol>
+  <li><a href="#protect-the-vaccine!">Protect The Vaccine</a></li>
+</ol>
+
+<h2 id="protect-the-vaccine">Protect The Vaccine!</h2>
+<p><code class="language-plaintext highlighter-rouge">A nation-supported hacker group is using their cutting edge technology to attack a company that develops vaccine. They roll their own crypto with a hope that it will be more secure. Luckily, we have got some of their crypto system information and also have found some research that is likely to break their crypto system. I heard you are a cipher breaker, could you help us to decrypt their secret and protect the vaccine from their plan?</code></p>
+
+<h3 id="reconnaissance">Reconnaissance</h3>
+<p>We are given the 2020 paper by Amir Hamzah, Mhd. Rezal, and Mhd. Azraf, <a href="https://www.mdpi.com/2073-8994/12/5/838">A New LSB Attack on Special-Structured RSA Primes</a>, and an encryptor file as below:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">config</span> <span class="kn">import</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">r_p</span><span class="p">,</span><span class="n">r_q</span><span class="p">,</span><span class="n">secret</span>
+<span class="kn">from</span> <span class="nn">Crypto.Util.number</span> <span class="kn">import</span> <span class="n">bytes_to_long</span>
+
+<span class="n">p</span> <span class="o">=</span> <span class="n">a</span><span class="o">**</span><span class="n">m</span> <span class="o">+</span> <span class="n">r_p</span>
+<span class="n">q</span> <span class="o">=</span> <span class="n">b</span><span class="o">**</span><span class="n">m</span> <span class="o">+</span> <span class="n">r_q</span>
+<span class="n">N</span> <span class="o">=</span> <span class="n">p</span><span class="o">*</span><span class="n">q</span>
+<span class="n">e</span> <span class="o">=</span> <span class="mi">65537</span>
+
+<span class="n">M</span> <span class="o">=</span> <span class="n">bytes_to_long</span><span class="p">(</span><span class="n">secret</span><span class="p">)</span>
+<span class="n">c</span> <span class="o">=</span> <span class="nb">pow</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">'N:'</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">'e:'</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">'r_p:'</span><span class="p">,</span> <span class="n">r_p</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">'r_q:'</span><span class="p">,</span> <span class="n">r_q</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">'c:'</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>The paper itself describes an attack on <strong>primes of the special form <img src="https://render.githubusercontent.com/render/math?math=$n^{m}%2Br$" alt="" /></strong>, where <code class="language-plaintext highlighter-rouge">n,m,r</code> are secret integers.</p>
+
+<p>Ostensibly this is of the same form as the primes p and q in this challenge.</p>
+
+<p><strong>At this point I heaved a protracted sigh of disappointment, deflating and slouching upon my chair as a leaky balloon prostrates upon the floor.</strong></p>
+
+<p><strong>If Uncle Roger were here he would put down his leg. H A I Y A A.</strong></p>
+
+<h3 id="on-the-challenge-itself">On The Challenge Itself</h3>
+
+<p>It should be painfully obvious that whoever made this challenge simply wanted us to implement the attack.</p>
+
+<p>The proofs and conceptual framework are thus insignificant. It is a nice paper though.</p>
+
+<p>Below is a brief explanation of the attack:</p>
+<ol>
+  <li>Compute <img src="https://render.githubusercontent.com/render/math?math=$i=\lceil%20r_{p}r_{q}%20\rceil$" alt="" />.</li>
+  <li>Thus compute <img src="https://render.githubusercontent.com/render/math?math=$\sigma%20=%20(\lceil%20\sqrt{N}%20\rceil%20-%20i)^{2}$" alt="" /> and <img src="https://render.githubusercontent.com/render/math?math=$\z%20\equiv%20N-(r_{p}r_{q})%20\pmod%20\sigma$" alt="" />.</li>
+  <li>Then solve the quadratic equation <img src="https://render.githubusercontent.com/render/math?math=$X^{2}-zX%2B\sigma%20r_{p}r_{q}=0$" alt="" />.</li>
+  <li>So compute <img src="https://render.githubusercontent.com/render/math?math=$p=\frac{x_{1}}{r_{q}}%2Br_{p}$" alt="" />, and <img src="https://render.githubusercontent.com/render/math?math=$q=\frac{x_{1}}{r_{p}}%2Br_{q}$" alt="" /></li>
+  <li>If you do not get integer solutions for <code class="language-plaintext highlighter-rouge">p</code> and <code class="language-plaintext highlighter-rouge">q</code>, increment <code class="language-plaintext highlighter-rouge">i</code> and go to step 2.</li>
+  <li>Otherwise, you have factorized <code class="language-plaintext highlighter-rouge">p</code> and <code class="language-plaintext highlighter-rouge">q</code>.</li>
+</ol>
+
+<p>There really is no need to explain anything else. Let’s claim our flag and walk away in dejection…</p>
+
+<h3 id="the-script--the-flag">The Script &amp; The Flag</h3>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">Crypto.Util.number</span> <span class="kn">import</span> <span class="n">long_to_bytes</span>
+<span class="n">N</span><span class="o">=</span><span class="mi">3275733051034358984052873301763419226982953208866734590577442123100212241755791923555521543209801099055699081707325573295107810120279016450478569963727745375599027892100123044479660797401966572267597729137245240398252709789403914717981992805267568330238483858915840720285089128695716116366797390222336632152162599116524881401005018469215424916742801818134711336300828503706379381178900753467864554260446708842162773345348298157467411926079756092147544497068000233007477191578333572784654318537785544709699328915760518608291118807464400785836835778315009377442766842129158923286952014836265426233094717963075689446543</span>
+<span class="n">e</span><span class="o">=</span><span class="mi">65537</span>
+<span class="n">r_p</span><span class="o">=</span><span class="mi">5555</span>
+<span class="n">r_q</span><span class="o">=</span><span class="mi">2021</span>
+<span class="n">c</span><span class="o">=</span><span class="mi">1556192154031991594732510705883546583096229743096303430901374706824505750761088363281890335979653013911714293502545423757924361475736093242401222947901355869932133190452403616496603786871994754637823336368216836022953863014593342644392369877974990401809731572974216127814977558172171864993498081681595043521251475276813852699339208084848504200274031750249400405999547189108618939914820295837292164648879085448065561197691023430722069818332742153760012768834458654303088057879612122947985115227503445210002797443447539212535515235045439442675101339926607807561016634838677881127459579466831387538801957970278441177712</span>
+
+<span class="c1"># I believe all you need to do is follow the instructions...
+</span><span class="n">i</span><span class="o">=</span><span class="n">ceil</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="n">r_p</span><span class="o">*</span><span class="n">r_q</span><span class="p">))</span>
+
+<span class="n">factorized</span><span class="o">=</span><span class="bp">False</span>
+<span class="k">while</span> <span class="ow">not</span> <span class="n">factorized</span><span class="p">:</span>
+    <span class="n">sigma</span><span class="o">=</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="n">N</span><span class="p">))</span><span class="o">-</span><span class="n">i</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">z</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">Mod</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="n">r_p</span><span class="o">*</span><span class="n">r_q</span><span class="p">,</span><span class="n">sigma</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+    <span class="n">x</span><span class="o">=</span><span class="n">var</span><span class="p">(</span><span class="s">'x'</span><span class="p">)</span>
+    <span class="n">S</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">x</span><span class="o">^</span><span class="mi">2</span><span class="o">-</span><span class="n">z</span><span class="o">*</span><span class="n">x</span><span class="o">+</span><span class="n">sigma</span><span class="o">*</span><span class="n">r_p</span><span class="o">*</span><span class="n">r_q</span><span class="o">==</span><span class="mi">0</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">solution_dict</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">soln</span> <span class="ow">in</span> <span class="n">S</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">soln</span><span class="p">[</span><span class="n">x</span><span class="p">].</span><span class="n">is_integer</span><span class="p">():</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">"No solution :((("</span><span class="p">)</span>
+            <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"Got Solution! </span><span class="si">{</span><span class="n">soln</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+            <span class="n">factorized</span><span class="o">=</span><span class="bp">True</span>
+    <span class="n">i</span><span class="o">+=</span><span class="mi">1</span>
+<span class="c1"># Turns out we got lucky. At i=3379 we receive
+</span><span class="n">x1</span><span class="o">=</span><span class="mi">168200524686562144694620288802920098491216735170837810125672320002939647866974222365012727452940769281308849288903115688589419797624616813460735137583543839726240553545302460214475263890124428240711467804365871217554755973866852861234743770756153485545678683848833029401921482153203747584834969282377159947080780</span>
+<span class="n">x2</span><span class="o">=</span><span class="mi">218640963841168131005470550035379468161157139960153907690360606758392731649074205802111908622011434335143690091387592220823296028451227124397192393817824166806698902839833001318765091590325160563899341911850960055105827530299680127408632836041078255714159019688574965424438294715765508204336190307241026142672404</span>
+
+<span class="n">q</span><span class="o">=</span><span class="p">(</span><span class="n">x1</span><span class="o">/</span><span class="n">r_p</span><span class="p">)</span><span class="o">+</span><span class="n">r_q</span>
+<span class="n">p</span><span class="o">=</span><span class="p">(</span><span class="n">x2</span><span class="o">/</span><span class="n">r_q</span><span class="p">)</span><span class="o">+</span><span class="n">r_p</span>
+<span class="k">print</span><span class="p">(</span><span class="n">p</span><span class="o">*</span><span class="n">q</span><span class="o">==</span><span class="n">N</span><span class="p">)</span>
+
+<span class="n">totient</span><span class="o">=</span><span class="p">(</span><span class="n">p</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">q</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">d</span><span class="o">=</span><span class="n">inverse_mod</span><span class="p">(</span><span class="n">e</span><span class="p">,</span><span class="n">totient</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">long_to_bytes</span><span class="p">(</span><span class="nb">pow</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">N</span><span class="p">)))</span>
+</code></pre></div></div>
+
+<p>And thus we receive the flag: <code class="language-plaintext highlighter-rouge">Let's meet at Yichun on 30 Feb. On that day, say 'DSO-NUS{851f6c328f2da456cbc410184c7ada365c6d1f69199f0f4fdcb9fd43101ce9ee}' to confirm your identity.</code></p>
+:ET
