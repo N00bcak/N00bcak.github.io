@@ -20,4 +20,4 @@ Thank you I appreciate it. uwu
 * Pinky promise I will populate this place with past and newer writeups as time goes on.
 
 ## Shameless Sieberrsec Plug
-* Please do visit my CTF Team's [writeup repository]("https://github.com/IRS-Cybersec/ctfdump") as well!
+* Please do visit my CTF Team's [writeup repository](https://github.com/IRS-Cybersec/ctfdump) as well!
