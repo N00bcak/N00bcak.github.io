@@ -1,4 +1,4 @@
-I"�<h2 id="thats-a-pretty-purple-screen">That’s a <em>pretty</em> purple screen.</h2>
+I"[<h2 id="thats-a-pretty-purple-screen">That’s a <em>pretty</em> purple screen.</h2>
 <p>Thank you I appreciate it. uwu</p>
 
 <h2 id="anyways-who-are-you">Anyways who are you?</h2>
@@ -14,8 +14,13 @@
   <li>Who knows what else I’ll throw here?</li>
 </ul>
 
+<h2 id="why-is-this-place-so-empty">Why is this place so empty?</h2>
+<ul>
+  <li>Pinky promise I will populate this place with past and newer writeups as time goes on.</li>
+</ul>
+
 <h2 id="shameless-sieberrsec-plug">Shameless Sieberrsec Plug</h2>
 <ul>
-  <li>Please do visit my CTF Team’s <a href="&quot;https://github.com/IRS-Cybersec/ctfdump&quot;">writeup repository</a> as well!</li>
+  <li>Please do visit my CTF Team’s <a href="https://github.com/IRS-Cybersec/ctfdump">writeup repository</a> as well!</li>
 </ul>
 :ET
