@@ -30,7 +30,7 @@ a { color: inherit; text-decoration: none; }
 
 a:hover { text-decoration: underline; }
 
-pre { border-left: 8px solid #ddd; margin: 32px 0; padding-left: 16px; width: 75%; overflow-x: auto; }
+pre { border-left: 8px solid #ddd; margin: 32px 0; padding-left: 16px; width: 83.3333333333%; overflow-x: auto; }
 
 code { color: #660085; font-size: 20px; padding: 1px 0px; }
 
