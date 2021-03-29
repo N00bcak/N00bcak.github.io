@@ -1,72 +1,4 @@
-<!DOCTYPE html>
-<html>
-
-  <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <title>UMassCTF</title>
-  <meta name="description" content="Creating this blogpost almost entirely to share one writeup :P.">
-
-  
-  
-  <link rel="stylesheet" href="/assets/style.css">
-
-  <link rel="canonical" href="/writeups/2021/03/27/UMass-CTF.html">
-  <link rel="alternate" type="application/rss+xml" title="N00bcak's Purple Cave" href="/feed.xml">
-
-  <script async defer src="https://buttons.github.io/buttons.js"></script>
-</head>
-
-
-  <body>
-
-    <header class="border-bottom-thick px-2 clearfix">
-  <div class="left sm-width-full py-1 mt-1 mt-lg-0">
-    <a class="align-middle link-primary text-accent" href="/">
-      N00bcak's Purple Cave
-    </a>
-  </div>
-  <div class="right sm-width-full">
-    <ul class="list-reset mt-lg-1 mb-2 mb-lg-1">
-      
-        
-        <li class="inline-block">
-          <a class="align-middle link-primary mr-2 mr-lg-0 ml-lg-2" href="/about/">
-            About
-          </a>
-        </li>
-        
-      
-        
-      
-        
-      
-        
-        <li class="inline-block">
-          <a class="align-middle link-primary mr-2 mr-lg-0 ml-lg-2" href="/writeups/">
-            CTF Writeups
-          </a>
-        </li>
-        
-      
-    </ul>
-  </div>
-</header>
-
-
-    <div>
-      <article class="container px-2 mx-auto mb4" itemscope itemtype="http://schema.org/BlogPosting">
-  <script type="text/javascript" charset="utf-8" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML,
-  https://vincenttam.github.io/javascripts/MathJaxLocal.js"></script>
-  <h1 class="h0 col-12 sm-width-full py-4 mt-3 inline-block" itemprop="name headline">UMassCTF</h1>
-  <div class="col-4 sm-width-full mt-1 border-top-thin ">
-    <p class="mb-3 py-2 bold h4"><time datetime="2021-03-27T00:00:00+08:00" itemprop="datePublished">Mar 27, 2021</time></p>
-  </div>
-
-  <div class="prose" itemprop="articleBody">
-      <p>Creating this blogpost almost entirely to share one writeup :P.</p>
+I"�{<p>Creating this blogpost almost entirely to share one writeup :P.</p>
 
 <p>I saw UMassCTF on <a href="ctftime.org">ctftime</a> one fine day and decided to delve into the cryptography challenges.</p>
 
@@ -194,7 +126,7 @@ It is defined as \(s(N)=lcm((p-\left(\frac{D}{p}\right)),(q-\left(\frac{D}{q}\ri
 <h3 id="smarter-solution-no-1-matrix-exponentiation-n00bcak">Smart(er) Solution No 1: Matrix Exponentiation (N00bcak)</h3>
 <p>It is commonly known that the Fibonacci numbers can be efficiently calculated if we consider the following equation:</p>
 
-\[\begin{bmatrix}1 &amp; 1\\1 &amp; 0\end{bmatrix}^{k} \begin{bmatrix}F_{n} \\ F_{n-1}\end{bmatrix} = \begin{bmatrix}F_{n+k} \\ F_{n+k-1}\end{bmatrix} \pmod N\]
+\[\begin{bmatrix}1 &amp; 1\\1 &amp; 0\end{bmatrix}^{m} \begin{bmatrix}F_{n} \\ F_{n-1}\end{bmatrix} = \begin{bmatrix}F_{n+m} \\ F_{n+m-1}\end{bmatrix} \pmod N\]
 
 <p>starting with \(\begin{bmatrix}F_{1} \\ F_{0}\end{bmatrix} = \begin{bmatrix}1 \\ 1 \end{bmatrix} \pmod N\)</p>
 
@@ -209,7 +141,7 @@ It is defined as \(s(N)=lcm((p-\left(\frac{D}{p}\right)),(q-\left(\frac{D}{q}\ri
 
 <p>We instead construct the equation</p>
 
-\[\begin{bmatrix}c &amp; -1\\1 &amp; 0\end{bmatrix}^{k} \begin{bmatrix}v_{d,n} \\ v_{d,n-1}\end{bmatrix} = \begin{bmatrix}v_{d,n+k} \\ v_{d,n+k-1}\end{bmatrix} \pmod N\]
+\[\begin{bmatrix}c &amp; -1\\1 &amp; 0\end{bmatrix}^{m} \begin{bmatrix}v_{d,n} \\ v_{d,n-1}\end{bmatrix} = \begin{bmatrix}v_{d,n+m} \\ v_{d,n+m-1}\end{bmatrix} \pmod N\]
 
 <p>starting with \(\begin{bmatrix}v_{d,1} \\ v_{d,0}\end{bmatrix} = \begin{bmatrix}c \\ 2 \end{bmatrix} \pmod N\).</p>
 
@@ -226,7 +158,8 @@ It is defined as \(s(N)=lcm((p-\left(\frac{D}{p}\right)),(q-\left(\frac{D}{q}\ri
 193176669955827209622251066457076784585371373964277798061865411821246530561
 383535103167981845269581107478839208362184363684861933751977628913990071405
 958328582095998026994488924875397572666822615094574032473410127350687926799
-7897021195578431451783598575024934925665773924302367241787422460973592399521285519201923073</code></p>
+789702119557843145178359857502493492566577392430236724178742246097359239952
+1285519201923073</code></p>
 
 <p>Indeed, the source of this method’s speed <strong>actually</strong> lies in the <code class="language-plaintext highlighter-rouge">square-and-multiply</code> exponentiation algorithm.</p>
 
@@ -236,14 +169,14 @@ It is defined as \(s(N)=lcm((p-\left(\frac{D}{p}\right)),(q-\left(\frac{D}{q}\ri
 
 <ol>
   <li>
-    <p>Keep a copy of the original item you wish to exponentiate \(P_{original}\) and store your exponentiation result under \(R\).</p>
+    <p>Keep a copy of the original item you wish to exponentiate \(P_{original}.\) and store your exponentiation result under \(R\).</p>
   </li>
   <li>
     <p>Define two operations, <code class="language-plaintext highlighter-rouge">square</code> and <code class="language-plaintext highlighter-rouge">multiply</code>.</p>
 
     <p>1a. <code class="language-plaintext highlighter-rouge">square</code> - Assign \(R \leftarrow R^2\)</p>
 
-    <p>1b. <code class="language-plaintext highlighter-rouge">multiply</code> - Assign \(R \leftarrow R \cdot P_{original}\)</p>
+    <p>1b. <code class="language-plaintext highlighter-rouge">multiply</code> - Assign \(R \leftarrow RP_{original}\)</p>
   </li>
   <li>
     <p>Convert <code class="language-plaintext highlighter-rouge">m</code> into binary representation.</p>
@@ -393,37 +326,4 @@ It is defined as \(s(N)=lcm((p-\left(\frac{D}{p}\right)),(q-\left(\frac{D}{q}\ri
 
 <p>Notice that \(\pmod N\) was missing from these workings the whole time.
 I will stop here because… man this was dumb.</p>
-
-  </div>
-
-</article>
-
-<div class="container mx-auto px-2 py-2 clearfix">
-  <!-- Use if you want to show previous and next for all posts. -->
-
-
-
-  <div class="col-4 sm-width-full left mr-lg-4 mt-3">
-    <a class="no-underline border-top-thin py-1 block" href="/writeups/2021/03/14/CTF-SG.html">
-      <span class="h5 bold text-accent">Previous</span>
-      <p class="bold h3 link-primary mb-1">CTFSG 2021</p>
-      <p>1 week, 1 CTF, 3 weeks straight. These CTFs just keep coming, don’t they? Interestingly the three CTFs were also...</p>
-    </a>
-  </div>
-  
-  
-
-</div>
-
-    </div>
-
-    <div class="border-top-thin clearfix mt-2 mt-lg-4">
-  <div class="container mx-auto px-2">
-    <p class="col-8 sm-width-full left py-2 mb-0" style="font-size:14px">This theme is slightly abridged from <a class="text-accent" href="https://github.com/broccolini/swiss">broccolini's Swiss theme</a> by <a class="text-accent" href="https://github.com/N00bcak">N00bcak</a></p>
-  </div>
-</div>
-
-
-  </body>
-
-</html>
+:ET
