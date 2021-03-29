@@ -1,0 +1,188 @@
+I"P9<p>Creating this blogpost almost entirely to share one writeup :P.</p>
+
+<p>I saw UMassCTF on <a href="ctftime.org">ctftime</a> one fine day and decided to delve into the cryptography challenges.</p>
+
+<p>Due to my mountains of homework I opted only to attempt the RSA challenge and I solved it! … after the CTF ended.</p>
+
+<p>Nevertheless I think that my writeup will be of help to my learning and of utility to future CTF players.</p>
+
+<h1 id="weirdrsa-500-pts">WeirdRSA (500 pts)</h1>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Wanna take a look at this challenge? 
+
+I tried the normal decryption for RSA but for some reason it isn't working.
+
+http://static.ctf.umasscybersec.org/crypto/3e057374-8731-4bf5-be5c-c436a8dab580/chall.py
+
+Created by Soul#8230
+</code></pre></div></div>
+
+<h2 id="reconnaissance">Reconnaissance</h2>
+
+<p>We are greeted by this interesting snippet:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">from</span> <span class="nn">Crypto.Util.number</span> <span class="kn">import</span> <span class="n">isPrime</span>
+
+<span class="n">m</span><span class="p">,</span> <span class="n">Q</span> <span class="o">=</span> <span class="s">"""REDACTED"""</span><span class="p">,</span> <span class="mi">1</span> 
+
+<span class="k">def</span> <span class="nf">genPrimes</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
+    <span class="n">base</span> <span class="o">=</span> <span class="n">random</span><span class="p">.</span><span class="n">getrandbits</span><span class="p">(</span><span class="n">size</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">size</span> <span class="o">//</span> <span class="mi">2</span>
+    <span class="n">base</span> <span class="o">=</span> <span class="n">base</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">1023</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">1022</span><span class="p">)</span> <span class="o">|</span> <span class="mi">1</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">base</span> <span class="o">|</span> <span class="n">random</span><span class="p">.</span><span class="n">getrandbits</span><span class="p">(</span><span class="n">size</span> <span class="o">//</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">isPrime</span><span class="p">(</span><span class="n">temp</span><span class="p">):</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">temp</span>
+            <span class="k">break</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">base</span> <span class="o">|</span> <span class="n">random</span><span class="p">.</span><span class="n">getrandbits</span><span class="p">(</span><span class="n">size</span> <span class="o">//</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">isPrime</span><span class="p">(</span><span class="n">temp</span><span class="p">):</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">temp</span>
+            <span class="k">break</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">pow</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>     
+    <span class="k">return</span> <span class="n">v</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">v</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">2</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">m</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">m</span><span class="o">*</span><span class="n">v</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">Q</span><span class="o">*</span><span class="n">v</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">))</span> <span class="o">%</span> <span class="n">N</span>
+
+<span class="n">p</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="n">genPrimes</span><span class="p">(</span><span class="mi">1024</span><span class="p">)</span>
+
+<span class="n">N</span> <span class="o">=</span> <span class="n">p</span> <span class="o">*</span> <span class="n">q</span>
+<span class="n">e</span> <span class="o">=</span> <span class="mh">0x10001</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">"N:"</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">"c:"</span><span class="p">,</span> <span class="nb">pow</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">N</span><span class="p">))</span>
+
+<span class="s">"""
+N: 18378141703504870053256589621469911325593449136456168833252297256858537217774550712713558376586907139191035169090694633962713086351032581652760861668116820553602617805166170038411635411122411322217633088733925562474573155702958062785336418656834129389796123636312497589092777440651253803216182746548802100609496930688436148522617770670087143010376380205698834648595913982981670535389045333406092868158446779681106756879563374434867509327405933798082589697167457848396375382835193219251999626538126258606572805220878283429607438382521692951006432650132816122705167004219371235964716616826653226062550260270958038670427
+c: 14470740653145070679700019966554818534890999807830802232451906444910279478539396448114592242906623394239703347815141824698585119347592990685923384931479024856262941313458084648914561375377956072245149926143782368239175037299219241806241533201175001088200209202522586119648246842120571566051381821899459346757935757111233323915022287370687524912870425787594648397524189694991735372527387329346198018567010117587531474035014342584491831714256980975368294579192077738910916486139823489975038981139084864837358039928972730135031064241393391678984872799573965150169368237298603189344477806873779325227557835790957023000991
+"""</span>
+</code></pre></div></div>
+
+<p>Those familiar with RSA should instantly spot the strange exponentiation function <code class="language-plaintext highlighter-rouge">pow(m,e,N)</code>. It seems to be some kind of recurrence relation (precisely, a Lucas sequence) of the form</p>
+
+\[v(n) = Pv(n-1)-Qv(n-2), v(0)=2,v(1)=P\]
+
+<p>and we are to somehow invert it.</p>
+
+<p>Also, the <code class="language-plaintext highlighter-rouge">genPrimes()</code> function indicates that the two primes only differ in their 256 least significant bits. This reeks of Fermat’s Factorization Method, which can quickly factorize composite numbers with prime factors close together.</p>
+
+<p>Some quick google-fu brings us to <a href="https://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=5140063BDB10AB1388C9AAB52A8071A1?doi=10.1.1.32.1835&amp;rep=rep1&amp;type=pdf">this paper</a> that talks about the use of Lucas sequences to <strong>substitute for modular exponentiation</strong> in RSA.</p>
+
+<p>This cryptosystem, for the sake of namedropping, is called <code class="language-plaintext highlighter-rouge">Lucas RSA</code> or <code class="language-plaintext highlighter-rouge">LUCRSA</code>, whatever have you.</p>
+
+<h2 id="reading-the-paper">Reading the Paper</h2>
+
+<p>Everything is very similar to RSA. Similar decryption framework, similar assumptions (Large Pseudoprime Factorization is hard), etc.</p>
+
+<h3 id="the-cryptosystem">The Cryptosystem</h3>
+
+<p>Heres a bad summary of how the <code class="language-plaintext highlighter-rouge">LUCRSA</code> cryptosystem works:</p>
+
+<p>Thus we define \(N=pq\) where p,q are primes, a public exponent \(e\), and a plaintext (converted into integers) \(m\).</p>
+
+<p>Our substitute for the exponentiation function is the recurrence relation \(v_{e}(n) = mv_{e}(n-1)-v_{e}(n-2)\) with \(v_{e}(0)=2, v_{e}(1)=m\).</p>
+
+<h3 id="encryption">Encryption</h3>
+
+<p>To encrypt, we simply look up the \(e^{th}\) term in the recurrence relation \(v_{e}\). This gives us our ciphertext \(c\).</p>
+
+<h3 id="decryption">Decryption</h3>
+
+<p>Decryption in <code class="language-plaintext highlighter-rouge">LUCRSA</code> is also rather similar.</p>
+
+<p>Instead of Euler’s totient function \(\phi(N)\) we instead consider Lehmer’s totient function \(t(N) = (p-\left(\frac{D}{p}\right))(q-\left(\frac{D}{q}\right))\), as referenced from the paper.</p>
+
+<p>There also exists an analog of the Carmichael’s lambda function \(\lambda(N)\), which is often used in place of \(\phi(n)\).
+It is defined as \(s(N)=lcm((p-\left(\frac{D}{p}\right)),(q-\left(\frac{D}{q}\right)))\).</p>
+
+<p>Instead of computing \(d\) where \(ed \equiv 1 \pmod \phi(N)\) in regular RSA, we compute \(ed \equiv 1 \pmod t(N)\).</p>
+
+<p>Lastly, we define a new recurrence relation for decryption, \(v_{d}(n) = cv_{d}(n-1)-v_{d}(n-2)\) with \(v_{d}(0)=2, v_{d}(1)=c\).</p>
+
+<p>We then look up the \(d^{th}\) term in the recurrence relation \(v_{d}\) to recover \(m\).</p>
+
+<h2 id="that-seems-pretty-easy">That seems pretty easy.</h2>
+
+<p>And you’d be right, if it were not for <strong>recursion</strong>. D:</p>
+
+<p>Realise that even if you implemented the naive recursive algorithm for \(v_{d}\), you would have about <code class="language-plaintext highlighter-rouge">2**2046</code> recursion calls.</p>
+
+<p>(By naive, I mean you simply abused the properties of \(v_{d}\) provided in the paper.)</p>
+
+<p>For being such a fan of recursion, Python3 would reward you with:</p>
+
+<p><code class="language-plaintext highlighter-rouge">RecursionError: maximum recursion depth exceeded in comparison</code></p>
+
+<p>(Yes, this will happen even if you <code class="language-plaintext highlighter-rouge">sys.setrecursionlimit(2**32-1)</code>, the maximum allowable recursion limit in Python).</p>
+
+<p>So instead, I present you 3 smarter approaches, my own, that of the challenge setter, <code class="language-plaintext highlighter-rouge">Soul#8230</code>, and another solution done by <code class="language-plaintext highlighter-rouge">Rey#7813</code>.</p>
+
+<h3 id="smarter-solution-no-1-matrix-exponentiation-n00bcak">Smart(er) Solution No 1: Matrix Exponentiation (N00bcak)</h3>
+<p>It is commonly known that the Fibonacci numbers can be efficiently calculated if we consider the following equation:</p>
+
+\[\begin{bmatrix}1 &amp; 1\\1 &amp; 0\end{bmatrix}^{m} \begin{bmatrix}F_{n} \\ F_{n-1}\end{bmatrix} = \begin{bmatrix}F_{n+m} \\ F_{n+m-1}\end{bmatrix}\]
+
+<p>starting with \(\begin{bmatrix}F_{1} \\ F_{0}\end{bmatrix} = \begin{bmatrix}1 \\ 1 \end{bmatrix}\)</p>
+
+<p>Essentially, we are iteratively doing the following steps:</p>
+<ul>
+  <li>Compute \(F(n+1)=F(n)+F(n-1)\)</li>
+  <li>Move \(F(n)\) in the upper row of the matrix \(\begin{bmatrix}F_{n+1} \\ F_{n}\end{bmatrix}\) to the lower row.</li>
+  <li>Move \(F(n+1)\) to the upper row of the same matrix</li>
+</ul>
+
+<p>Generalizing this idea, we can do something similar for \(v_{d}\).</p>
+
+<p>We instead construct the equation</p>
+
+\[\begin{bmatrix}c &amp; -1\\1 &amp; 0\end{bmatrix}^{m} \begin{bmatrix}v_{d,n} \\ v_{d,n-1}\end{bmatrix} = \begin{bmatrix}v_{d,n+m} \\ v_{d,n+m-1}\end{bmatrix}\]
+
+<p>starting with \(\begin{bmatrix}v_{d,1} \\ v_{d,0}\end{bmatrix} = \begin{bmatrix}c \\ 2 \end{bmatrix}\).</p>
+
+<h4 id="ok-but-i-am-not-convinced-that-this-wont-take-seventy-trillion-centuries">Ok but I am not convinced that this won’t take seventy trillion centuries</h4>
+
+<p><em>It won’t if you have a GPU &gt;:)))</em></p>
+
+<p>Jokes aside, matrix exponentiation <strong>is</strong> fast, but look at this:</p>
+
+<p><code class="language-plaintext highlighter-rouge">d: 100952607126688026903464794905613135743376133926243507941633382859591885475
+362592986814791882009957277702254617584724174536165999151192904694964832087
+554440992064672015194793991610674092559440865440101193893727245538342250226
+054024485727310015110343475084372325136932298905959666058125473516117441408
+193176669955827209622251066457076784585371373964277798061865411821246530561
+383535103167981845269581107478839208362184363684861933751977628913990071405
+958328582095998026994488924875397572666822615094574032473410127350687926799
+789702119557843145178359857502493492566577392430236724178742246097359239952
+1285519201923073</code></p>
+
+<p>Indeed, the source of this method’s speed actually lies in the <code class="language-plaintext highlighter-rouge">square-and-multiply</code> exponentiation algorithm.</p>
+
+<p>Basically for any exponent <code class="language-plaintext highlighter-rouge">m</code>.</p>
+
+<h2 id="n00bcak-outtakes">N00bcak Outtakes</h2>
+
+<p>My first instinct was, bizarrely, to derive the closed form solution of the sequence.</p>
+
+<p>This, I would not have realized on my 11pm brain, would involve surds and is rather dumb.</p>
+
+<p>In case you are curious, we can rewrite the recurrence relation in its characteristic equation to obtain:</p>
+
+\[r^n = Pr^{n-1} - Qr^{n-2}\]
+
+<p>which simplifies to</p>
+
+\[r^{n-2}(r^{2} - Pr + Q) = 0\]
+
+<p>Solving, we obtain</p>
+
+\[v(n)=(\frac{P+\sqrt{P^2-4Q}}{2})^n + (\frac{P-\sqrt{P^2-4Q}}{2})^{n}\]
+
+<p>Notice that \(\pmod N\) was missing from these workings the whole time.
+I will stop here because… man this was dumb.</p>
+:ET
