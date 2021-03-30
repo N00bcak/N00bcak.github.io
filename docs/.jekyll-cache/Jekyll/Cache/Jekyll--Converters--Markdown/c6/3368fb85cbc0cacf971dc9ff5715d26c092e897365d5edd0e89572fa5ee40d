@@ -1,4 +1,4 @@
-I"�{<p>Creating this blogpost almost entirely to share one writeup :P.</p>
+I"&|<p>Creating this blogpost almost entirely to share one writeup :P.</p>
 
 <p>I saw UMassCTF on <a href="ctftime.org">ctftime</a> one fine day and decided to delve into the cryptography challenges.</p>
 
@@ -98,10 +98,10 @@ c: 14470740653145070679700019966554818534890999807830802232451906444910279478539
 
 <p>Instead of Euler’s totient function \(\phi(N)\) we instead consider Lehmer’s totient function \(t(N) = (p-\left(\frac{D}{p}\right))(q-\left(\frac{D}{q}\right))\), as referenced from the paper.</p>
 
-<p>There also exists an analog of the Carmichael’s lambda function \(\lambda(N)\), which is often used in place of \(\phi(n)\).
+<p>There also exists an analogue of the Carmichael’s lambda function \(\lambda(N)\), which is often used in place of \(\phi(N)\).
 It is defined as \(s(N)=lcm((p-\left(\frac{D}{p}\right)),(q-\left(\frac{D}{q}\right)))\).</p>
 
-<p>Instead of computing \(d\) where \(ed \equiv 1 \pmod \phi(N)\) in regular RSA, we compute \(ed \equiv 1 \pmod t(N)\).</p>
+<p>Instead of computing \(d\) where \(ed \equiv 1 \pmod{\phi(N)}\) in regular RSA, we compute \(ed \equiv 1 \pmod{t(N)}\).</p>
 
 <p>Lastly, we define a new recurrence relation for decryption, \(v_{d}(n) = cv_{d}(n-1)-v_{d}(n-2)\) with \(v_{d}(0)=2, v_{d}(1)=c\).</p>
 
@@ -158,8 +158,7 @@ It is defined as \(s(N)=lcm((p-\left(\frac{D}{p}\right)),(q-\left(\frac{D}{q}\ri
 193176669955827209622251066457076784585371373964277798061865411821246530561
 383535103167981845269581107478839208362184363684861933751977628913990071405
 958328582095998026994488924875397572666822615094574032473410127350687926799
-789702119557843145178359857502493492566577392430236724178742246097359239952
-1285519201923073</code></p>
+7897021195578431451783598575024934925665773924302367241787422460973592399521285519201923073</code></p>
 
 <p>Indeed, the source of this method’s speed <strong>actually</strong> lies in the <code class="language-plaintext highlighter-rouge">square-and-multiply</code> exponentiation algorithm.</p>
 
@@ -169,14 +168,14 @@ It is defined as \(s(N)=lcm((p-\left(\frac{D}{p}\right)),(q-\left(\frac{D}{q}\ri
 
 <ol>
   <li>
-    <p>Keep a copy of the original item you wish to exponentiate \(P_{original}.\) and store your exponentiation result under \(R\).</p>
+    <p>Keep a copy of the original item you wish to exponentiate \(P_{original}\) and store your exponentiation result under \(R\).</p>
   </li>
   <li>
     <p>Define two operations, <code class="language-plaintext highlighter-rouge">square</code> and <code class="language-plaintext highlighter-rouge">multiply</code>.</p>
 
     <p>1a. <code class="language-plaintext highlighter-rouge">square</code> - Assign \(R \leftarrow R^2\)</p>
 
-    <p>1b. <code class="language-plaintext highlighter-rouge">multiply</code> - Assign \(R \leftarrow RP_{original}\)</p>
+    <p>1b. <code class="language-plaintext highlighter-rouge">multiply</code> - Assign \(R \leftarrow R \cdot P_{original}\)</p>
   </li>
   <li>
     <p>Convert <code class="language-plaintext highlighter-rouge">m</code> into binary representation.</p>
@@ -282,7 +281,7 @@ It is defined as \(s(N)=lcm((p-\left(\frac{D}{p}\right)),(q-\left(\frac{D}{q}\ri
 
 <p>This solution uses William’s p+1 algorithm to optimize \(v_{d}\).</p>
 
-<p>I do not claim (as of yet) to understand what it does, so I will just link you to <a href="">this writeup (the link is not here yet :&lt;)</a> and show you the script:</p>
+<p>I do not claim (as of yet) to understand what it does, so I will just link you to <a href="https://github.com/r3yc0n1c/CTF-Writeups/tree/main/2021/UMassCTF-2021/Crypto/Weird%20RSA#weird-rsa-500">this writeup</a> and show you the script:</p>
 
 <h3 id="script-3">Script 3</h3>
 

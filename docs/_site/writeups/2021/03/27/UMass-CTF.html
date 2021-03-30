@@ -166,7 +166,7 @@ c: 14470740653145070679700019966554818534890999807830802232451906444910279478539
 
 <p>Instead of Euler’s totient function \(\phi(N)\) we instead consider Lehmer’s totient function \(t(N) = (p-\left(\frac{D}{p}\right))(q-\left(\frac{D}{q}\right))\), as referenced from the paper.</p>
 
-<p>There also exists an analog of the Carmichael’s lambda function \(\lambda(N)\), which is often used in place of \(\phi(N)\).
+<p>There also exists an analogue of the Carmichael’s lambda function \(\lambda(N)\), which is often used in place of \(\phi(N)\).
 It is defined as \(s(N)=lcm((p-\left(\frac{D}{p}\right)),(q-\left(\frac{D}{q}\right)))\).</p>
 
 <p>Instead of computing \(d\) where \(ed \equiv 1 \pmod{\phi(N)}\) in regular RSA, we compute \(ed \equiv 1 \pmod{t(N)}\).</p>
@@ -349,7 +349,7 @@ It is defined as \(s(N)=lcm((p-\left(\frac{D}{p}\right)),(q-\left(\frac{D}{q}\ri
 
 <p>This solution uses William’s p+1 algorithm to optimize \(v_{d}\).</p>
 
-<p>I do not claim (as of yet) to understand what it does, so I will just link you to <a href="">this writeup (the link is not here yet :&lt;)</a> and show you the script:</p>
+<p>I do not claim (as of yet) to understand what it does, so I will just link you to <a href="https://github.com/r3yc0n1c/CTF-Writeups/tree/main/2021/UMassCTF-2021/Crypto/Weird%20RSA#weird-rsa-500">this writeup</a> and show you the script:</p>
 
 <h3 id="script-3">Script 3</h3>
 
