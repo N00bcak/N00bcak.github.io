@@ -1,0 +1,240 @@
+I"#^<p>ångstromCTF2021 was, in all honesty, probably the most serious I’ve been on a CTFTime CTF.</p>
+
+<p>The spread of challenge difficulties was just right for a beginner like me. While I could not do any of the harder challenges (includes my nemesis, block ciphers), I was nonetheless able to solve quite a sizable number, including some I did not think possible.</p>
+
+<p>In the end, we reached 71st place in the CTF!</p>
+
+<p><img src="/assets/Images/AngstromCTF-2021/scoreboard.png" alt="" /></p>
+
+<h1 id="writeups">Writeups</h1>
+<p>I made writeups for the following two challenges (because I’m the most proud of them heh):</p>
+<ol>
+  <li><a href="#substitution">(Crypto) Subsitution</a></li>
+  <li><a href="#im-so-random">(Crypto) I’m So Random</a></li>
+</ol>
+
+<h2 id="substitution">Substitution</h2>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[Source](https://files.actf.co/3c66d046b7d644f65c4e4bbb0c7aa4c4420ef1b6fda684e1b00c261ccf6472be/chall.py)
+
+nc crypto.2021.chall.actf.co 21601
+
+Author: EvilMuffinHa
+</code></pre></div></div>
+
+<h3 id="reconnaissance">Reconnaissance</h3>
+<p>We are given the following code:</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#!/usr/bin/python
+</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="nb">reduce</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">"flag"</span><span class="p">,</span> <span class="s">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="p">[</span><span class="nb">ord</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">f</span><span class="p">.</span><span class="n">read</span><span class="p">().</span><span class="n">strip</span><span class="p">()]</span>
+
+
+
+<span class="k">def</span> <span class="nf">substitute</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="nb">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span><span class="o">*</span><span class="n">value</span><span class="o">+</span><span class="n">y</span><span class="p">,</span> <span class="n">key</span><span class="p">))</span><span class="o">%</span><span class="mi">691</span>
+
+
+
+<span class="k">print</span><span class="p">(</span><span class="s">"Enter a number and it will be returned with our super secret synthetic substitution technique"</span><span class="p">)</span>
+<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s">"&gt; "</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s">'quit'</span><span class="p">:</span>
+            <span class="n">quit</span><span class="p">()</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="n">enc</span> <span class="o">=</span> <span class="n">substitute</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"&gt;&gt; "</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s">""</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">enc</span><span class="p">)</span>
+    <span class="k">except</span> <span class="nb">ValueError</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"Invalid input. "</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>We can therefore make some observations:</p>
+<ol>
+  <li>If we recover the key, we recover the flag.</li>
+  <li>We need to understand how that <code class="language-plaintext highlighter-rouge">substitute()</code> function works. (because I didn’t before I saw this challenge)</li>
+  <li>Since <code class="language-plaintext highlighter-rouge">691</code> is a prime, we know that there is a <code class="language-plaintext highlighter-rouge">bijective</code> mapping between each <code class="language-plaintext highlighter-rouge">input value</code> and its <code class="language-plaintext highlighter-rouge">substituted value</code>.</li>
+</ol>
+
+<h3 id="figuring-out-what-substitute-does">Figuring out what <code class="language-plaintext highlighter-rouge">substitute()</code> does</h3>
+<p>Rewriting the code we get:</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="k">def</span> <span class="nf">substitute</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="nb">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span><span class="o">*</span><span class="n">value</span><span class="o">+</span><span class="n">y</span><span class="p">,</span> <span class="n">key</span><span class="p">))</span><span class="o">%</span><span class="mi">691</span>
+
+<span class="k">def</span> <span class="nf">sub</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="n">c</span><span class="o">=</span><span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">)):</span>
+        <span class="n">c</span><span class="o">=</span><span class="p">(</span><span class="n">c</span><span class="o">*</span><span class="n">value</span><span class="o">+</span><span class="n">key</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">%</span><span class="mi">691</span>
+    <span class="k">return</span> <span class="n">c</span>
+
+</code></pre></div></div>
+
+<h2 id="im-so-random">I’m So Random</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Aplet's quirky and unique so he made my own [PRNG](https://files.actf.co/a155e414e8cc7e0279ffe40225d7295fda5c2b79116313c2cb8fb8bf22dda70d/chall.py)! It's not like the other PRNGs, its absolutely unbreakable!
+
+nc crypto.2021.chall.actf.co 21600
+
+Author: EvilMuffinHa
+</code></pre></div></div>
+
+<h3 id="reconnaissance-1">Reconnaissance</h3>
+
+<p>We are presented with the following code:</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="k">class</span> <span class="nc">Generator</span><span class="p">():</span>
+    <span class="n">DIGITS</span> <span class="o">=</span> <span class="mi">8</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seed</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">seed</span>
+        <span class="k">assert</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">seed</span><span class="p">))</span> <span class="o">==</span> <span class="bp">self</span><span class="p">.</span><span class="n">DIGITS</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getNum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">seed</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">seed</span><span class="o">**</span><span class="mi">2</span><span class="p">).</span><span class="n">rjust</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">DIGITS</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="s">"0"</span><span class="p">)[</span><span class="bp">self</span><span class="p">.</span><span class="n">DIGITS</span><span class="o">//</span><span class="mi">2</span><span class="p">:</span><span class="bp">self</span><span class="p">.</span><span class="n">DIGITS</span> <span class="o">+</span> <span class="bp">self</span><span class="p">.</span><span class="n">DIGITS</span><span class="o">//</span><span class="mi">2</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">.</span><span class="n">seed</span>
+
+
+<span class="n">r1</span> <span class="o">=</span> <span class="n">Generator</span><span class="p">(</span><span class="n">random</span><span class="p">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">10000000</span><span class="p">,</span> <span class="mi">99999999</span><span class="p">))</span>
+<span class="n">r2</span> <span class="o">=</span> <span class="n">Generator</span><span class="p">(</span><span class="n">random</span><span class="p">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">10000000</span><span class="p">,</span> <span class="mi">99999999</span><span class="p">))</span>
+
+
+<span class="n">query_counter</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s">"Would you like to get a random output [r], or guess the next random number [g]? "</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">query</span><span class="p">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s">"r"</span><span class="p">,</span> <span class="s">"g"</span><span class="p">]:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"Invalid input."</span><span class="p">)</span>
+        <span class="k">break</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">query</span><span class="p">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s">"r"</span> <span class="ow">and</span> <span class="n">query_counter</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">r1</span><span class="p">.</span><span class="n">getNum</span><span class="p">()</span> <span class="o">*</span> <span class="n">r2</span><span class="p">.</span><span class="n">getNum</span><span class="p">())</span>
+            <span class="n">query_counter</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="k">elif</span> <span class="n">query_counter</span> <span class="o">&gt;=</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">query</span><span class="p">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s">"r"</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">"You don't get more random numbers!"</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+                <span class="n">guess</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s">"What is your guess to the next value generated? "</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">guess</span> <span class="o">!=</span> <span class="n">r1</span><span class="p">.</span><span class="n">getNum</span><span class="p">()</span> <span class="o">*</span> <span class="n">r2</span><span class="p">.</span><span class="n">getNum</span><span class="p">():</span>
+                    <span class="k">print</span><span class="p">(</span><span class="s">"Incorrect!"</span><span class="p">)</span>
+                    <span class="nb">exit</span><span class="p">()</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">"flag"</span><span class="p">,</span> <span class="s">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">fleg</span> <span class="o">=</span> <span class="n">f</span><span class="p">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">"Congrats! Here's your flag: "</span><span class="p">)</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">fleg</span><span class="p">)</span>
+            <span class="nb">exit</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>In brief, it creates a PRNG that generates numbers like so:</p>
+
+<ol>
+  <li>Generate 2 pseudo-randomly seeded PRNGs. (post-solve addendum: see <a href="https://en.wikipedia.org/wiki/Middle-square_method">middle-square method</a>)</li>
+  <li>
+    <p>When each <code class="language-plaintext highlighter-rouge">getNum()</code> is called,</p>
+
+    <p>a. Square the seed</p>
+
+    <p>b. Pad the seed so it is 16 digits long.</p>
+
+    <p>c. Extract the middle 8 digits of the seed.</p>
+
+    <p>d. Return seed.</p>
+
+    <p>e. Next <code class="language-plaintext highlighter-rouge">getNum()</code> will use this new seed.</p>
+  </li>
+  <li>Multiply the two PRNG-generated numbers to create a pseudo-random number (we will call this the <code class="language-plaintext highlighter-rouge">Result</code>).</li>
+</ol>
+
+<p>That’s cool. But where’s the vulnerability?</p>
+
+<h3 id="the-exploit">The Exploit</h3>
+
+<p>Here &gt;:D.</p>
+
+<p>Notice that:</p>
+<ol>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">Result</code> is pretty small (16 digits at best).</p>
+
+    <p>a. Easily factorized.</p>
+  </li>
+  <li>
+    <p>The pseudo-randomly generated number is always the product of the two PRNG-generated numbers.</p>
+
+    <p>a. So in the event that they are prime, factorizing the pseudoprime <code class="language-plaintext highlighter-rouge">Result</code> will leak both pseudo-random seeds.</p>
+  </li>
+  <li>
+    <p>For every pair of pseudo-random seeds, the PRNG-generated number is ALWAYS the same.</p>
+
+    <p>a. That means that we can simply intercept the pseudo-random seeds and continue generating new <code class="language-plaintext highlighter-rouge">Result</code>s as if nothing had happened.</p>
+  </li>
+</ol>
+
+<p>This gives me an idea for an exploit:</p>
+<ol>
+  <li>
+    <p>Generate numbers repeatedly until we get a pseudoprime <code class="language-plaintext highlighter-rouge">Result</code>.</p>
+
+    <p>a. This will happen with an \(\approx\) 1/64 chance.</p>
+
+    <p>(A consequence of the <a href="https://primes.utm.edu/howmany.html">Prime Number Theorem</a> states that any integer <code class="language-plaintext highlighter-rouge">n</code> digits long has an \(\approx \frac{1}{ln(n)}\) chance of being prime. We have our PRNG-generated numbers being at most 8 digits.)</p>
+  </li>
+  <li>Factorize <code class="language-plaintext highlighter-rouge">Result</code> to intercept the seeds of the two PRNGs.</li>
+  <li>Create our own PRNGs with the two intercepted seeds and generate <code class="language-plaintext highlighter-rouge">Result</code>s to get flag!</li>
+</ol>
+
+<p>There’s really not much else to say, this solution was pretty simple in my eyes.</p>
+
+<h3 id="script">Script</h3>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># So here's the plan...
+# We hope for a pseudoprime seed...
+# And if we get it... we win! :D
+</span><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">sage.all</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="c1"># context.log_level='DEBUG'
+</span>
+<span class="k">class</span> <span class="nc">Generator</span><span class="p">():</span>
+    <span class="n">DIGITS</span> <span class="o">=</span> <span class="mi">8</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seed</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">seed</span>
+
+    <span class="k">def</span> <span class="nf">getNum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">seed</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">seed</span><span class="o">**</span><span class="mi">2</span><span class="p">).</span><span class="n">rjust</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">DIGITS</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="s">"0"</span><span class="p">)[</span><span class="bp">self</span><span class="p">.</span><span class="n">DIGITS</span><span class="o">//</span><span class="mi">2</span><span class="p">:</span><span class="bp">self</span><span class="p">.</span><span class="n">DIGITS</span> <span class="o">+</span> <span class="bp">self</span><span class="p">.</span><span class="n">DIGITS</span><span class="o">//</span><span class="mi">2</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">.</span><span class="n">seed</span>
+
+<span class="n">const</span><span class="o">=</span><span class="mi">24</span>
+<span class="n">j</span><span class="o">=</span><span class="mi">0</span>
+<span class="k">while</span> <span class="nb">sum</span><span class="p">([</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">factor</span><span class="p">(</span><span class="n">const</span><span class="p">)])</span><span class="o">!=</span><span class="mi">2</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">j</span><span class="o">%</span><span class="mi">3</span><span class="p">:</span>
+        <span class="n">r</span><span class="o">=</span><span class="n">remote</span><span class="p">(</span><span class="s">"crypto.2021.chall.actf.co"</span><span class="p">,</span><span class="mi">21600</span><span class="p">)</span>
+    <span class="n">r</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s">'? '</span><span class="p">)</span>
+    <span class="n">r</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="s">'r'</span><span class="p">)</span>
+    <span class="n">const</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">recvline</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">j</span><span class="o">+=</span><span class="mi">1</span>
+<span class="n">n1</span><span class="p">,</span><span class="n">n2</span><span class="o">=</span><span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">factor</span><span class="p">(</span><span class="n">const</span><span class="p">)]</span>
+<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"Intercepted! n1: </span><span class="si">{</span><span class="n">n1</span><span class="si">}</span><span class="s"> n2: </span><span class="si">{</span><span class="n">n2</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+<span class="n">r1</span> <span class="o">=</span> <span class="n">Generator</span><span class="p">(</span><span class="n">n1</span><span class="p">)</span>
+<span class="n">r2</span> <span class="o">=</span> <span class="n">Generator</span><span class="p">(</span><span class="n">n2</span><span class="p">)</span>
+
+<span class="n">r</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s">'? '</span><span class="p">)</span>
+<span class="n">r</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="s">'g'</span><span class="p">)</span>
+<span class="n">r</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">r1</span><span class="p">.</span><span class="n">getNum</span><span class="p">()</span><span class="o">*</span><span class="n">r2</span><span class="p">.</span><span class="n">getNum</span><span class="p">()))</span>
+
+<span class="n">r</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s">'? '</span><span class="p">)</span>
+<span class="n">r</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">r1</span><span class="p">.</span><span class="n">getNum</span><span class="p">()</span><span class="o">*</span><span class="n">r2</span><span class="p">.</span><span class="n">getNum</span><span class="p">()))</span>
+
+<span class="n">r</span><span class="p">.</span><span class="n">interactive</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>And thus we run the exploit:</p>
+
+<p><img src="/assets/Images/AngstromCTF-2021/imsorandom_solve.png" alt="" /></p>
+
+<p>And receive our flag!</p>
+
+<p><code class="language-plaintext highlighter-rouge">actf{middle_square_method_more_like_middle_fail_method}</code></p>
+:ET

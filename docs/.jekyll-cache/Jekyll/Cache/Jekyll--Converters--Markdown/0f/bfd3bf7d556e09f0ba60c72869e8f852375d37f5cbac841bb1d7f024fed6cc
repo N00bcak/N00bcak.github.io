@@ -1,0 +1,22 @@
+I"-<p>ångstromCTF2021 was, in all honesty, probably the most serious I’ve been on a CTFTime CTF.</p>
+
+<p>The spread of challenge difficulties was just right for a beginner like me. While I could not do any of the harder challenges (includes my nemesis, block ciphers), I was nonetheless able to solve quite a sizable number, including some I did not think possible.</p>
+
+<p>In the end, we reached 71st place in the CTF!</p>
+
+<p><img src="" alt="" /></p>
+
+<h1 id="writeups">Writeups</h1>
+<p>I made writeups for the following two challenges: (and one picture to complain about Rev :&lt;)</p>
+<ol>
+  <li><a href="#substitution">(Crypto) Subsitution</a></li>
+  <li><a href="#I'm-So-Random">(Crypto) I’m So Random</a></li>
+</ol>
+
+<h2 id="substitution">Substitution</h2>
+<p>Aplet’s quirky and unique so he made my own <a href="https://files.actf.co/a155e414e8cc7e0279ffe40225d7295fda5c2b79116313c2cb8fb8bf22dda70d/chall.py">PRNG</a>! It’s not like the other PRNGs, its absolutely unbreakable!</p>
+
+<p>nc crypto.2021.chall.actf.co 21600</p>
+
+<p>Author: EvilMuffinHa</p>
+:ET
