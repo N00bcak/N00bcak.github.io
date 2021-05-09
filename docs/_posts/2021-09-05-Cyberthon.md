@@ -150,7 +150,11 @@ And we get:
 p.s. welp1.0 is the exact same thing but $$k=0$$.
 
 ## Encraptor 1.0
-```To ensure that all APOCALYPSE agents are encrypting their files properly, APOCALYPSE has decided to provide a centralized encryption service for all their members. We've recently recovered a flag that was encrypted by their service. Can you try to recover the flag?```
+```To ensure that all APOCALYPSE agents are encrypting their files properly, 
+APOCALYPSE has decided to provide a centralized encryption 
+service for all their members. We've recently recovered a flag that was encrypted by their service. 
+Can you try to recover the flag?
+```
 
 ### Reconnaissance
 We are greeted with:
@@ -261,13 +265,15 @@ print(len(msg))
 print(f"MSG: {msg}")
 ```
 
-Flag: `Cyberthon{mfw_3ncrypt10n_s4m3_45_d3crypt_s4dg3}`
+### Flag!
+`Cyberthon{mfw_3ncrypt10n_s4m3_45_d3crypt_s4dg3}`
 
 ## apcafe
 ```
-We've received intel that APOCALYPSE is running a cafe as a front for their illegal activities. Although it seems like a regular cafe on the 
-outside, serving local favourites such as Kopi-O, Milo, and Yuan Yang, we believe that something more sinister is going on. Could u try to 
-find a way to break in so we can investigate further?
+We've received intel that APOCALYPSE is running a cafe as a front for their illegal activities. 
+Although it seems like a regular cafe on the outside, serving local favourites such as Kopi-O, Milo, 
+and Yuan Yang, we believe that something more sinister is going on. Could u try to find a way to break 
+in so we can investigate further?
 ```
 
 ### Reconnaissance
@@ -344,7 +350,9 @@ r.interactive()
 ```
 
 After getting **shell** we thus obtain:
-Flag: `Cyberthon{th4t5_4_r34lly_l000ng_0rd3r_dud3_pl5_ch1ll}`
+
+### Flag!
+`Cyberthon{th4t5_4_r34lly_l000ng_0rd3r_dud3_pl5_ch1ll}`
 
 ## apcdb
 ```
@@ -436,11 +444,16 @@ r.interactive()
 
 ![](/assets/Images/Cyberthon-2021/apcdb_flag.png)
 
-Flag: `Cyberthon{f4k3_c0nt4ct5_f41lur3}`
+### Flag!
+`Cyberthon{f4k3_c0nt4ct5_f41lur3}`
 
 ## Placeholder
 ```
-Hohoho seems like one of the APOCALYPSE agents messed up big time. Seems this agent went to deploy his/her code for testing and completely forgot to bring down the network service. This careless agent even forgot to private the repository containing the test code, so we've managed to obtain the source for the entire project, dockerfile and all. We've provided you with everything that we've found, so can you get the flag from their server?
+Hohoho seems like one of the APOCALYPSE agents messed up big time. 
+Seems this agent went to deploy his/her code for testing and completely forgot to bring down the network service. 
+This careless agent even forgot to private the repository containing the test code, 
+so we've managed to obtain the source for the entire project, dockerfile and all. 
+We've provided you with everything that we've found, so can you get the flag from their server?
 ```
 
 (Scared off by Dockerfile until `niktay` said "guys easiest pwn chall")
@@ -521,5 +534,6 @@ for i in range(0,len(streeng),8):
 
 That was easy enough.
 
-Flag: `Cyberthon{d0nt_d3pl0y_1nc0mpl3t3_pr0j3ct5}`
+### Flag!
+`Cyberthon{d0nt_d3pl0y_1nc0mpl3t3_pr0j3ct5}`
 
