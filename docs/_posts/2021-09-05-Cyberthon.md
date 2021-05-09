@@ -13,7 +13,7 @@ Moreover, all the various schools fielded many fearsome competitors that really 
 
 Nonetheless we managed to pull through to clinch overall champions!
 
-![](/assets/Images/Cyberthon-2021/results.png)
+![](/assets/Images/Cyberthon-2021/scoreboard.png)
 
 # Writeups
 Due to time constraints I will share my cleanest writeups so no one will have to suffer from my unassailable reputation for digital illegibility:
@@ -81,7 +81,7 @@ Anyways, the attack hinges on the `basic` fact (provided you know modular arithm
 
 
 $$\begin{equation} \label{eq:one}
-c \equiv m^e \pmod N
+c \equiv m^{e} \pmod N
 \end{equation}$$
 
 then
@@ -273,11 +273,11 @@ find a way to break in so we can investigate further?
 ### Reconnaissance
 
 We are greeted by a 64-bit binary that has the following functions:
-![](/assets/Images/Cyberthon-2021/apcafe-main.png)
-![](/assets/Images/Cyberthon-2021/apcafe-serveorder.png)
+![](/assets/Images/Cyberthon-2021/apcafe_main.png)
+![](/assets/Images/Cyberthon-2021/apcafe_serveorder.png)
 
 Of course, not forgetting our checksec...
-![](/assets/Images/Cyberthon-2021/apcafe-checksec.png)
+![](/assets/Images/Cyberthon-2021/apcafe_checksec.png)
 
 Let's cut to the chase, I'm strapped for time.
 
