@@ -377,7 +377,7 @@ Ideally when **leaking LIBC**, we want multiple addresses in a **single** connec
 
 This is because **LIBC** files are **PIE** meaning that their addresses are merely offsets added to a **random** `base address`.
 
-If you instead retrieve addresses from **multiple** connections, the **PIE bases** are most definitely different, and you (probably) cannot use that to retrieve **LIBC version** from [libc.blukat.me]("https://libc.blukat.me")
+If you instead retrieve addresses from **multiple** connections, the **PIE bases** are most definitely different, and you (probably) cannot use that to retrieve **LIBC version** from [libc.blukat.me](https://libc.blukat.me)
 
 We can overcome this simply by overwriting the [GOT entry](https://systemoverlord.com/2017/03/19/got-and-plt-for-pwning.html) of the `exit()` function, since **partial RELRO** security allows us to overwrite `.got.plt`.
 
@@ -386,7 +386,7 @@ This will in effect give us a never-ending loop, which is great because now we c
 For example, leaking our **LIBC addresses** as usual!
 
 ### The Exploit
-After we leak some nice addresses we will shove them into [libc.blukat.me]("https://libc.blukat.me") to get our dearest libc version:
+After we leak some nice addresses we will shove them into [libc.blukat.me](https://libc.blukat.me) to get our dearest libc version:
 
 ![](/assets/Images/Cyberthon-2021/apcdb_libc.png)
 
