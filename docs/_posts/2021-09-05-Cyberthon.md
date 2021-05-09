@@ -18,7 +18,7 @@ Nonetheless we managed to pull through to clinch overall champions!
 # Writeups
 Due to time constraints I will share my cleanest writeups so no one will have to suffer from my unassailable reputation for digital illegibility:
 1. [(Crypto) Welp 1.0/2.0](#welp)
-2. [(Crypto) Encraptor 1.0](#encraptor-1.0)
+2. [(Crypto) Encraptor 1.0](#encraptor-10)
 3. [(Pwn) apcafe](#apcafe)
 4. [(Pwn) apcdb](#apcdb)
 5. [(Pwn) Placeholder](#placeholder)
