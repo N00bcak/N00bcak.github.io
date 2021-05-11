@@ -89,13 +89,13 @@
 
 <p>Nonetheless we managed to pull through to clinch overall champions!</p>
 
-<p><img src="/assets/Images/Cyberthon-2021/results.png" alt="" /></p>
+<p><img src="/assets/Images/Cyberthon-2021/scoreboard.png" alt="" /></p>
 
 <h1 id="writeups">Writeups</h1>
 <p>Due to time constraints I will share my cleanest writeups so no one will have to suffer from my unassailable reputation for digital illegibility:</p>
 <ol>
   <li><a href="#welp">(Crypto) Welp 1.0/2.0</a></li>
-  <li><a href="#encraptor-1.0">(Crypto) Encraptor 1.0</a></li>
+  <li><a href="#encraptor-10">(Crypto) Encraptor 1.0</a></li>
   <li><a href="#apcafe">(Pwn) apcafe</a></li>
   <li><a href="#apcdb">(Pwn) apcdb</a></li>
   <li><a href="#placeholder">(Pwn) Placeholder</a></li>
@@ -162,7 +162,7 @@
 <p>Anyways, the attack hinges on the <code class="language-plaintext highlighter-rouge">basic</code> fact (provided you know modular arithmetic) that if</p>
 
 \[\begin{equation} \label{eq:one}
-c \equiv m^e \pmod N
+c \equiv m^{e} \pmod N
 \end{equation}\]
 
 <p>then</p>
@@ -230,74 +230,77 @@ c \equiv m^e \pmod N
 <p>p.s. welp1.0 is the exact same thing but \(k=0\).</p>
 
 <h2 id="encraptor-10">Encraptor 1.0</h2>
-<p><code class="language-plaintext highlighter-rouge">To ensure that all APOCALYPSE agents are encrypting their files properly, APOCALYPSE has decided to provide a centralized encryption service for all their members. We've recently recovered a flag that was encrypted by their service. Can you try to recover the flag?</code></p>
 
-<h3 id="reconnaissance-1">Reconnaissance</h3>
-<p>We are greeted with:</p>
-<ul>
-  <li>An encrypted flag</li>
-  <li>Whatever APOCALYPSE is running on their server:</li>
-</ul>
+<p>```To ensure that all APOCALYPSE agents are encrypting their files properly, 
+APOCALYPSE has decided to provide a centralized encryption 
+service for all their members. We’ve recently recovered a flag that was encrypted by their service. 
+Can you try to recover the flag?</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+### Reconnaissance
+We are greeted with:
+- An encrypted flag
+- Whatever APOCALYPSE is running on their server:
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#! /usr/bin/python3
-</span>
-<span class="kn">from</span> <span class="nn">Crypto.Hash</span> <span class="kn">import</span> <span class="n">MD5</span>
-<span class="kn">from</span> <span class="nn">Crypto.Cipher</span> <span class="kn">import</span> <span class="n">AES</span>
-<span class="kn">from</span> <span class="nn">binascii</span> <span class="kn">import</span> <span class="n">unhexlify</span>
-<span class="kn">import</span> <span class="nn">sys</span>
+```python
+#! /usr/bin/python3
 
-
-<span class="n">KEY</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">'/home/encraptor1/aeskey'</span><span class="p">,</span> <span class="s">'rb'</span><span class="p">).</span><span class="n">read</span><span class="p">()</span>
-<span class="n">IV</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">'/home/encraptor1/iv'</span><span class="p">,</span> <span class="s">'rb'</span><span class="p">).</span><span class="n">read</span><span class="p">()</span>
-
-
-<span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">prompt</span><span class="p">):</span>
-    <span class="n">write</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">sys</span><span class="p">.</span><span class="n">stdin</span><span class="p">.</span><span class="nb">buffer</span><span class="p">.</span><span class="n">read</span><span class="p">()</span>
-    <span class="n">write</span><span class="p">(</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">data</span>
+from Crypto.Hash import MD5
+from Crypto.Cipher import AES
+from binascii import unhexlify
+import sys
 
 
-<span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="n">prompt</span><span class="p">):</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">sys</span><span class="p">.</span><span class="n">stdout</span><span class="p">.</span><span class="nb">buffer</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
-    <span class="k">except</span> <span class="nb">TypeError</span><span class="p">:</span>
-        <span class="n">sys</span><span class="p">.</span><span class="n">stdout</span><span class="p">.</span><span class="nb">buffer</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">prompt</span><span class="p">.</span><span class="n">encode</span><span class="p">(</span><span class="s">'utf-8'</span><span class="p">))</span>
-
-    <span class="n">sys</span><span class="p">.</span><span class="n">stdout</span><span class="p">.</span><span class="n">flush</span><span class="p">()</span>
+KEY = open('/home/encraptor1/aeskey', 'rb').read()
+IV = open('/home/encraptor1/iv', 'rb').read()
 
 
-<span class="k">def</span> <span class="nf">md5sum</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-    <span class="n">md5</span> <span class="o">=</span> <span class="n">MD5</span><span class="p">.</span><span class="n">new</span><span class="p">()</span>
-    <span class="n">md5</span><span class="p">.</span><span class="n">update</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+def read(prompt):
+    write(prompt)
+    data = sys.stdin.buffer.read()
+    write('\n')
 
-    <span class="k">return</span> <span class="n">md5</span><span class="p">.</span><span class="n">hexdigest</span><span class="p">()</span>
-
-
-<span class="k">def</span> <span class="nf">encrypt</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">iv</span><span class="p">):</span>
-    <span class="n">cipher</span> <span class="o">=</span> <span class="n">AES</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">AES</span><span class="p">.</span><span class="n">MODE_OFB</span><span class="p">,</span> <span class="n">iv</span><span class="o">=</span><span class="n">iv</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">unhexlify</span><span class="p">(</span><span class="n">md5sum</span><span class="p">(</span><span class="n">data</span><span class="p">))</span> <span class="o">+</span> <span class="n">cipher</span><span class="p">.</span><span class="n">encrypt</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    return data
 
 
-<span class="k">def</span> <span class="nf">banner</span><span class="p">():</span>
-    <span class="n">write</span><span class="p">(</span><span class="s">"  ______        _____                 _               __   ___  </span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
-    <span class="n">write</span><span class="p">(</span><span class="s">" |  ____|      / ____|               | |             /_ | / _ </span><span class="se">\\</span><span class="s"> </span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
-    <span class="n">write</span><span class="p">(</span><span class="s">" | |__   _ __ | |     _ __ __ _ _ __ | |_ ___  _ __   | || | | |</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
-    <span class="n">write</span><span class="p">(</span><span class="s">" |  __| | '_ </span><span class="se">\\</span><span class="s">| |    | '__/ _` | '_ </span><span class="se">\\</span><span class="s">| __/ _ </span><span class="se">\\</span><span class="s">| '__|  | || | | |</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
-    <span class="n">write</span><span class="p">(</span><span class="s">" | |____| | | | |____| | | (_| | |_) | || (_) | |     | || |_| |</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
-    <span class="n">write</span><span class="p">(</span><span class="s">" |______|_| |_|</span><span class="se">\\</span><span class="s">_____|_|  </span><span class="se">\\</span><span class="s">__,_| .__/ </span><span class="se">\\</span><span class="s">__</span><span class="se">\\</span><span class="s">___/|_|     |_(_)___/ </span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
-    <span class="n">write</span><span class="p">(</span><span class="s">"                               | |                              </span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
-    <span class="n">write</span><span class="p">(</span><span class="s">"                               |_|                              </span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
-    <span class="n">write</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
-<span class="c1"># To be fair 
-</span><span class="n">banner</span><span class="p">()</span>
+def write(prompt):
+    try:
+        sys.stdout.buffer.write(prompt)
+    except TypeError:
+        sys.stdout.buffer.write(prompt.encode('utf-8'))
 
-<span class="n">data</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s">'[+] Data: '</span><span class="p">)</span>
-<span class="n">write</span><span class="p">(</span><span class="s">'[+] Encrypted:</span><span class="se">\n</span><span class="s">'</span><span class="p">)</span>
-<span class="n">write</span><span class="p">(</span><span class="s">'----------------------------- START -------------------------------</span><span class="se">\n</span><span class="s">'</span><span class="p">)</span>
-<span class="n">write</span><span class="p">(</span><span class="n">encrypt</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">KEY</span><span class="p">,</span> <span class="n">IV</span><span class="p">))</span>
-<span class="n">write</span><span class="p">(</span><span class="s">'</span><span class="se">\n</span><span class="s">------------------------------ END --------------------------------'</span><span class="p">)</span>
+    sys.stdout.flush()
+
+
+def md5sum(data):
+    md5 = MD5.new()
+    md5.update(data)
+
+    return md5.hexdigest()
+
+
+def encrypt(data, key, iv):
+    cipher = AES.new(key, AES.MODE_OFB, iv=iv)
+    return unhexlify(md5sum(data)) + cipher.encrypt(data)
+
+
+def banner():
+    write("  ______        _____                 _               __   ___  \n")
+    write(" |  ____|      / ____|               | |             /_ | / _ \\ \n")
+    write(" | |__   _ __ | |     _ __ __ _ _ __ | |_ ___  _ __   | || | | |\n")
+    write(" |  __| | '_ \\| |    | '__/ _` | '_ \\| __/ _ \\| '__|  | || | | |\n")
+    write(" | |____| | | | |____| | | (_| | |_) | || (_) | |     | || |_| |\n")
+    write(" |______|_| |_|\\_____|_|  \\__,_| .__/ \\__\\___/|_|     |_(_)___/ \n")
+    write("                               | |                              \n")
+    write("                               |_|                              \n")
+    write("\n");
+# To be fair 
+banner()
+
+data = read('[+] Data: ')
+write('[+] Encrypted:\n')
+write('----------------------------- START -------------------------------\n')
+write(encrypt(data, KEY, IV))
+write('\n------------------------------ END --------------------------------')
 </code></pre></div></div>
 
 <p>Ostensibly this uses the AES block cipher with <a href="https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Output_feedback_(OFB)">Output-Feedback</a> mode (OFB).</p>
@@ -343,22 +346,24 @@ c \equiv m^e \pmod N
 <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"MSG: </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
 </code></pre></div></div>
 
-<p>Flag: <code class="language-plaintext highlighter-rouge">Cyberthon{mfw_3ncrypt10n_s4m3_45_d3crypt_s4dg3}</code></p>
+<h3 id="flag-1">Flag!</h3>
+<p><code class="language-plaintext highlighter-rouge">Cyberthon{mfw_3ncrypt10n_s4m3_45_d3crypt_s4dg3}</code></p>
 
 <h2 id="apcafe">apcafe</h2>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>We've received intel that APOCALYPSE is running a cafe as a front for their illegal activities. Although it seems like a regular cafe on the 
-outside, serving local favourites such as Kopi-O, Milo, and Yuan Yang, we believe that something more sinister is going on. Could u try to 
-find a way to break in so we can investigate further?
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>We've received intel that APOCALYPSE is running a cafe as a front for their illegal activities. 
+Although it seems like a regular cafe on the outside, serving local favourites such as Kopi-O, Milo, 
+and Yuan Yang, we believe that something more sinister is going on. Could u try to find a way to break 
+in so we can investigate further?
 </code></pre></div></div>
 
-<h3 id="reconnaissance-2">Reconnaissance</h3>
+<h3 id="reconnaissance-1">Reconnaissance</h3>
 
 <p>We are greeted by a 64-bit binary that has the following functions:
-<img src="/assets/Images/Cyberthon-2021/apcafe-main.png" alt="" />
-<img src="/assets/Images/Cyberthon-2021/apcafe-serveorder.png" alt="" /></p>
+<img src="/assets/Images/Cyberthon-2021/apcafe_main.png" alt="" />
+<img src="/assets/Images/Cyberthon-2021/apcafe_serveorder.png" alt="" /></p>
 
 <p>Of course, not forgetting our checksec…
-<img src="/assets/Images/Cyberthon-2021/apcafe-checksec.png" alt="" /></p>
+<img src="/assets/Images/Cyberthon-2021/apcafe_checksec.png" alt="" /></p>
 
 <p>Let’s cut to the chase, I’m strapped for time.</p>
 
@@ -427,8 +432,10 @@ find a way to break in so we can investigate further?
 <span class="n">r</span><span class="p">.</span><span class="n">interactive</span><span class="p">()</span>
 </code></pre></div></div>
 
-<p>After getting <strong>shell</strong> we thus obtain:
-Flag: <code class="language-plaintext highlighter-rouge">Cyberthon{th4t5_4_r34lly_l000ng_0rd3r_dud3_pl5_ch1ll}</code></p>
+<p>After getting <strong>shell</strong> we thus obtain:</p>
+
+<h3 id="flag-2">Flag!</h3>
+<p><code class="language-plaintext highlighter-rouge">Cyberthon{th4t5_4_r34lly_l000ng_0rd3r_dud3_pl5_ch1ll}</code></p>
 
 <h2 id="apcdb">apcdb</h2>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>We've found a network service that seems to be posing as a fake directory of APOCALYPSE members. 
@@ -438,7 +445,7 @@ Could u try to break in anyway? Who knows, access to this server might come in u
 
 <p>Being the only person to have solved this during the actual CTF, of course I must do a writeup on it uwu.</p>
 
-<h3 id="reconnaissance-3">Reconnaissance</h3>
+<h3 id="reconnaissance-2">Reconnaissance</h3>
 <p>We are once again presented with a 64-bit binary with the following function:
 <img src="/assets/Images/Cyberthon-2021/apcdb_main.png" alt="" /></p>
 
@@ -465,7 +472,7 @@ Could u try to break in anyway? Who knows, access to this server might come in u
 
 <p>This is because <strong>LIBC</strong> files are <strong>PIE</strong> meaning that their addresses are merely offsets added to a <strong>random</strong> <code class="language-plaintext highlighter-rouge">base address</code>.</p>
 
-<p>If you instead retrieve addresses from <strong>multiple</strong> connections, the <strong>PIE bases</strong> are most definitely different, and you (probably) cannot use that to retrieve <strong>LIBC version</strong> from <a href="&quot;https://libc.blukat.me&quot;">libc.blukat.me</a></p>
+<p>If you instead retrieve addresses from <strong>multiple</strong> connections, the <strong>PIE bases</strong> are most definitely different, and you (probably) cannot use that to retrieve <strong>LIBC version</strong> from <a href="https://libc.blukat.me">libc.blukat.me</a></p>
 
 <p>We can overcome this simply by overwriting the <a href="https://systemoverlord.com/2017/03/19/got-and-plt-for-pwning.html">GOT entry</a> of the <code class="language-plaintext highlighter-rouge">exit()</code> function, since <strong>partial RELRO</strong> security allows us to overwrite <code class="language-plaintext highlighter-rouge">.got.plt</code>.</p>
 
@@ -474,7 +481,7 @@ Could u try to break in anyway? Who knows, access to this server might come in u
 <p>For example, leaking our <strong>LIBC addresses</strong> as usual!</p>
 
 <h3 id="the-exploit-2">The Exploit</h3>
-<p>After we leak some nice addresses we will shove them into <a href="&quot;https://libc.blukat.me&quot;">libc.blukat.me</a> to get our dearest libc version:</p>
+<p>After we leak some nice addresses we will shove them into <a href="https://libc.blukat.me">libc.blukat.me</a> to get our dearest libc version:</p>
 
 <p><img src="/assets/Images/Cyberthon-2021/apcdb_libc.png" alt="" /></p>
 
@@ -523,15 +530,20 @@ Could u try to break in anyway? Who knows, access to this server might come in u
 
 <p><img src="/assets/Images/Cyberthon-2021/apcdb_flag.png" alt="" /></p>
 
-<p>Flag: <code class="language-plaintext highlighter-rouge">Cyberthon{f4k3_c0nt4ct5_f41lur3}</code></p>
+<h3 id="flag-3">Flag!</h3>
+<p><code class="language-plaintext highlighter-rouge">Cyberthon{f4k3_c0nt4ct5_f41lur3}</code></p>
 
 <h2 id="placeholder">Placeholder</h2>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Hohoho seems like one of the APOCALYPSE agents messed up big time. Seems this agent went to deploy his/her code for testing and completely forgot to bring down the network service. This careless agent even forgot to private the repository containing the test code, so we've managed to obtain the source for the entire project, dockerfile and all. We've provided you with everything that we've found, so can you get the flag from their server?
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Hohoho seems like one of the APOCALYPSE agents messed up big time. 
+Seems this agent went to deploy his/her code for testing and completely forgot to bring down the network service. 
+This careless agent even forgot to private the repository containing the test code, 
+so we've managed to obtain the source for the entire project, dockerfile and all. 
+We've provided you with everything that we've found, so can you get the flag from their server?
 </code></pre></div></div>
 
 <p>(Scared off by Dockerfile until <code class="language-plaintext highlighter-rouge">niktay</code> said “guys easiest pwn chall”)</p>
 
-<h3 id="reconnaissance-4">Reconnaissance</h3>
+<h3 id="reconnaissance-3">Reconnaissance</h3>
 <p>We are greeted with the binary that does… nothing???
 <img src="/assets/Images/Cyberthon-2021/placeholder_main.png" alt="" /></p>
 
@@ -607,7 +619,8 @@ Not even a GOT overwrite!
 
 <p>That was easy enough.</p>
 
-<p>Flag: <code class="language-plaintext highlighter-rouge">Cyberthon{d0nt_d3pl0y_1nc0mpl3t3_pr0j3ct5}</code></p>
+<h3 id="flag-4">Flag!</h3>
+<p><code class="language-plaintext highlighter-rouge">Cyberthon{d0nt_d3pl0y_1nc0mpl3t3_pr0j3ct5}</code></p>
 
 
   </div>

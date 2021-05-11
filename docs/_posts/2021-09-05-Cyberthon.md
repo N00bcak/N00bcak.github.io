@@ -150,6 +150,7 @@ And we get:
 p.s. welp1.0 is the exact same thing but $$k=0$$.
 
 ## Encraptor 1.0
+
 ```To ensure that all APOCALYPSE agents are encrypting their files properly, 
 APOCALYPSE has decided to provide a centralized encryption 
 service for all their members. We've recently recovered a flag that was encrypted by their service. 
