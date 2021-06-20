@@ -1,0 +1,23 @@
+I"A<h3 id="unfortunately-im-a-little-very-much-short-on-time-lets-cut-to-the-chase">Unfortunately I’m <del>a little</del> VERY MUCH short on time, let’s cut to the chase.</h3>
+
+<h1 id="writeups-wip-might-add-more-as-time-goes-on">Writeups (WIP, might add more as time goes on)</h1>
+<ol>
+  <li><a href="#hopscotch">(PPC) Hopscotch</a></li>
+</ol>
+
+<h2 id="hopscotch-151-solves--436-points">Hopscotch (151 Solves / 436 Points)</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Keith wants to play hopscotch, but in order to make things interesting, 
+he decides to use a random number generator to decide the number of 
+squares n to draw for a round of hopscotch. He then creates a hopscotch 
+board on the floor by randomly creating a sequence of ones (one square) 
+and twos (two squares) such that the sum of all the numbers in the sequence
+is n. Given 1 &lt;= n &lt;= 1000, find the number of valid hopscotch boards (mod 10000) 
+he can create. 
+
+Sample Input: 5 
+Sample Output: 8
+
+nc hopscotch.hsc.tf 1337
+</code></pre></div></div>
+:ET
