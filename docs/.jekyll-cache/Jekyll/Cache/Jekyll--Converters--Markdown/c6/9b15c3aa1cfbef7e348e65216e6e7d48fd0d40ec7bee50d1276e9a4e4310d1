@@ -1,4 +1,4 @@
-I"U<p>CDDC 2021 was nothing short of a disaster.</p>
+I"�T<p>CDDC 2021 was nothing short of a disaster.</p>
 
 <p><em>Before I say anything more scathing, it must be said that I do not seek to slam DSTA and BSW who organized this CTF. This post, however strongly worded, is also meant to be constructive criticism.</em></p>
 
@@ -175,7 +175,7 @@ That is, they were thought of, roughly drafted, and then left sitting in a folde
 
 <p>Upon entering a pwn Docker container. Someone had altered the <code class="language-plaintext highlighter-rouge">.bashrc</code> file to play a low-resolution <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">Rickroll</a>.</p>
 
-<p>Some contestants seem to have had their fill of vexation and aggravation. Not a good sight.
+<p>Some contestants seem to have had their fill of vexation and aggravation. Not a good sight in a CTF.
 <img src="https://cdn.discordapp.com/attachments/850202940597469207/858310322015305748/unknown.png" alt="" /></p>
 
 <p>Or, <em>that the flags were even present in some of the challenge environments in the first place</em>.</p>
@@ -230,9 +230,7 @@ That is, they were thought of, roughly drafted, and then left sitting in a folde
 
 <p>A cursory glance at some beginner CTFs such as the recent <a href="https://ctftime.org/event/1264/tasks/">HSCTF 8</a> and <a href="https://ctftime.org/event/1320/tasks/">TAMUCTF 2021</a> would show that CDDC’s challenges were far easier and significantly less demanding than is expected of an average CTF for beginners.</p>
 
-<p>Since many of the challenges were also much simpler than <a href="https://n00bcak.github.io/writeups/2021/05/09/Cyberthon.html">even</a> that of <a href="please put your links here">local CTFs</a>, an interesting phenomenon occurred, <strong>virtually unheard of</strong> in “normal” CTFs.</p>
-
-<p><img src="insert picture of full solves" alt="" /></p>
+<p>Since many of the challenges were also much simpler than <a href="https://n00bcak.github.io/writeups/2021/05/09/Cyberthon.html">even that of local CTFs</a>, an interesting phenomenon occurred, <strong>virtually unheard of</strong> in “normal” CTFs.</p>
 
 <p>Many teams in both the Junior and Senior category managed to solve <strong>ALL</strong> the provided challenges before the stipulated time was up.</p>
 
