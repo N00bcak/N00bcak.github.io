@@ -1,4 +1,4 @@
-I"ΩT<p>CDDC 2021 was nothing short of a disaster.</p>
+I"‡T<p>CDDC 2021 was nothing short of a disaster.</p>
 
 <p><em>Before I say anything more scathing, it must be said that I do not seek to slam DSTA and BSW who organized this CTF. This post, however strongly worded, is also meant to be constructive criticism.</em></p>
 
@@ -269,22 +269,22 @@ That is, they were thought of, roughly drafted, and then left sitting in a folde
 
 <p>For a prominent example, the challenge named ‚ÄúDefault Password‚Äù, a memory forensics challenge, can be completed simply by invoking <code class="language-plaintext highlighter-rouge">volatility2</code>‚Äôs <code class="language-plaintext highlighter-rouge">lsadump</code> command. <u>This is the challenge with the greatest number of points in that category.</u></p>
 
-<p>This should <strong>NEVER, EVER</strong> be your mindset in a CTF:</p>
+<p>This should <strong>NEVER, EVER</strong> be the mindset that organizers encourage or expect in CTFs:</p>
 
 <p><img src="https://cdn.discordapp.com/attachments/850202940597469207/858304467844726814/unknown.png" alt="" /></p>
 
-<p><u>If not, your CTF is an utter failure and you should pack your bags and be sent rolling home.</u></p>
+<p><u>If not, the CTF is an utter failure and the organizer should pack their bags and be sent rolling home.</u></p>
 
 <p>Suggestions:</p>
 
 <ul>
-  <li>Make your CTF engaging and interesting.
+  <li>Make CTFs engaging and interesting.
     <ul>
       <li>Take the effort to make a one or two challenges from scratch.</li>
       <li>If you are short on time, introduce some tweaks!</li>
     </ul>
   </li>
-  <li>Take your inspiration from real life!</li>
+  <li>Take inspiration from real life!</li>
 </ul>
 
 <p><img src="https://cdn.discordapp.com/attachments/850202940597469207/858307212492668928/unknown.png" alt="" /></p>
