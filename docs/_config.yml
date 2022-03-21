@@ -14,11 +14,14 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 title: N00bcak's Purple Cave
-description: CTF Writeups blog. Place my writeups where they get good exposure :))).
+description: CTF Writeups & Mathematics blog. 
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 github_repo:  # the GitHub repo name for your project
 github_username: N00bcak
+collections:
+  texdocs:
+    output: true
 
 # Optional social link, you can choose from the following options:
 # twitter (default), instagram, medium, or dribbble
