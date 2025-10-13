@@ -36,7 +36,7 @@ but since this was a LLM-less attempt... let's just say I wasted a lot of time o
 
 ### Trying Unsupervised Learning
 
-![](/assets/images/GovTechAICTF-2025/stridesafe-pictures.png)
+![]({{ site.baseurl }}/assets/images/GovTechAICTF-2025/stridesafe-pictures.png)
 
 As mentioned above, there were no image labels. So my first instinct was to perform a quick PCA + K-Means clustering to see if the images could be grouped into 2 distinct clusters (people vs bicycles/PMDs).
 ```python
@@ -121,7 +121,7 @@ df_labels = pl.DataFrame(kmeans.labels_, schema=["label"])
 pl.concat([df_labels, df["file_name"].to_frame()], how = "horizontal").write_csv("results.csv")
 ```
 yields a relatively clean clustering of the images into 2 groups:
-![](/assets/Images/GovTechAICTF-2025/kmeans-plot.png)
+![]({{ site.baseurl }}/assets/Images/GovTechAICTF-2025/kmeans-plot.png)
 
 The classification, however, was a lot less clean...
 ```python
@@ -135,7 +135,7 @@ plt.imshow(1 - results_arr.reshape((size, size)), cmap="gray")
 plt.axis('off')
 plt.show()
 ```
-![](/assets/Images/GovTechAICTF-2025/init-qr.png)
+![]({{ site.baseurl }}/assets/Images/GovTechAICTF-2025/init-qr.png)
 
 At this point in the contest, you could already sort of make out that the classification results yielded some kind of QR code.
 But as you can see... it looks nothing like a QR code.
@@ -240,7 +240,7 @@ results_df.write_csv('results.csv')
 ```
 
 and with some prompt-engineering, it... kind of worked!
-![](/assets/Images/GovTechAICTF-2025/final-qr.png)
+![]({{ site.baseurl }}/assets/Images/GovTechAICTF-2025/final-qr.png)
 
 flag: `AI2025{5tr1d3s4f3_15_l1t}`
 
@@ -261,7 +261,7 @@ https://limittheory.aictf.sg
 
 ### Reconnaissance
 We are given a web interface and an API, as well as a **CSV file** of sample experiments.
-![](/assets/Images/GovTechAICTF-2025/limittheory-website.png)
+![]({{ site.baseurl }}/assets/Images/GovTechAICTF-2025/limittheory-website.png)
 
 Looking at the CSV file, we see that it contains a list of `800` experiments with 4 input parameters (coconut milk, eggs, sugar, pandan leaves) and a 'PASSED/FAILED' output.
 ```csv
@@ -393,7 +393,7 @@ plt.show()
 ```
 
 This is a REALLY GOOD fit. The ROC AUC is `0.93`, which is near perfect.
-![](/assets/Images/GovTechAICTF-2025/log-reg-roc.png)
+![]({{ site.baseurl }}/assets/Images/GovTechAICTF-2025/log-reg-roc.png)
 
 But...
 ```python
@@ -444,7 +444,7 @@ Think about it: How else can you get such a clean decision boundary with so few 
 So I decided to try and fit a random assortment of linear models to the data, and see which one fit best.
 
 The key to getting good results with linear models is to do a lot of [feature engineering](https://en.wikipedia.org/wiki/Feature_engineering). 
-![](/assets/Images/GovTechAICTF-2025/randombsgo.png)
+![]({{ site.baseurl }}/assets/Images/GovTechAICTF-2025/randombsgo.png)
 
 Since there are no obvious relationships between the features, I decided to try out a few different transformations (and was prepared to try way more until something stuck):
 - Linear (i.e. the original features)
@@ -604,8 +604,8 @@ a 3-hour process of:
 - repeat
 
 So I got a little tilted when this happened:
-![](/assets/Images/GovTechAICTF-2025/vincent-solve.png)
-![](/assets/Images/GovTechAICTF-2025/vincent-solve-2.png)
+![]({{ site.baseurl }}/assets/Images/GovTechAICTF-2025/vincent-solve.png)
+![]({{ site.baseurl }}/assets/Images/GovTechAICTF-2025/vincent-solve-2.png)
 
 (jk, well done Vincent!)
 

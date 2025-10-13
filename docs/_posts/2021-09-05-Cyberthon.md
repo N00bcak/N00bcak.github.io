@@ -13,7 +13,7 @@ Moreover, all the various schools fielded many fearsome competitors that really 
 
 Nonetheless we managed to pull through to clinch overall champions!
 
-![](/assets/Images/Cyberthon-2021/scoreboard.png)
+![]({{ site.baseurl }}/assets/Images/Cyberthon-2021/scoreboard.png)
 
 # Writeups
 Due to time constraints I will share my cleanest writeups so no one will have to suffer from my unassailable reputation for digital illegibility:
@@ -142,7 +142,7 @@ for k in range(1,1000):
 ```
 
 And we get:
-![](/assets/Images/Cyberthon-2021/welp.png)
+![]({{ site.baseurl }}/assets/Images/Cyberthon-2021/welp.png)
 
 ### Flag!
 `Cyberthon{f0rg0t_t0_p4d!}`
@@ -228,7 +228,7 @@ write('\n------------------------------ END --------------------------------')
 Ostensibly this uses the AES block cipher with [Output-Feedback](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Output_feedback_(OFB)) mode (OFB).
 
 A diagram of how the encryption happens at a high level is attached by shamelessly ripping off Wikipedia:
-![](/assets/Images/Cyberthon-2021/AES-OFB.png)
+![]({{ site.baseurl }}/assets/Images/Cyberthon-2021/AES-OFB.png)
 
 This is a lot more straightforward compared to Welp2.0:
 
@@ -281,11 +281,11 @@ in so we can investigate further?
 ### Reconnaissance
 
 We are greeted by a 64-bit binary that has the following functions:
-![](/assets/Images/Cyberthon-2021/apcafe_main.png)
-![](/assets/Images/Cyberthon-2021/apcafe_serveorder.png)
+![]({{ site.baseurl }}/assets/Images/Cyberthon-2021/apcafe_main.png)
+![]({{ site.baseurl }}/assets/Images/Cyberthon-2021/apcafe_serveorder.png)
 
 Of course, not forgetting our checksec...
-![](/assets/Images/Cyberthon-2021/apcafe_checksec.png)
+![]({{ site.baseurl }}/assets/Images/Cyberthon-2021/apcafe_checksec.png)
 
 Let's cut to the chase, I'm strapped for time.
 
@@ -298,7 +298,7 @@ Also:
 - We have no `win()` function, so we should be looking at some way to get us **shell**.
 
 However `NX-bit` is turned on, so our first instinct is to look at what **ROP gadgets** we have...
-![](/assets/Images/Cyberthon-2021/apcafe-ropper.png)
+![]({{ site.baseurl }}/assets/Images/Cyberthon-2021/apcafe-ropper.png)
 
 Rats. No `syscall` gadget. 
 
@@ -367,10 +367,10 @@ Being the only person to have solved this during the actual CTF, of course I mus
 
 ### Reconnaissance
 We are once again presented with a 64-bit binary with the following function:
-![](/assets/Images/Cyberthon-2021/apcdb_main.png)
+![]({{ site.baseurl }}/assets/Images/Cyberthon-2021/apcdb_main.png)
 
 Of course, not forgetting our checksec...
-![](/assets/Images/Cyberthon-2021/apcdb_checksec.png)
+![]({{ site.baseurl }}/assets/Images/Cyberthon-2021/apcdb_checksec.png)
 
 ### Vulnerability Analysis
 "This is __real__ similar to that `apcafe` challenge", you say.
@@ -398,7 +398,7 @@ For example, leaking our **LIBC addresses** as usual!
 ### The Exploit
 After we leak some nice addresses we will shove them into [libc.blukat.me](https://libc.blukat.me) to get our dearest libc version:
 
-![](/assets/Images/Cyberthon-2021/apcdb_libc.png)
+![]({{ site.baseurl }}/assets/Images/Cyberthon-2021/apcdb_libc.png)
 
 (During the actual competition I forgot to change my connection to the `remote` server, which resulted in some very fun times as I tried to figure out why my offsets were pointing me to a wrong **LIBC address**. Be careful kids!)
 
@@ -444,7 +444,7 @@ r.sendline("/bin/sh\x00")
 r.interactive()
 ```
 
-![](/assets/Images/Cyberthon-2021/apcdb_flag.png)
+![]({{ site.baseurl }}/assets/Images/Cyberthon-2021/apcdb_flag.png)
 
 ### Flag!
 `Cyberthon{f4k3_c0nt4ct5_f41lur3}`
@@ -462,14 +462,14 @@ We've provided you with everything that we've found, so can you get the flag fro
 
 ### Reconnaissance
 We are greeted with the binary that does... nothing???
-![](/assets/Images/Cyberthon-2021/placeholder_main.png)
+![]({{ site.baseurl }}/assets/Images/Cyberthon-2021/placeholder_main.png)
 
 N-no seriously, it just takes in our input and does nothing!
 Not even a GOT overwrite!
-![](/assets/Images/Cyberthon-2021/placeholder_checksec.png)
+![]({{ site.baseurl }}/assets/Images/Cyberthon-2021/placeholder_checksec.png)
 
 However, this Dockerfile changed everything for me...
-![](/assets/Images/Cyberthon-2021/placeholder_env.png)
+![]({{ site.baseurl }}/assets/Images/Cyberthon-2021/placeholder_env.png)
 
 ### Vulnerability Analysis
 We have, basically:
@@ -518,7 +518,7 @@ r.interactive()
 
 Where we notice something... interesting...
 
-![](/assets/Images/Cyberthon-2021/placeholder_offset.png)
+![]({{ site.baseurl }}/assets/Images/Cyberthon-2021/placeholder_offset.png)
 
 Considering the number of 6 and 7s in the hex string, I think it is safe to assume that `THIS IS THE FLAG` :D
 

@@ -10,7 +10,7 @@ It was quite fast-paced and enjoyable because the CTF lasted only 8 hours in tot
 
 Surprisingly, the Cryptography challenges in this CTF were a lot harder than expected. I only managed to solve one challenge in total, and so despite my team and I achieving 3rd place in the end, I am not satisfied. >:(
 
-![](/assets/Images/Whitehacks-2021/whitehacksscoreboard.png)
+![]({{ site.baseurl }}/assets/Images/Whitehacks-2021/whitehacksscoreboard.png)
 
 (Perhaps I will open a tinkering section to discuss and make notes on past CTF challenges/random projects. Just maybe.)
 

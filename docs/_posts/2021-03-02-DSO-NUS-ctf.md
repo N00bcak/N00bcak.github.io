@@ -10,8 +10,8 @@ I had honestly expected that I would not solve any challenges, seeing as to how 
 
 However, my teammate and I managed to pull through and clinch 10th place!
 
-![](/assets/Images/DSO-NUS-ctf/results.png)
-![](/assets/Images/DSO-NUS-ctf/solves.png)
+![]({{ site.baseurl }}/assets/Images/DSO-NUS-ctf/results.png)
+![]({{ site.baseurl }}/assets/Images/DSO-NUS-ctf/solves.png)
 
 # Writeups
 Also, I made writeups the following challenges:
@@ -126,12 +126,12 @@ This was my first foray into Mobile RE. It was rather painful but at least I lea
 
 We are presented with an APK file which reveals some interesting code:
 
-![](/assets/Images/DSO-NUS-ctf/mobile_login/ddea.png)
-![](/assets/Images/DSO-NUS-ctf/mobile_login/m_userid.png)
-![](/assets/Images/DSO-NUS-ctf/mobile_login/m_password.png)
-![](/assets/Images/DSO-NUS-ctf/mobile_login/checks.png)
-![](/assets/Images/DSO-NUS-ctf/mobile_login/javapassword.png)
-![](/assets/Images/DSO-NUS-ctf/mobile_login/aestool.png)
+![]({{ site.baseurl }}/assets/Images/DSO-NUS-ctf/mobile_login/ddea.png)
+![]({{ site.baseurl }}/assets/Images/DSO-NUS-ctf/mobile_login/m_userid.png)
+![]({{ site.baseurl }}/assets/Images/DSO-NUS-ctf/mobile_login/m_password.png)
+![]({{ site.baseurl }}/assets/Images/DSO-NUS-ctf/mobile_login/checks.png)
+![]({{ site.baseurl }}/assets/Images/DSO-NUS-ctf/mobile_login/javapassword.png)
+![]({{ site.baseurl }}/assets/Images/DSO-NUS-ctf/mobile_login/aestool.png)
 
 All from LoginDataSource.java and AESTools.java. The rest were... junk, to say the least.
 
@@ -144,21 +144,21 @@ We seem to need to recover 3 things:
 
 The first two are relatively trivial.
 
-![](/assets/Images/DSO-NUS-ctf/mobile_login/userid.png)
-![](/assets/Images/DSO-NUS-ctf/mobile_login/first4.png)
+![]({{ site.baseurl }}/assets/Images/DSO-NUS-ctf/mobile_login/userid.png)
+![]({{ site.baseurl }}/assets/Images/DSO-NUS-ctf/mobile_login/first4.png)
 
 The only troublesome one was the `getNativePassword()` function.
 
 However, upon following, we noticed that there was this `ddea.so` file (4 different binaries, we selected the ARM 64-bit one). Opening it gives us:
 
-![](/assets/Images/DSO-NUS-ctf/mobile_login/getnativepassword.png)
+![]({{ site.baseurl }}/assets/Images/DSO-NUS-ctf/mobile_login/getnativepassword.png)
 
 which... OK, it is what we want but...
 It is pretty intimidating.
 
 That is... if you **don't** look at the program graph.
 
-![](/assets/Images/DSO-NUS-ctf/mobile_login/xor.png)
+![]({{ site.baseurl }}/assets/Images/DSO-NUS-ctf/mobile_login/xor.png)
 
 It is evident that each and every byte is being xorred, from `byte_8F0` and `byte_901` to `byte_8FF` and `byte_910`.
 This will give us the key.
@@ -166,12 +166,12 @@ This will give us the key.
 
 So let us see if we can xor them together...
 
-![](/assets/Images/DSO-NUS-ctf/mobile_login/recoverkey.png)
+![]({{ site.baseurl }}/assets/Images/DSO-NUS-ctf/mobile_login/recoverkey.png)
 
 Bingo.
 Thus we decrypt the AES ciphertext as:
 
-![](/assets/Images/DSO-NUS-ctf/mobile_login/decrypt.png)
+![]({{ site.baseurl }}/assets/Images/DSO-NUS-ctf/mobile_login/decrypt.png)
 
 Thus we submit
 ```
@@ -189,12 +189,12 @@ And receive the flag:
 ### Reconnaissance
 Doing the things that we should do in Pwn:
 
-![](/assets/Images/DSO-NUS-ctf/pwn_ROPS/checksec.png)
-![](/assets/Images/DSO-NUS-ctf/pwn_ROPS/ida.png)
+![]({{ site.baseurl }}/assets/Images/DSO-NUS-ctf/pwn_ROPS/checksec.png)
+![]({{ site.baseurl }}/assets/Images/DSO-NUS-ctf/pwn_ROPS/ida.png)
 
 Also, note that we have a LIBC file:
 
-![](/assets/Images/DSO-NUS-ctf/pwn_ROPS/libc.png)
+![]({{ site.baseurl }}/assets/Images/DSO-NUS-ctf/pwn_ROPS/libc.png)
 ### Vulnerability Analysis
 - `printf()` without *format strings* means a **Format String Exploit.**
 - Unlike the previous FSBS challenge, there is no `getflag()` function.
@@ -210,20 +210,20 @@ ret2libc attacks (that I know of) primarily concern themselves with exploiting `
 
 So we will be looking for `libc offsets` to jump into the `one_gadget`:
 
-![](/assets/Images/DSO-NUS-ctf/pwn_ROPS/libc-offset.png)
+![]({{ site.baseurl }}/assets/Images/DSO-NUS-ctf/pwn_ROPS/libc-offset.png)
 
 And the `one_gadget` itself:
-![](/assets/Images/DSO-NUS-ctf/pwn_ROPS/onegadget.png)
+![]({{ site.baseurl }}/assets/Images/DSO-NUS-ctf/pwn_ROPS/onegadget.png)
 
 Then, we simply perform your standard ret2libc exploit routine: 
 
 1. Leak `libc base` with a known `libc` function:
 
-![](/assets/Images/DSO-NUS-ctf/pwn_ROPS/libcleak.png)
+![]({{ site.baseurl }}/assets/Images/DSO-NUS-ctf/pwn_ROPS/libcleak.png)
 
 We are using the **Format String Exploit** from the previous challenge (FSBS).
 
-![](/assets/Images/DSO-NUS-ctf/pwn_ROPS/libc-offset.png)
+![]({{ site.baseurl }}/assets/Images/DSO-NUS-ctf/pwn_ROPS/libc-offset.png)
 
 Then we look up the custom LIBC offset using LIBC-database.
 
@@ -237,7 +237,7 @@ libc_base=int(r.recvline()[:-1],16)-243-0x236c0
 2. Find our one_gadget address.
 
 This... requires no explanation. Just use `one_gadget`.
-![](/assets/Images/DSO-NUS-ctf/pwn_ROPS/onegadget.png)
+![]({{ site.baseurl }}/assets/Images/DSO-NUS-ctf/pwn_ROPS/onegadget.png)
 
 I used the first one.
 
