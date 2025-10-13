@@ -624,3 +624,8 @@ Feature engineering is also rather underrated in favor of architectural improvem
 
 However, I would have liked if the model was a bit more complex and noisy and the checker a bit less strict,
 so that more models could have worked. But I don't know if that would have made it Jippity-able anyways...
+
+### Post-Script: Some Nice Plots
+I spent 3 hours querying the `/experiment` endpoint, getting rate-limited to no tomorrow, WHILE STILL trying to fit various models to the data. So I might as well show you some of the plots that transpired from all that messing around...
+![]({{ site.baseurl }}/assets/Images/GovTechAICTF-2025/scaling-laws-analysis.png)
+![]({{ site.baseurl }}/assets/Images/GovTechAICTF-2025/other-models-comparison.png)
