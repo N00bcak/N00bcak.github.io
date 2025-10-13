@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>GovTech AI CTF 2025 (Quals) Writeups</title>
+  <meta name="description" content="So I fancied coming back to do writeups after a 4-year hiatus.">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VENZWYNPB8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-VENZWYNPB8');
+  </script>
+  
+  
+  <link rel="stylesheet" href="http://localhost:4000/assets/style.css">
+
+  <link rel="canonical" href="http://localhost:4000/writeups/2025/10/13/GovTech-AI-CTF-2025-quals.html">
+  <link rel="alternate" type="application/rss+xml" title="N00bcak's Purple Cave" href="http://localhost:4000/feed.xml">
+
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+</head>
+
+
+  <body>
+
+    <header class="border-bottom-thick px-2 clearfix">
+  <div class="left sm-width-full py-1 mt-1 mt-lg-0">
+    <a class="align-middle link-primary text-accent" href="/">
+      N00bcak's Purple Cave
+    </a>
+  </div>
+  <div class="right sm-width-full dropdown">
+    <ul class="list-reset mt-lg-1 mb-2 mb-lg-1">
+      
+        
+        <li class="inline-block">
+          <a class="align-middle link-primary header-link mr-2" href="/about/">About</a>
+        </li>
+        
+      
+        
+      
+        
+        <li class="inline-block">
+          <a class="align-middle link-primary header-link mr-2" href="/math/">Mathematics</a>
+        </li>
+        
+      
+        
+      
+        
+        <li class="inline-block">
+          <a class="align-middle link-primary header-link mr-2" href="/writeups/">CTF Writeups</a>
+        </li>
+        
+      
+    </ul>
+  </div>
+</header>
+
+
+    <div>
+      <article class="container px-2 mx-auto mb4" itemscope itemtype="http://schema.org/BlogPosting">
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    TeX: {
+      equationNumbers: { autoNumber: "AMS" },
+      tagSide: "right"
+    }
+  });</script>
+  <script type="text/javascript" charset="utf-8" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML,
+  https://vincenttam.github.io/javascripts/MathJaxLocal.js"></script>
+  <h1 class="h0 col-12 sm-width-full py-4 mt-3 inline-block" itemprop="name headline">GovTech AI CTF 2025 (Quals) Writeups</h1>
+  <div class="col-4 sm-width-full mt-1 border-top-thin ">
+    <p class="mb-3 py-2 bold h4"><time datetime="2025-10-13T00:00:00+08:00" itemprop="datePublished">Oct 13, 2025</time></p>
+  </div>
+
+  <div class="prose" itemprop="articleBody">
+      <p>So I fancied coming back to do writeups after a 4-year hiatus.</p>
+
+<p>This CTF was apparently very easy to one-shot with GPT Plus, and I’m pretty sure none of the top 10 teams solved
+a majority of the challenges without LLM assistance.</p>
+
+<p>However, I had quite a few interesting concepts and challenges that I found fun to solve (notably, WITHOUT resorting to LLM chatbots). Let’s go.</p>
+
+<h1 id="writeups">Writeups</h1>
+<ol>
+  <li><a href="#stridesafe">StrideSafe</a></li>
+  <li><a href="#limit-theory">Limit Theory</a></li>
+</ol>
+
+<h2 id="stridesafe">StrideSafe</h2>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Singapore's lamp posts are getting smarter. They don't just light the way -- they watch over the pavements.
+
+Your next-gen chip has been selected for testing. Can your chip distinguish pedestrians from bicycles and PMDs (personal mobility devices)?
+
+Pass the test, and your chip will earn deployment on Singapore's smart lamp posts. Fail, and hazards roam free on pedestrian walkways.
+</code></pre></div></div>
+
+<h3 id="reconnaissance">Reconnaissance</h3>
+<p>We are given a zip file containing a 1k 64x64 RGB images.
+Conspicuously missing are any image labels, leading me to think that:</p>
+<ol>
+  <li>This is an <a href="#trying-unsupervised-learning">unsupervised learning challenge</a></li>
+  <li>The challenge wants us to <a href="#trying-inference">run inference</a>.</li>
+</ol>
+
+<p>While I can tell you right now that <a href="#trying-inference">method 2</a> gave us the flag,<br />
+but since this was a LLM-less attempt… let’s just say I wasted a lot of time on <a href="#trying-unsupervised-learning">method 1</a>. So I’m going to waste YOUR time too &gt;:D</p>
+
+<h3 id="trying-unsupervised-learning">Trying Unsupervised Learning</h3>
+
+<p><img src="/assets/images/GovTechAICTF-2025/stridesafe-pictures.png" alt="" /></p>
+
+<p>As mentioned above, there were no image labels. So my first instinct was to perform a quick PCA + K-Means clustering to see if the images could be grouped into 2 distinct clusters (people vs bicycles/PMDs).</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># This was done on a Jupyter notebook, so the code snippets are kind of scattered. Sorry!
+</span><span class="kn">import</span> <span class="n">glob</span>
+<span class="kn">from</span> <span class="n">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">from</span> <span class="n">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">import</span> <span class="n">numpy</span> <span class="k">as</span> <span class="n">np</span>
+
+<span class="c1"># Retrieve all the images and put them into shapes.
+</span><span class="n">image_files</span> <span class="o">=</span> <span class="n">glob</span><span class="p">.</span><span class="nf">glob</span><span class="p">(</span><span class="sh">"</span><span class="s">data/*.jpg</span><span class="sh">"</span><span class="p">)</span>
+<span class="c1"># for img_path in image_files:
+#     img = Image.open(img_path)
+#     img = img.convert("RGB")
+</span>
+<span class="n">dummy_path</span> <span class="o">=</span> <span class="nf">next</span><span class="p">(</span><span class="nf">iter</span><span class="p">(</span><span class="n">image_files</span><span class="p">),</span> <span class="bp">None</span><span class="p">)</span>
+<span class="n">dummy_image</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">array</span><span class="p">(</span><span class="n">Image</span><span class="p">.</span><span class="nf">open</span><span class="p">(</span><span class="n">dummy_path</span><span class="p">))</span> <span class="k">if</span> <span class="n">dummy_path</span> <span class="k">else</span> <span class="bp">None</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">dummy_image</span><span class="p">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">imshow</span><span class="p">(</span><span class="n">dummy_image</span><span class="p">)</span>
+
+<span class="c1">### New cell
+</span><span class="kn">import</span> <span class="n">polars</span> <span class="k">as</span> <span class="n">pl</span>
+<span class="kn">import</span> <span class="n">einops</span>
+
+<span class="n">image_data</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">img_path</span> <span class="ow">in</span> <span class="n">image_files</span><span class="p">:</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">Image</span><span class="p">.</span><span class="nf">open</span><span class="p">(</span><span class="n">img_path</span><span class="p">)</span>
+    <span class="n">img_array</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">array</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+    <span class="n">img_array</span> <span class="o">=</span> <span class="n">einops</span><span class="p">.</span><span class="nf">rearrange</span><span class="p">(</span><span class="n">img_array</span><span class="p">,</span> <span class="sh">"</span><span class="s">h w c -&gt; (h w c)</span><span class="sh">"</span><span class="p">)</span>
+    <span class="n">image_data</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="n">img_array</span><span class="p">)</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pl</span><span class="p">.</span><span class="nf">from_numpy</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="nf">array</span><span class="p">(</span><span class="n">image_data</span><span class="p">))</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="nf">head</span><span class="p">())</span>
+
+<span class="n">file_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">img_path</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="sh">"</span><span class="s">/</span><span class="sh">"</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">img_path</span> <span class="ow">in</span> <span class="n">image_files</span><span class="p">]</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="nf">with_columns</span><span class="p">(</span><span class="n">pl</span><span class="p">.</span><span class="nc">Series</span><span class="p">(</span><span class="sh">"</span><span class="s">file_name</span><span class="sh">"</span><span class="p">,</span> <span class="n">file_names</span><span class="p">))</span>
+<span class="n">df</span><span class="p">.</span><span class="nf">write_csv</span><span class="p">(</span><span class="sh">"</span><span class="s">images.csv</span><span class="sh">"</span><span class="p">)</span>
+
+<span class="c1">### New cell
+</span><span class="kn">from</span> <span class="n">sklearn.decomposition</span> <span class="kn">import</span> <span class="n">PCA</span>
+<span class="kn">from</span> <span class="n">sklearn.neighbors</span> <span class="kn">import</span> <span class="n">NearestNeighbors</span>
+<span class="kn">from</span> <span class="n">sklearn.manifold</span> <span class="kn">import</span> <span class="n">TSNE</span>
+<span class="kn">from</span> <span class="n">sklearn.cluster</span> <span class="kn">import</span> <span class="n">KMeans</span><span class="p">,</span> <span class="n">DBSCAN</span>
+<span class="kn">from</span> <span class="n">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">StandardScaler</span>
+
+<span class="c1"># Load the CSV file
+</span><span class="n">df</span> <span class="o">=</span> <span class="n">pl</span><span class="p">.</span><span class="nf">read_csv</span><span class="p">(</span><span class="sh">"</span><span class="s">images.csv</span><span class="sh">"</span><span class="p">)</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="nf">drop</span><span class="p">(</span><span class="sh">"</span><span class="s">file_name</span><span class="sh">"</span><span class="p">).</span><span class="nf">to_numpy</span><span class="p">()</span>
+
+<span class="c1"># Scale and do dim reduction.
+</span><span class="n">scaler</span> <span class="o">=</span> <span class="nc">StandardScaler</span><span class="p">()</span>
+<span class="n">scaled_data</span> <span class="o">=</span> <span class="n">scaler</span><span class="p">.</span><span class="nf">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+<span class="n">pca</span> <span class="o">=</span> <span class="nc">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">pca_result</span> <span class="o">=</span> <span class="n">pca</span><span class="p">.</span><span class="nf">fit_transform</span><span class="p">(</span><span class="n">scaled_data</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">PCA reduced data shape: </span><span class="si">{</span><span class="n">pca_result</span><span class="p">.</span><span class="n">shape</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
+<span class="c1"># print(f"Good threshold for number of components: {np.sum(pca.explained_variance_ratio_ &gt;)}")
+</span><span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">Explained variance ratios: </span><span class="si">{</span><span class="n">pca</span><span class="p">.</span><span class="n">explained_variance_ratio_</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
+<span class="n">thresh</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">sum</span><span class="p">(</span><span class="n">pca</span><span class="p">.</span><span class="n">explained_variance_ratio_</span> <span class="o">&gt;</span> <span class="mf">0.01</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">Good threshold for number of components: </span><span class="si">{</span><span class="n">thresh</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">Total explained variance for </span><span class="si">{</span><span class="n">thresh</span><span class="si">}</span><span class="s"> components: </span><span class="si">{</span><span class="n">np</span><span class="p">.</span><span class="nb">sum</span><span class="p">(</span><span class="n">pca</span><span class="p">.</span><span class="n">explained_variance_ratio_</span><span class="p">[</span><span class="si">:</span><span class="n">thresh</span><span class="p">])</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
+
+<span class="c1"># (1089, 12288)
+# PCA reduced data shape: (1089, 100)
+# Explained variance ratios: &lt;omitted for sanity&gt;
+# Good threshold for number of components: 12
+# Total explained variance for 12 components: 0.7005721540268107
+</span>
+<span class="c1">### New cell
+# Use K-Means clustering
+</span><span class="n">kmeans</span> <span class="o">=</span> <span class="nc">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">max_iter</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="n">kmeans</span><span class="p">.</span><span class="nf">fit_transform</span><span class="p">(</span><span class="n">pca_result</span><span class="p">)</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">K-Means labels shape: </span><span class="si">{</span><span class="n">labels</span><span class="p">.</span><span class="n">shape</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">scatter</span><span class="p">(</span><span class="n">labels</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">labels</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="n">kmeans</span><span class="p">.</span><span class="n">labels_</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="sh">'</span><span class="s">viridis</span><span class="sh">'</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">title</span><span class="p">(</span><span class="sh">"</span><span class="s">K-Means Clustering of Image Data</span><span class="sh">"</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="sh">"</span><span class="s">K-Means Component 1</span><span class="sh">"</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="sh">"</span><span class="s">K-Means Component 2</span><span class="sh">"</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">show</span><span class="p">()</span>
+<span class="n">df_labels</span> <span class="o">=</span> <span class="n">pl</span><span class="p">.</span><span class="nc">DataFrame</span><span class="p">(</span><span class="n">kmeans</span><span class="p">.</span><span class="n">labels_</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="p">[</span><span class="sh">"</span><span class="s">label</span><span class="sh">"</span><span class="p">])</span>
+<span class="n">pl</span><span class="p">.</span><span class="nf">concat</span><span class="p">([</span><span class="n">df_labels</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="sh">"</span><span class="s">file_name</span><span class="sh">"</span><span class="p">].</span><span class="nf">to_frame</span><span class="p">()],</span> <span class="n">how</span> <span class="o">=</span> <span class="sh">"</span><span class="s">horizontal</span><span class="sh">"</span><span class="p">).</span><span class="nf">write_csv</span><span class="p">(</span><span class="sh">"</span><span class="s">results.csv</span><span class="sh">"</span><span class="p">)</span>
+</code></pre></div></div>
+<p>yields a relatively clean clustering of the images into 2 groups:
+<img src="/assets/Images/GovTechAICTF-2025/kmeans-plot.png" alt="" /></p>
+
+<p>The classification, however, was a lot less clean…</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">results</span> <span class="o">=</span> <span class="n">pl</span><span class="p">.</span><span class="nf">read_csv</span><span class="p">(</span><span class="sh">"</span><span class="s">results.csv</span><span class="sh">"</span><span class="p">).</span><span class="nf">sort</span><span class="p">(</span><span class="n">by</span> <span class="o">=</span> <span class="sh">"</span><span class="s">file_name</span><span class="sh">"</span><span class="p">)[</span><span class="sh">"</span><span class="s">label</span><span class="sh">"</span><span class="p">].</span><span class="nf">to_list</span><span class="p">()</span>
+
+<span class="n">results_arr</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">array</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+<span class="n">size</span> <span class="o">=</span> <span class="nf">int</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="nf">sqrt</span><span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="n">results_arr</span><span class="p">)))</span>     
+
+<span class="n">plt</span><span class="p">.</span><span class="nf">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">imshow</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">results_arr</span><span class="p">.</span><span class="nf">reshape</span><span class="p">((</span><span class="n">size</span><span class="p">,</span> <span class="n">size</span><span class="p">)),</span> <span class="n">cmap</span><span class="o">=</span><span class="sh">"</span><span class="s">gray</span><span class="sh">"</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">axis</span><span class="p">(</span><span class="sh">'</span><span class="s">off</span><span class="sh">'</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">show</span><span class="p">()</span>
+</code></pre></div></div>
+<p><img src="/assets/Images/GovTechAICTF-2025/init-qr.png" alt="" /></p>
+
+<p>At this point in the contest, you could already sort of make out that the classification results yielded some kind of QR code.
+But as you can see… it looks nothing like a QR code.</p>
+
+<p>I tried a few things to clean it up, such as:</p>
+<ol>
+  <li>Using DBSCAN instead of K-Means</li>
+  <li>Using t-SNE instead of PCA</li>
+  <li>Tweaking the number of PCA components</li>
+  <li>Tweaking the K-Means parameters</li>
+</ol>
+
+<p>But all of these didn’t work.</p>
+
+<h3 id="trying-inference">Trying Inference</h3>
+<p>So my mind turned instead to the new and fashionable way of doing things: Inference with pre-trained models.</p>
+
+<p>For the record I think that using pre-trained models is quite the cop-out, but cop-outs are encouraged
+in CTFs since they allow you to get stuff done with less effort…</p>
+
+<p>First model I thought of was <a href="https://github.com/openai/CLIP">OpenAI’s CLIP</a> model, since it is designed to match images to text.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">import</span> <span class="n">polars</span> <span class="k">as</span> <span class="n">pl</span>
+<span class="kn">import</span> <span class="n">einops</span>
+<span class="kn">import</span> <span class="n">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="n">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">import</span> <span class="n">torch</span>
+<span class="kn">from</span> <span class="n">torch.nn.functional</span> <span class="kn">import</span> <span class="n">softmax</span>
+<span class="kn">import</span> <span class="n">clip</span>
+<span class="kn">from</span> <span class="n">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="n">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="n">CSV_PATH</span> <span class="o">=</span> <span class="sh">'</span><span class="s">images.csv</span><span class="sh">'</span>  <span class="c1"># Update this path
+</span><span class="n">IMG_SHAPE</span> <span class="o">=</span> <span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">MODEL_NAME</span> <span class="o">=</span> <span class="sh">'</span><span class="s">ViT-B/32</span><span class="sh">'</span>
+
+<span class="n">CATEGORIES</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="sh">"</span><span class="s">a photo of a human or person</span><span class="sh">"</span><span class="p">,</span>
+    <span class="sh">"</span><span class="s">a photo of a bicycle or PMD</span><span class="sh">"</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">model</span><span class="p">,</span> <span class="n">preprocess</span> <span class="o">=</span> <span class="n">clip</span><span class="p">.</span><span class="nf">load</span><span class="p">(</span><span class="n">MODEL_NAME</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+<span class="n">model</span><span class="p">.</span><span class="nf">eval</span><span class="p">()</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pl</span><span class="p">.</span><span class="nf">read_csv</span><span class="p">(</span><span class="n">CSV_PATH</span><span class="p">)</span>
+<span class="n">filenames</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="sh">"</span><span class="s">file_name</span><span class="sh">"</span><span class="p">].</span><span class="nf">to_list</span><span class="p">()</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="nf">drop</span><span class="p">(</span><span class="sh">"</span><span class="s">file_name</span><span class="sh">"</span><span class="p">).</span><span class="nf">to_numpy</span><span class="p">()</span>
+<span class="n">n_samples</span> <span class="o">=</span> <span class="n">X</span><span class="p">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">images</span> <span class="o">=</span> <span class="n">einops</span><span class="p">.</span><span class="nf">rearrange</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="sh">"</span><span class="s">n (h w c) -&gt; n h w c</span><span class="sh">"</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">IMG_SHAPE</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">w</span><span class="o">=</span><span class="n">IMG_SHAPE</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="n">IMG_SHAPE</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+<span class="k">if</span> <span class="n">images</span><span class="p">.</span><span class="nf">max</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mf">1.0</span><span class="p">:</span>
+    <span class="n">images</span> <span class="o">=</span> <span class="n">images</span> <span class="o">/</span> <span class="mf">255.0</span>
+
+<span class="n">text_inputs</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="nf">cat</span><span class="p">([</span><span class="n">clip</span><span class="p">.</span><span class="nf">tokenize</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">CATEGORIES</span><span class="p">]).</span><span class="nf">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">torch</span><span class="p">.</span><span class="nf">no_grad</span><span class="p">():</span>
+    <span class="n">text_features</span> <span class="o">=</span> <span class="n">model</span><span class="p">.</span><span class="nf">encode_text</span><span class="p">(</span><span class="n">text_inputs</span><span class="p">)</span>
+    <span class="n">text_features</span> <span class="o">/=</span> <span class="n">text_features</span><span class="p">.</span><span class="nf">norm</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="n">predictions</span><span class="p">,</span> <span class="n">probabilities</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nf">tqdm</span><span class="p">(</span><span class="nf">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">,</span> <span class="n">BATCH_SIZE</span><span class="p">),</span> <span class="n">desc</span><span class="o">=</span><span class="sh">"</span><span class="s">Processing</span><span class="sh">"</span><span class="p">):</span>
+    <span class="n">batch</span> <span class="o">=</span> <span class="n">images</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">BATCH_SIZE</span><span class="p">]</span>
+    
+    <span class="n">batch_processed</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">img</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">:</span>
+        <span class="n">img_uint8</span> <span class="o">=</span> <span class="p">(</span><span class="n">img</span> <span class="o">*</span> <span class="mi">255</span><span class="p">).</span><span class="nf">astype</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">uint8</span><span class="p">)</span> <span class="k">if</span> <span class="n">img</span><span class="p">.</span><span class="nf">max</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="mf">1.0</span> <span class="k">else</span> <span class="n">img</span><span class="p">.</span><span class="nf">astype</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">uint8</span><span class="p">)</span>
+        <span class="n">pil_img</span> <span class="o">=</span> <span class="n">Image</span><span class="p">.</span><span class="nf">fromarray</span><span class="p">(</span><span class="n">img_uint8</span><span class="p">)</span>
+        <span class="n">pil_img</span> <span class="o">=</span> <span class="n">pil_img</span><span class="p">.</span><span class="nf">resize</span><span class="p">((</span><span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">),</span> <span class="n">Image</span><span class="p">.</span><span class="n">BICUBIC</span><span class="p">)</span>
+        <span class="n">batch_processed</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="nf">preprocess</span><span class="p">(</span><span class="n">pil_img</span><span class="p">))</span>
+    
+    <span class="n">image_inputs</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="nf">stack</span><span class="p">(</span><span class="n">batch_processed</span><span class="p">).</span><span class="nf">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+    
+    <span class="k">with</span> <span class="n">torch</span><span class="p">.</span><span class="nf">no_grad</span><span class="p">():</span>
+        <span class="n">image_features</span> <span class="o">=</span> <span class="n">model</span><span class="p">.</span><span class="nf">encode_image</span><span class="p">(</span><span class="n">image_inputs</span><span class="p">)</span>
+        <span class="n">image_features</span> <span class="o">/=</span> <span class="n">image_features</span><span class="p">.</span><span class="nf">norm</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        
+        <span class="n">similarity</span> <span class="o">=</span> <span class="p">(</span><span class="mf">100.0</span> <span class="o">*</span> <span class="n">image_features</span> <span class="o">@</span> <span class="n">text_features</span><span class="p">.</span><span class="n">T</span><span class="p">)</span>
+        <span class="n">probs</span> <span class="o">=</span> <span class="nf">softmax</span><span class="p">(</span><span class="n">similarity</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        
+        <span class="n">batch_predictions</span> <span class="o">=</span> <span class="n">similarity</span><span class="p">.</span><span class="nf">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">).</span><span class="nf">cpu</span><span class="p">().</span><span class="nf">numpy</span><span class="p">()</span>
+        <span class="n">batch_probs</span> <span class="o">=</span> <span class="n">probs</span><span class="p">.</span><span class="nf">cpu</span><span class="p">().</span><span class="nf">numpy</span><span class="p">()</span>
+        
+        <span class="n">predictions</span><span class="p">.</span><span class="nf">extend</span><span class="p">(</span><span class="n">batch_predictions</span><span class="p">)</span>
+        <span class="n">probabilities</span><span class="p">.</span><span class="nf">extend</span><span class="p">(</span><span class="n">batch_probs</span><span class="p">)</span>
+
+<span class="n">predictions</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">array</span><span class="p">(</span><span class="n">predictions</span><span class="p">)</span>
+<span class="n">probabilities</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">array</span><span class="p">(</span><span class="n">probabilities</span><span class="p">)</span>
+
+<span class="c1"># 0 = human/person, others (i.e. 1) = bicycle/PMD
+</span><span class="n">binary_labels</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="n">predictions</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">predicted_confidences</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">array</span><span class="p">([</span><span class="n">probabilities</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">pred</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">pred</span> <span class="ow">in</span> <span class="nf">enumerate</span><span class="p">(</span><span class="n">predictions</span><span class="p">)])</span>
+
+<span class="n">results_df</span> <span class="o">=</span> <span class="n">pl</span><span class="p">.</span><span class="nc">DataFrame</span><span class="p">({</span>
+    <span class="sh">'</span><span class="s">file_name</span><span class="sh">'</span><span class="p">:</span> <span class="n">filenames</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">label</span><span class="sh">'</span><span class="p">:</span> <span class="n">binary_labels</span><span class="p">,</span>  <span class="c1"># 0 = person, 1 = other (bicycle/PMD)
+</span>    <span class="sh">'</span><span class="s">confidence</span><span class="sh">'</span><span class="p">:</span> <span class="n">predicted_confidences</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">detailed_prediction</span><span class="sh">'</span><span class="p">:</span> <span class="p">[</span><span class="n">CATEGORIES</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">predictions</span><span class="p">]</span>
+<span class="p">})</span>
+
+<span class="n">results_df</span><span class="p">.</span><span class="nf">write_csv</span><span class="p">(</span><span class="sh">'</span><span class="s">results.csv</span><span class="sh">'</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>and with some prompt-engineering, it… kind of worked!
+<img src="/assets/Images/GovTechAICTF-2025/final-qr.png" alt="" /></p>
+
+<p>flag: <code class="language-plaintext highlighter-rouge">AI2025{5tr1d3s4f3_15_l1t}</code></p>
+
+<h3 id="challenge-review">Challenge Review</h3>
+<p>Was a bit annoying, but overall a good beginner challenge. (The writeup elides the fact that prompt engineering took about 30 minutes.)</p>
+
+<h2 id="limit-theory">Limit Theory</h2>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Mr Hojiak has inherited a kaya making machine that his late grandmother invented. This is an advanced machine that can take in the key ingredients of coconut milk, eggs, sugar and pandan leaves and churn out perfect jars of kaya. Unfortunately, original recipe is lost but luckily taste-testing module is still functioning so it may be possible to recreate the taste of the original recipe.
+
+The machine has three modes experiment, order and taste-test. The experimental mode allows you to put in a small number of ingredients and it will tell you if the mixture added is acceptable. In order to make great jars of kaya, you have to maximise the pandan leaves with a given set of sugar, coconut milk, and eggs to give the best flavor. However, using too many pandan leaves overwhelms the kaya, making it unpalatable.
+
+Production mode with order and taste-test to check the batch quality will use greater quantities, but because of yield loss, the machine will only be able to tell you the amounts of sugar, coconut milk and eggs that will be used before infusing the flavor of pandan leaves. Plan accordingly.
+
+API: https://limittheory.aictf.sg:5000
+https://limittheory.aictf.sg 
+</code></pre></div></div>
+
+<h3 id="reconnaissance-1">Reconnaissance</h3>
+<p>We are given a web interface and an API, as well as a <strong>CSV file</strong> of sample experiments.
+<img src="/assets/Images/GovTechAICTF-2025/limittheory-website.png" alt="" /></p>
+
+<p>Looking at the CSV file, we see that it contains a list of <code class="language-plaintext highlighter-rouge">800</code> experiments with 4 input parameters (coconut milk, eggs, sugar, pandan leaves) and a ‘PASSED/FAILED’ output.</p>
+<pre><code class="language-csv">coconut_milk,eggs,sugar,pandan_leaves,success
+9.556428757689250,2.5347171131856200,3.442141285965060,7132.44787222995,PASSED
+7.587945476302650,1.5854643368675200,8.458637582367370,32418.319308810100,FAILED
+6.387926357773330,9.539969835280000,4.210779940242300,5612.771975694960,PASSED
+...&lt;all the other rows omitted for sanity&gt;...
+</code></pre>
+
+<p>Like the (torturously long) description suggests, we have 3 API endpoints:</p>
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">/experiment</code> - takes in quantities of ingredients from a restricted domain, and returns whether the mixture is “acceptable” or not.</li>
+  <li><code class="language-plaintext highlighter-rouge">/order</code> - issues ingredient quantities for a production run <strong>outside</strong> the restricted domain of <code class="language-plaintext highlighter-rouge">/experiment</code>.</li>
+  <li><code class="language-plaintext highlighter-rouge">/taste-test</code> - takes in the results of the production run, and returns whether the mixture is “acceptable” or not.</li>
+</ol>
+
+<p>It wasn’t apparent from the challenge description, but there was also a <strong>pretty severe</strong> rate limit of <code class="language-plaintext highlighter-rouge">~120</code> requests every like 10 minutes? Did not appreciate it, but whatever.</p>
+
+<p>This appears to be a rather classical “fit data and generalize well” machine learning problem; problem being that the model is unknown.</p>
+
+<h3 id="okay-its-ml-so-can-solve">Okay, its ML. So can solve?</h3>
+<p>Given the pitiful number of experiments provided (800), I immediately suspected that the underlying model was something simple, like a <a href="https://en.wikipedia.org/wiki/Logistic_regression">Logistic Regression</a> model.</p>
+
+<p>Just to be safe, I obviously made sure to augment the data by querying the <code class="language-plaintext highlighter-rouge">/experiment</code> endpoint with random values within the allowed domain, and adding those to the dataset:</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Also Jupyter notebook code snippets. Sorry!
+</span>
+<span class="kn">import</span> <span class="n">aiohttp</span>
+<span class="kn">import</span> <span class="n">asyncio</span>
+<span class="kn">import</span> <span class="n">random</span>
+<span class="kn">import</span> <span class="n">polars</span> <span class="k">as</span> <span class="n">pl</span>
+<span class="kn">import</span> <span class="n">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">from</span> <span class="n">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="n">API_URL</span> <span class="o">=</span> <span class="sh">"</span><span class="s">https://limittheory.aictf.sg:5000/experiment</span><span class="sh">"</span>
+<span class="n">NUM_SAMPLES</span> <span class="o">=</span> <span class="mi">120</span>
+<span class="n">OUTPUT_FILE</span> <span class="o">=</span> <span class="sh">"</span><span class="s">additional_data_new.csv</span><span class="sh">"</span>
+<span class="n">NPRNG</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="nf">default_rng</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">RANDOM_SAMPLES</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">concatenate</span><span class="p">((</span><span class="n">NPRNG</span><span class="p">.</span><span class="nf">random</span><span class="p">((</span><span class="n">NUM_SAMPLES</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span> <span class="n">NPRNG</span><span class="p">.</span><span class="nf">triangular</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">NUM_SAMPLES</span><span class="p">,</span> <span class="mi">1</span><span class="p">))),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Restricted domain from website is [0, 10] for first three parameters, and [0, 50000] for last parameter.
+</span><span class="n">RANDOM_SAMPLES</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">*=</span> <span class="mi">10</span>  <span class="c1"># Scale first three parameters to [0, 10]
+</span><span class="n">RANDOM_SAMPLES</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">*=</span> <span class="mi">50000</span>  <span class="c1"># Scale last parameter to [0, 50000]
+</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_sample</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">semaphore</span><span class="p">):</span>
+    <span class="c1"># Get random parameters to increase dataset support
+</span>    <span class="k">async</span> <span class="k">with</span> <span class="n">semaphore</span><span class="p">:</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="sh">"</span><span class="s">coconut_milk</span><span class="sh">"</span><span class="p">:</span> <span class="n">RANDOM_SAMPLES</span><span class="p">[</span><span class="nb">id</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="sh">"</span><span class="s">eggs</span><span class="sh">"</span><span class="p">:</span> <span class="n">RANDOM_SAMPLES</span><span class="p">[</span><span class="nb">id</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+            <span class="sh">"</span><span class="s">sugar</span><span class="sh">"</span><span class="p">:</span> <span class="n">RANDOM_SAMPLES</span><span class="p">[</span><span class="nb">id</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+            <span class="sh">"</span><span class="s">pandan_leaves</span><span class="sh">"</span><span class="p">:</span> <span class="n">RANDOM_SAMPLES</span><span class="p">[</span><span class="nb">id</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+        <span class="p">}</span>
+
+        <span class="k">async</span> <span class="k">with</span> <span class="n">session</span><span class="p">.</span><span class="nf">post</span><span class="p">(</span><span class="n">API_URL</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">params</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="k">await</span> <span class="n">response</span><span class="p">.</span><span class="nf">json</span><span class="p">()</span>
+            <span class="n">params</span><span class="p">.</span><span class="nf">update</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+            <span class="k">await</span> <span class="n">asyncio</span><span class="p">.</span><span class="nf">sleep</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>  <span class="c1"># Rate limit...
+</span>            <span class="k">return</span> <span class="n">params</span>
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_samples</span><span class="p">(</span><span class="n">num_samples</span><span class="p">):</span>
+    <span class="n">semaphore</span> <span class="o">=</span> <span class="n">asyncio</span><span class="p">.</span><span class="nc">Semaphore</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># Rate limit...
+</span>    <span class="k">async</span> <span class="k">with</span> <span class="n">aiohttp</span><span class="p">.</span><span class="nc">ClientSession</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="n">tasks</span> <span class="o">=</span> <span class="p">[</span><span class="nf">fetch_sample</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">semaphore</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="n">num_samples</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="k">await</span> <span class="n">task</span> <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="nf">tqdm</span><span class="p">(</span><span class="n">asyncio</span><span class="p">.</span><span class="nf">as_completed</span><span class="p">(</span><span class="n">tasks</span><span class="p">))]</span>
+
+<span class="c1"># New cell
+</span><span class="kn">from</span> <span class="n">time</span> <span class="kn">import</span> <span class="n">sleep</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nf">tqdm</span><span class="p">(</span><span class="nf">range</span><span class="p">(</span><span class="mi">20</span><span class="p">)):</span>
+    <span class="n">samples</span> <span class="o">=</span> <span class="k">await</span> <span class="nf">fetch_samples</span><span class="p">(</span><span class="n">NUM_SAMPLES</span><span class="p">)</span>
+    <span class="n">pl</span><span class="p">.</span><span class="nc">DataFrame</span><span class="p">(</span><span class="n">samples</span><span class="p">).</span><span class="nf">write_csv</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">additional_data_batch_</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s">.csv</span><span class="sh">"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>However, I was quite rudely surprised by the level of precision required to pass the <code class="language-plaintext highlighter-rouge">/taste-test</code> endpoint:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># New cell
+# Try to fit a logistic regressor to the data
+</span><span class="kn">from</span> <span class="n">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LogisticRegression</span>
+<span class="kn">from</span> <span class="n">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">RandomForestRegressor</span>
+<span class="kn">from</span> <span class="n">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span> <span class="n">sklearn.metrics</span> <span class="kn">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">classification_report</span>
+<span class="kn">from</span> <span class="n">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pl</span><span class="p">.</span><span class="nf">read_csv</span><span class="p">(</span><span class="sh">"</span><span class="s">sample_data.csv</span><span class="sh">"</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="nf">vstack</span><span class="p">(</span><span class="n">pl</span><span class="p">.</span><span class="nf">read_csv</span><span class="p">(</span><span class="sh">"</span><span class="s">additional_data.csv</span><span class="sh">"</span><span class="p">).</span><span class="nf">drop</span><span class="p">(</span><span class="sh">"</span><span class="s">status</span><span class="sh">"</span><span class="p">).</span><span class="nf">rename</span><span class="p">({</span><span class="sh">"</span><span class="s">message</span><span class="sh">"</span><span class="p">:</span> <span class="sh">"</span><span class="s">success</span><span class="sh">"</span><span class="p">}))</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="nf">drop_nulls</span><span class="p">()</span>
+
+<span class="n">EPS</span> <span class="o">=</span>  <span class="mf">1e-8</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="nf">select</span><span class="p">(</span><span class="sh">'</span><span class="s">success</span><span class="sh">'</span><span class="p">).</span><span class="nf">to_numpy</span><span class="p">()</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="nf">drop</span><span class="p">(</span><span class="sh">'</span><span class="s">success</span><span class="sh">'</span><span class="p">).</span><span class="nf">to_numpy</span><span class="p">()</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">X</span><span class="p">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">y</span><span class="p">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="sh">"</span><span class="s">success</span><span class="sh">"</span><span class="p">].</span><span class="nf">value_counts</span><span class="p">())</span>
+
+<span class="c1"># New cell
+</span><span class="kn">from</span> <span class="n">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">StandardScaler</span>
+<span class="c1"># Prevent outsized scales from messing with the model...
+</span><span class="n">scaler</span> <span class="o">=</span> <span class="nc">StandardScaler</span><span class="p">()</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">scaler</span><span class="p">.</span><span class="nf">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">pf_map</span><span class="p">(</span><span class="n">x</span><span class="p">):</span> 
+    <span class="k">if</span> <span class="nf">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">x</span>
+    <span class="k">elif</span> <span class="nf">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="sh">'</span><span class="s">PASSED</span><span class="sh">'</span> <span class="k">else</span> <span class="mi">0</span>
+    <span class="k">raise</span> <span class="nc">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">Unexpected value: </span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
+
+<span class="n">y</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span><span class="nf">map</span><span class="p">(</span><span class="n">pf_map</span><span class="p">,</span> <span class="n">y</span><span class="p">.</span><span class="nf">flatten</span><span class="p">()))</span>
+
+<span class="n">X_tr</span><span class="p">,</span> <span class="n">X_val</span><span class="p">,</span> <span class="n">y_tr</span><span class="p">,</span> <span class="n">y_val</span> <span class="o">=</span> <span class="nf">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">clf</span> <span class="o">=</span> <span class="nc">LogisticRegression</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">).</span><span class="nf">fit</span><span class="p">(</span><span class="n">X_tr</span><span class="p">,</span> <span class="n">y_tr</span><span class="p">)</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Score:</span><span class="sh">"</span><span class="p">,</span> <span class="n">clf</span><span class="p">.</span><span class="nf">score</span><span class="p">(</span><span class="n">X_val</span><span class="p">,</span> <span class="n">y_val</span><span class="p">))</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">clf</span><span class="p">)</span>
+
+<span class="c1"># New cell
+</span><span class="kn">from</span> <span class="n">sklearn.metrics</span> <span class="kn">import</span> <span class="n">roc_curve</span><span class="p">,</span> <span class="n">auc</span>
+<span class="n">y_score</span> <span class="o">=</span> <span class="n">clf</span><span class="p">.</span><span class="nf">decision_function</span><span class="p">(</span><span class="n">X_val</span><span class="p">)</span>
+<span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="nf">roc_curve</span><span class="p">(</span><span class="n">y_val</span><span class="p">,</span> <span class="n">y_score</span><span class="p">)</span>
+<span class="n">roc_auc</span> <span class="o">=</span> <span class="nf">auc</span><span class="p">(</span><span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">figure</span><span class="p">()</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="sh">'</span><span class="s">darkorange</span><span class="sh">'</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sh">'</span><span class="s">ROC curve (area = %0.2f)</span><span class="sh">'</span> <span class="o">%</span> <span class="n">roc_auc</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="sh">'</span><span class="s">navy</span><span class="sh">'</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="sh">'</span><span class="s">--</span><span class="sh">'</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">xlim</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">ylim</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.05</span><span class="p">])</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="sh">'</span><span class="s">False Positive Rate</span><span class="sh">'</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="sh">'</span><span class="s">True Positive Rate</span><span class="sh">'</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">title</span><span class="p">(</span><span class="sh">'</span><span class="s">Receiver Operating Characteristic</span><span class="sh">'</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="sh">"</span><span class="s">lower right</span><span class="sh">"</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>This is a REALLY GOOD fit. The ROC AUC is <code class="language-plaintext highlighter-rouge">0.93</code>, which is near perfect.
+<img src="/assets/Images/GovTechAICTF-2025/log-reg-roc.png" alt="" /></p>
+
+<p>But…</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># New cell
+</span><span class="kn">import</span> <span class="n">requests</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="sh">"</span><span class="s">https://limittheory.aictf.sg:5000/order</span><span class="sh">"</span><span class="p">)</span>
+<span class="c1"># print("Order response:", response.json())
+</span><span class="n">orders</span> <span class="o">=</span> <span class="n">response</span><span class="p">.</span><span class="nf">json</span><span class="p">()[</span><span class="sh">'</span><span class="s">order</span><span class="sh">'</span><span class="p">]</span>
+<span class="n">token</span> <span class="o">=</span> <span class="n">response</span><span class="p">.</span><span class="nf">json</span><span class="p">()[</span><span class="sh">'</span><span class="s">token</span><span class="sh">'</span><span class="p">]</span>
+<span class="c1"># Predict the threshold of Pandan leaves for each order
+# via binary search on logreg decision function
+</span><span class="n">preds</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nf">len</span><span class="p">(</span><span class="n">orders</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">order_name</span><span class="p">,</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">orders</span><span class="p">.</span><span class="nf">items</span><span class="p">():</span>
+    <span class="n">position</span> <span class="o">=</span> <span class="nf">int</span><span class="p">(</span><span class="n">order_name</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="sh">"</span><span class="s">-</span><span class="sh">"</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="n">low</span><span class="p">,</span> <span class="n">high</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">50000</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="mi">30</span><span class="p">):</span>  <span class="c1"># 30 iterations of binary search
+</span>        <span class="n">mid</span> <span class="o">=</span> <span class="p">(</span><span class="n">low</span> <span class="o">+</span> <span class="n">high</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">features</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">array</span><span class="p">([</span>
+            <span class="n">order</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">order</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">order</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+            <span class="n">mid</span>
+        <span class="p">]).</span><span class="nf">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">features</span> <span class="o">=</span> <span class="n">scaler</span><span class="p">.</span><span class="nf">transform</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+        <span class="n">decision_value</span> <span class="o">=</span> <span class="n">clf</span><span class="p">.</span><span class="nf">predict</span><span class="p">(</span><span class="n">features</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">decision_value</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="c1"># i.e. FAIL
+</span>            <span class="n">high</span> <span class="o">=</span> <span class="n">mid</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">low</span> <span class="o">=</span> <span class="n">mid</span>
+    <span class="n">preds</span><span class="p">[</span><span class="n">position</span><span class="p">]</span> <span class="o">=</span>  <span class="p">(</span><span class="n">low</span> <span class="o">+</span> <span class="n">high</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+<span class="c1"># Submit the order
+</span><span class="nf">print</span><span class="p">(</span><span class="n">preds</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="nf">post</span><span class="p">(</span><span class="sh">"</span><span class="s">https://limittheory.aictf.sg:5000/taste-test</span><span class="sh">"</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="p">{</span><span class="sh">"</span><span class="s">token</span><span class="sh">"</span><span class="p">:</span> <span class="n">token</span><span class="p">,</span> <span class="sh">"</span><span class="s">result</span><span class="sh">"</span><span class="p">:</span> <span class="n">preds</span><span class="p">})</span>
+<span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Taste test response:</span><span class="sh">"</span><span class="p">,</span> <span class="n">response</span><span class="p">.</span><span class="nf">json</span><span class="p">())</span>
+<span class="c1"># [15478.281280957162, 7663.008733652532, 10866.082808934152]
+# Taste test response: {'RESULT': 'Taste-test failed!'}
+# ugh...
+</span></code></pre></div></div>
+
+<p>So it would seem that we would have to radically revise our approach, perhaps, to model the decision boundary almost perfectly.</p>
+
+<p>This prompted us to believe that some other kind of <a href="https://en.wikipedia.org/wiki/Linear_model">parameterized linear model</a> was at play here.</p>
+
+<p>Think about it: How else can you get such a clean decision boundary with so few data points?</p>
+
+<h3 id="linear-modelling">Linear Modelling</h3>
+
+<p>So I decided to try and fit a random assortment of linear models to the data, and see which one fit best.</p>
+
+<p>The key to getting good results with linear models is to do a lot of <a href="https://en.wikipedia.org/wiki/Feature_engineering">feature engineering</a>. 
+<img src="/assets/Images/GovTechAICTF-2025/randombsgo.png" alt="" /></p>
+
+<p>Since there are no obvious relationships between the features, I decided to try out a few different transformations (and was prepared to try way more until something stuck):</p>
+<ul>
+  <li>Linear (i.e. the original features)</li>
+  <li>Ratios (e.g. coconut_milk / eggs)</li>
+  <li>Quadratic Forms (e.g. coconut_milk^2, coconut_milk * eggs)</li>
+  <li>Logarithmic (e.g. log(coconut_milk))</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Solved again
+</span><span class="kn">import</span> <span class="n">polars</span> <span class="k">as</span> <span class="n">pl</span>
+<span class="kn">import</span> <span class="n">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">from</span> <span class="n">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="n">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LinearRegression</span>
+
+<span class="k">def</span> <span class="nf">linear_transform</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="sh">"</span><span class="s">c</span><span class="sh">"</span><span class="p">:</span> <span class="n">c</span><span class="p">,</span>
+        <span class="sh">"</span><span class="s">e</span><span class="sh">"</span><span class="p">:</span> <span class="n">e</span><span class="p">,</span>
+        <span class="sh">"</span><span class="s">s</span><span class="sh">"</span><span class="p">:</span> <span class="n">s</span>
+    <span class="p">}</span>
+
+<span class="k">def</span> <span class="nf">ratio_transform</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+    <span class="n">EPS</span> <span class="o">=</span> <span class="mf">1e-8</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="sh">"</span><span class="s">c/s</span><span class="sh">"</span><span class="p">:</span> <span class="n">c</span> <span class="o">/</span> <span class="p">(</span><span class="n">s</span> <span class="o">+</span> <span class="n">EPS</span><span class="p">),</span>
+        <span class="sh">"</span><span class="s">e/s</span><span class="sh">"</span><span class="p">:</span> <span class="n">e</span> <span class="o">/</span> <span class="p">(</span><span class="n">s</span> <span class="o">+</span> <span class="n">EPS</span><span class="p">),</span>
+        <span class="sh">"</span><span class="s">c/e</span><span class="sh">"</span><span class="p">:</span> <span class="n">c</span> <span class="o">/</span> <span class="p">(</span><span class="n">e</span> <span class="o">+</span> <span class="n">EPS</span><span class="p">),</span>
+    <span class="p">}</span>
+
+<span class="k">def</span> <span class="nf">log_transform</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+    <span class="n">EPS</span> <span class="o">=</span> <span class="mf">1e-8</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="sh">"</span><span class="s">log_c</span><span class="sh">"</span><span class="p">:</span> <span class="n">np</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="n">c</span> <span class="o">+</span> <span class="n">EPS</span><span class="p">),</span>
+        <span class="sh">"</span><span class="s">log_e</span><span class="sh">"</span><span class="p">:</span> <span class="n">np</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="n">e</span> <span class="o">+</span> <span class="n">EPS</span><span class="p">),</span>
+        <span class="sh">"</span><span class="s">log_s</span><span class="sh">"</span><span class="p">:</span> <span class="n">np</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="n">s</span> <span class="o">+</span> <span class="n">EPS</span><span class="p">),</span>
+    <span class="p">}</span>
+<span class="k">def</span> <span class="nf">quadratic_form_transform</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="sh">"</span><span class="s">c2</span><span class="sh">"</span><span class="p">:</span> <span class="n">c</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span>
+        <span class="sh">"</span><span class="s">e2</span><span class="sh">"</span><span class="p">:</span> <span class="n">e</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span>
+        <span class="sh">"</span><span class="s">s2</span><span class="sh">"</span><span class="p">:</span> <span class="n">s</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span>
+        <span class="sh">"</span><span class="s">ce</span><span class="sh">"</span><span class="p">:</span> <span class="n">c</span><span class="o">*</span><span class="n">e</span><span class="p">,</span>
+        <span class="sh">"</span><span class="s">cs</span><span class="sh">"</span><span class="p">:</span> <span class="n">c</span><span class="o">*</span><span class="n">s</span><span class="p">,</span>
+        <span class="sh">"</span><span class="s">es</span><span class="sh">"</span><span class="p">:</span> <span class="n">e</span><span class="o">*</span><span class="n">s</span><span class="p">,</span>
+        <span class="sh">"</span><span class="s">c</span><span class="sh">"</span><span class="p">:</span> <span class="n">c</span><span class="p">,</span>
+        <span class="sh">"</span><span class="s">e</span><span class="sh">"</span><span class="p">:</span> <span class="n">e</span><span class="p">,</span>
+        <span class="sh">"</span><span class="s">s</span><span class="sh">"</span><span class="p">:</span> <span class="n">s</span>
+    <span class="p">}</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pl</span><span class="p">.</span><span class="nf">read_csv</span><span class="p">(</span><span class="sh">"</span><span class="s">scaling_results.csv</span><span class="sh">"</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="nf">drop</span><span class="p">([</span>
+    <span class="sh">"</span><span class="s">base_idx</span><span class="sh">"</span><span class="p">,</span> <span class="sh">"</span><span class="s">scale_factor</span><span class="sh">"</span><span class="p">,</span> <span class="sh">"</span><span class="s">sum</span><span class="sh">"</span>
+<span class="p">])</span>
+
+<span class="k">for</span> <span class="n">trf</span> <span class="ow">in</span> <span class="p">[</span><span class="n">linear_transform</span><span class="p">,</span> <span class="n">ratio_transform</span><span class="p">,</span> <span class="n">log_transform</span><span class="p">,</span> <span class="n">quadratic_form_transform</span><span class="p">]:</span>
+    <span class="n">trf_df</span> <span class="o">=</span> <span class="n">pl</span><span class="p">.</span><span class="nc">DataFrame</span><span class="p">({</span>
+        <span class="o">**</span><span class="nf">trf</span><span class="p">(</span>
+            <span class="n">df</span><span class="p">[</span><span class="sh">"</span><span class="s">coconut</span><span class="sh">"</span><span class="p">],</span>
+            <span class="n">df</span><span class="p">[</span><span class="sh">"</span><span class="s">eggs</span><span class="sh">"</span><span class="p">],</span> 
+            <span class="n">df</span><span class="p">[</span><span class="sh">"</span><span class="s">sugar</span><span class="sh">"</span><span class="p">]</span>
+        <span class="p">),</span>
+        <span class="sh">"</span><span class="s">threshold</span><span class="sh">"</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="sh">"</span><span class="s">threshold</span><span class="sh">"</span><span class="p">]</span>
+    <span class="p">})</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">trf_df</span><span class="p">.</span><span class="nf">drop</span><span class="p">(</span><span class="sh">"</span><span class="s">threshold</span><span class="sh">"</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">trf_df</span><span class="p">.</span><span class="nf">select</span><span class="p">(</span><span class="sh">"</span><span class="s">threshold</span><span class="sh">"</span><span class="p">)</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Transform:</span><span class="sh">"</span><span class="p">,</span> <span class="n">trf</span><span class="p">.</span><span class="n">__name__</span><span class="p">)</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">X shape:</span><span class="sh">"</span><span class="p">,</span> <span class="n">X</span><span class="p">.</span><span class="n">shape</span><span class="p">,</span> <span class="sh">"</span><span class="s">y shape:</span><span class="sh">"</span><span class="p">,</span> <span class="n">y</span><span class="p">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="nc">LinearRegression</span><span class="p">().</span><span class="nf">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">R^2:</span><span class="sh">"</span><span class="p">,</span> <span class="n">model</span><span class="p">.</span><span class="nf">score</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">MSE:</span><span class="sh">"</span><span class="p">,</span> <span class="n">np</span><span class="p">.</span><span class="nf">mean</span><span class="p">((</span><span class="n">model</span><span class="p">.</span><span class="nf">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">Names: </span><span class="si">{</span><span class="n">model</span><span class="p">.</span><span class="n">feature_names_in_</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">Coefficients: </span><span class="si">{</span><span class="n">model</span><span class="p">.</span><span class="n">coef_</span><span class="si">}</span><span class="s">, Intercept: </span><span class="si">{</span><span class="n">model</span><span class="p">.</span><span class="n">intercept_</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>which yielded the following results:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Transform: linear_transform
+X shape: (113, 3) y shape: (113, 1)
+R^2: 0.9041112446001132
+MSE: 1862281.5837982614
+Names: ['c' 'e' 's']
+Coefficients: [[1008.06767668  320.96307759 1122.20767127]], Intercept: [-5301.56386984]
+Transform: ratio_transform
+X shape: (113, 3) y shape: (113, 1)
+R^2: 0.085363747702359
+MSE: 17763399.27893326
+Names: ['c/s' 'e/s' 'c/e']
+Coefficients: [[-293.16913969  -23.31295561  112.94870038]], Intercept: [4931.46113844]
+Transform: log_transform
+X shape: (113, 3) y shape: (113, 1)
+R^2: 0.7198056157049848
+MSE: 5441731.301863531
+Names: ['log_c' 'log_e' 'log_s']
+Coefficients: [[2935.45798492 1132.50190739 2960.3670994 ]], Intercept: [-3014.31000086]
+Transform: quadratic_form_transform
+X shape: (113, 9) y shape: (113, 1)
+R^2: 0.9999999999998537
+MSE: 2.841802828936823e-06
+Names: ['c2' 'e2' 's2' 'ce' 'cs' 'es' 'c' 'e' 's']
+Coefficients: [[-2.19481179e-05  1.80340482e-05  3.24891983e-05  4.99999541e+01
+   2.00000001e+02  2.00000186e+01  4.72554194e-04 -1.61247451e-05
+  -3.75376121e-04]], Intercept: [-0.00063777]
+</code></pre></div></div>
+
+<p>Bingo. The quadratic form transformation yielded a near-perfect fit, with an <code class="language-plaintext highlighter-rouge">R^2</code> of <code class="language-plaintext highlighter-rouge">0.9999999999998537</code>.</p>
+
+<p>Let’s try it out:</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">requests</span>
+<span class="n">best_fn</span> <span class="o">=</span> <span class="n">quadratic_form_transform</span>
+<span class="n">trf_df</span> <span class="o">=</span> <span class="n">pl</span><span class="p">.</span><span class="nc">DataFrame</span><span class="p">({</span>
+    <span class="o">**</span><span class="nf">best_fn</span><span class="p">(</span>
+        <span class="n">df</span><span class="p">[</span><span class="sh">"</span><span class="s">coconut</span><span class="sh">"</span><span class="p">],</span>
+        <span class="n">df</span><span class="p">[</span><span class="sh">"</span><span class="s">eggs</span><span class="sh">"</span><span class="p">],</span> 
+        <span class="n">df</span><span class="p">[</span><span class="sh">"</span><span class="s">sugar</span><span class="sh">"</span><span class="p">]</span>
+    <span class="p">),</span>
+    <span class="sh">"</span><span class="s">threshold</span><span class="sh">"</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="sh">"</span><span class="s">threshold</span><span class="sh">"</span><span class="p">]</span>
+<span class="p">})</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">trf_df</span><span class="p">.</span><span class="nf">drop</span><span class="p">(</span><span class="sh">"</span><span class="s">threshold</span><span class="sh">"</span><span class="p">).</span><span class="nf">to_numpy</span><span class="p">()</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">trf_df</span><span class="p">.</span><span class="nf">select</span><span class="p">(</span><span class="sh">"</span><span class="s">threshold</span><span class="sh">"</span><span class="p">).</span><span class="nf">to_numpy</span><span class="p">()</span>
+<span class="n">model</span> <span class="o">=</span> <span class="nc">LinearRegression</span><span class="p">().</span><span class="nf">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">predict_pandan_threshold</span><span class="p">(</span><span class="n">coconut</span><span class="p">,</span> <span class="n">eggs</span><span class="p">,</span> <span class="n">sugar</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">model</span><span class="p">.</span><span class="nf">predict</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="nf">array</span><span class="p">([[</span>
+        <span class="o">*</span><span class="nf">best_fn</span><span class="p">(</span><span class="n">coconut</span><span class="p">,</span> <span class="n">eggs</span><span class="p">,</span> <span class="n">sugar</span><span class="p">).</span><span class="nf">values</span><span class="p">()</span>
+    <span class="p">]])).</span><span class="nf">item</span><span class="p">()</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="sh">"</span><span class="s">https://limittheory.aictf.sg:5000/order</span><span class="sh">"</span><span class="p">)</span>
+<span class="n">orders</span> <span class="o">=</span> <span class="n">response</span><span class="p">.</span><span class="nf">json</span><span class="p">()[</span><span class="sh">'</span><span class="s">order</span><span class="sh">'</span><span class="p">]</span>
+<span class="n">token</span> <span class="o">=</span> <span class="n">response</span><span class="p">.</span><span class="nf">json</span><span class="p">()[</span><span class="sh">'</span><span class="s">token</span><span class="sh">'</span><span class="p">]</span>
+
+<span class="n">preds</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nf">len</span><span class="p">(</span><span class="n">orders</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">order_name</span><span class="p">,</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">orders</span><span class="p">.</span><span class="nf">items</span><span class="p">():</span>
+    <span class="n">position</span> <span class="o">=</span> <span class="nf">int</span><span class="p">(</span><span class="n">order_name</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="sh">"</span><span class="s">-</span><span class="sh">"</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="n">preds</span><span class="p">[</span><span class="n">position</span><span class="p">]</span> <span class="o">=</span> <span class="nf">predict_pandan_threshold</span><span class="p">(</span><span class="n">order</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">order</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">order</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+<span class="c1"># Submit the order
+</span><span class="nf">print</span><span class="p">(</span><span class="n">preds</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="nf">post</span><span class="p">(</span><span class="sh">"</span><span class="s">https://limittheory.aictf.sg:5000/taste-test</span><span class="sh">"</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="p">{</span><span class="sh">"</span><span class="s">token</span><span class="sh">"</span><span class="p">:</span> <span class="n">token</span><span class="p">,</span> <span class="sh">"</span><span class="s">result</span><span class="sh">"</span><span class="p">:</span> <span class="n">preds</span><span class="p">})</span>
+<span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Taste test response:</span><span class="sh">"</span><span class="p">,</span> <span class="n">response</span><span class="p">.</span><span class="nf">json</span><span class="p">())</span>
+
+<span class="c1"># [34289.220314496735, 19659.9614213712, 21017.5142869692]
+# Taste test response: {'FLAG': 'AI2025{L1m1t_Th3ory_4_Kaya_T0ast}'}
+</span></code></pre></div></div>
+
+<p>And just like that, we win!</p>
+
+<p>flag: <code class="language-plaintext highlighter-rouge">AI2025{L1m1t_Th3ory_4_Kaya_T0ast}</code></p>
+
+<h3 id="a-quick-disclaimer">A Quick Disclaimer</h3>
+
+<p>Yes, I made it sound super easy. But in reality this was
+a 3-hour process of:</p>
+<ul>
+  <li>coming up with ideas</li>
+  <li>implementing them (with Copilot. I know I said no LLMs, but technically it only provides completions, not solutions)</li>
+  <li>testing them</li>
+  <li>failing</li>
+  <li>repeat</li>
+</ul>
+
+<p>So I got a little tilted when this happened:
+<img src="/assets/Images/GovTechAICTF-2025/vincent-solve.png" alt="" />
+<img src="/assets/Images/GovTechAICTF-2025/vincent-solve-2.png" alt="" /></p>
+
+<p>(jk, well done Vincent!)</p>
+
+<p>I guess there’s something to be said here about:</p>
+<ol>
+  <li>experience and intuition on datasets</li>
+  <li>being able to rapidly prototype and test ideas</li>
+  <li>luck</li>
+  <li>the gulf between challenge setters’ and solvers’ perceptions of difficulty</li>
+</ol>
+
+<p>But they won’t be in this writeup. So there.</p>
+
+<h3 id="challenge-review-1">Challenge Review</h3>
+<p>For all the pain I went through only to be outdone by Vincent (&amp; Chad Jippity), I have to say that this was an interesting challenge that presented me a rare opportunity to do Exploratory Data Analysis.</p>
+
+<p>Feature engineering is also rather underrated in favor of architectural improvements and “throwing more compute and data at the problem”, so it was nice to be reminded of its importance.</p>
+
+<p>However, I would have liked if the model was a bit more complex and noisy and the checker a bit less strict,
+so that more models could have worked. But I don’t know if that would have made it Jippity-able anyways…</p>
+
+  </div>
+
+</article>
+
+<div class="container mx-auto px-2 py-2 clearfix">
+  <!-- Use if you want to show previous and next for all posts. -->
+
+
+
+  <div class="col-4 sm-width-full left mr-lg-4 mt-3">
+    <a class="no-underline border-top-thin py-1 block" href="http://localhost:4000/writeups/2021/06/26/CDDC-2021.html">
+      <span class="h5 bold text-accent">Previous</span>
+      <p class="bold h3 link-primary mb-1">CDDC21: How Not To Organize a CTF</p>
+      <p>CDDC 2021 was nothing short of a disaster. Before I say anything more scathing, it must be said that I...</p>
+    </a>
+  </div>
+  
+  
+
+</div>
+
+
+    </div>
+
+    <div class="border-top-thin clearfix mt-2 mt-lg-4">
+  <div class="container mx-auto px-2">
+    <p class="col-8 sm-width-full left py-2 mb-0" style="font-size:14px">This theme is slightly abridged from <a class="text-accent" href="https://github.com/broccolini/swiss">broccolini's Swiss theme</a> by <a class="text-accent" href="https://github.com/N00bcak">N00bcak</a></p>
+  </div>
+</div>
+
+
+  </body>
+
+</html>

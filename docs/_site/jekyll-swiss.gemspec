@@ -15,6 +15,8 @@ Gem::Specification.new do |spec|
   end
 
   spec.add_development_dependency "jekyll", "~> 4.2"
-  spec.add_development_dependency "bundler", "~> 2.2.11"
+  spec.add_development_dependency "bundler", "~> 2.7.2"
   spec.add_development_dependency "rake", "~> 12.0"
+  spec.add_development_dependency "bigdecimal", "~> 3.0"
+  spec.add_development_dependency "logger", "~> 1.4"
 end

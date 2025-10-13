@@ -1,4 +1,4 @@
-I"�<h3 id="unfortunately-im-a-little-very-much-short-on-time-lets-cut-to-the-chase">Unfortunately I’m <del>a little</del> VERY MUCH short on time, let’s cut to the chase.</h3>
+I"W<h3 id="unfortunately-im-a-little-very-much-short-on-time-lets-cut-to-the-chase">Unfortunately I’m <del>a little</del> VERY MUCH short on time, let’s cut to the chase.</h3>
 
 <h1 id="writeups-wip-might-add-more-as-time-goes-on">Writeups (WIP, might add more as time goes on)</h1>
 <ol>
@@ -58,24 +58,24 @@ nc hopscotch.hsc.tf 1337
 <h3 id="solve-script">Solve Script</h3>
 <p>Taking what we have gathered from our combinatorial analysis, we can compute the <strong>number of sequences from **ones and twos** one can make that add up to <code class="language-plaintext highlighter-rouge">n</code></strong> using a Fibonacci sequence.</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">pwn</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="n">fibo</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
 
 <span class="k">def</span> <span class="nf">precompute</span><span class="p">():</span> 
     <span class="c1"># Precomputation is faster, although frankly unnecessary.
-</span>    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">fibo</span><span class="p">)</span><span class="o">&lt;=</span><span class="mi">1000</span><span class="p">:</span>
-        <span class="n">fibo</span><span class="p">.</span><span class="n">append</span><span class="p">((</span><span class="n">fibo</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">fibo</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">fibo</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">fibo</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span><span class="o">%</span><span class="mi">10000</span><span class="p">)</span>
-<span class="n">precompute</span><span class="p">()</span>
-<span class="n">r</span><span class="o">=</span><span class="n">remote</span><span class="p">(</span><span class="s">'hopscotch.hsc.tf'</span><span class="p">,</span><span class="mi">1337</span><span class="p">)</span>
-<span class="n">r</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">)</span>
+</span>    <span class="k">while</span> <span class="nf">len</span><span class="p">(</span><span class="n">fibo</span><span class="p">)</span><span class="o">&lt;=</span><span class="mi">1000</span><span class="p">:</span>
+        <span class="n">fibo</span><span class="p">.</span><span class="nf">append</span><span class="p">((</span><span class="n">fibo</span><span class="p">[</span><span class="nf">len</span><span class="p">(</span><span class="n">fibo</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">fibo</span><span class="p">[</span><span class="nf">len</span><span class="p">(</span><span class="n">fibo</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span><span class="o">%</span><span class="mi">10000</span><span class="p">)</span>
+<span class="nf">precompute</span><span class="p">()</span>
+<span class="n">r</span><span class="o">=</span><span class="nf">remote</span><span class="p">(</span><span class="sh">'</span><span class="s">hopscotch.hsc.tf</span><span class="sh">'</span><span class="p">,</span><span class="mi">1337</span><span class="p">)</span>
+<span class="n">r</span><span class="p">.</span><span class="nf">recvuntil</span><span class="p">(</span><span class="sh">'</span><span class="se">\n</span><span class="sh">'</span><span class="p">)</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-        <span class="n">num</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">recvline</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-        <span class="n">r</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fibo</span><span class="p">[</span><span class="n">num</span><span class="p">]))</span>
-        <span class="n">r</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s">': '</span><span class="p">)</span>
+        <span class="n">num</span><span class="o">=</span><span class="nf">int</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="nf">recvline</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">r</span><span class="p">.</span><span class="nf">sendline</span><span class="p">(</span><span class="nf">str</span><span class="p">(</span><span class="n">fibo</span><span class="p">[</span><span class="n">num</span><span class="p">]))</span>
+        <span class="n">r</span><span class="p">.</span><span class="nf">recvuntil</span><span class="p">(</span><span class="sh">'</span><span class="s">: </span><span class="sh">'</span><span class="p">)</span>
 <span class="k">except</span> <span class="nb">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span> <span class="c1"># I'm lazy to detect the flag, so I'll just catch it...
-</span>    <span class="k">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-    <span class="n">r</span><span class="p">.</span><span class="n">interactive</span><span class="p">()</span>
+</span>    <span class="nf">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+    <span class="n">r</span><span class="p">.</span><span class="nf">interactive</span><span class="p">()</span>
 </code></pre></div></div>
 
 <p>And we’re done!</p>

