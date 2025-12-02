@@ -1,0 +1,172 @@
+/* docs/.vitepress/theme/custom.css */
+@font-face {
+  font-family: 'RecursiveNerd'; /* Choose a name for your font */
+  src: url('./fonts/RecMonoCasualNerdFont-Regular.ttf') format('truetype'),
+        url('./fonts/RecMonoCasualNerdFont-Bold.ttf') format('truetype'),
+        url('./fonts/RecMonoCasualNerdFont-Italic.ttf') format('truetype'),
+        url('./fonts/RecMonoCasualNerdFont-BoldItalic.ttf') format('truetype'),
+        ;
+  font-weight: normal;
+  font-style: normal;
+}
+/* GLOBAL THEME TOKENS */
+:root {
+  /* Brand / accent color — your violet */
+  --vp-c-brand-1: #A31AFF;
+  --vp-c-brand-2: #A31AFF;
+  --vp-c-brand-3: #A31AFF;
+  
+  --vp-font-family-base: "RecursiveNerd", ui-monospace, SFMono-Regular, Menlo,
+    Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --vp-font-family-mono: "RecursiveNerd", ui-monospace, SFMono-Regular, Menlo,
+    Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  /* Slightly wider content area for a CV/blog */
+  --vp-layout-max-width: 1180px;
+
+  /* Smooth scrolling for anchors */
+  scroll-behavior: smooth;
+}
+
+/* DARK MODE OVERRIDES */
+html.dark {
+  /* Jet black background */
+  --vp-c-bg: #000000;
+  --vp-c-bg-alt: #050505;
+
+  /* Keep violet as accent */
+  --vp-c-brand-1: #A31AFF;
+  --vp-c-brand-2: #C861FF; /* a bit lighter for hover states */
+  --vp-c-brand-3: #E2A5FF;
+
+  /* Softer text contrast to avoid eye strain on pure black */
+  --vp-c-text-1: #e5e5ff;
+  --vp-c-text-2: #b3b3cc;
+  --vp-c-text-3: #808099;
+}
+
+/* TYPOGRAPHY TWEAKS */
+body {
+  font-family: var(--vp-font-family-base);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
+  line-height: 1.6;
+}
+
+/* Links pick up violet accent */
+a {
+  text-decoration: none;
+  color: var(--vp-c-brand-2);
+  transition: color 0.15s ease, text-shadow 0.15s ease;
+}
+
+a:hover {
+  color: var(--vp-c-brand-3);
+  text-shadow: 0 0 8px rgba(163, 26, 255, 0.55);
+}
+
+/* Headings with a subtle accent bar */
+.VPDoc h1,
+.VPDoc h2 {
+  position: relative;
+}
+
+.VPDoc h2::before {
+  content: '';
+  position: absolute;
+  left: -0.6rem;
+  top: 0.3em;
+  width: 3px;
+  height: 0.9em;
+  border-radius: 999px;
+  background: linear-gradient(
+    180deg,
+    #A31AFF,
+    #E2A5FF
+  );
+}
+
+/* CODE BLOCKS */
+.VPDoc pre {
+  border-radius: 10px;
+  border: 1px solid rgba(163, 26, 255, 0.35);
+  backdrop-filter: blur(10px);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+html.dark .VPDoc pre {
+  background: radial-gradient(circle at top left, #1a0828 0, #050505 50%);
+}
+
+.VPDoc pre:hover {
+  border-color: rgba(226, 165, 255, 0.7);
+  box-shadow: 0 0 18px rgba(163, 26, 255, 0.35);
+}
+
+/* INLINE CODE */
+.VPDoc code {
+  font-family: var(--vp-font-family-mono);
+  background-color: rgba(163, 26, 255, 0.08);
+  border-radius: 4px;
+  padding: 0.1em 0.3em;
+}
+
+/* NAVBAR TWEAKS */
+.VPNavBar .title {
+  font-family: var(--vp-font-family-mono);
+  letter-spacing: 0.04em;
+}
+
+.VPNavBar .VPNavBarMenuLink {
+  font-family: var(--vp-font-family-mono);
+}
+
+/* Make the dark/light toggle feel smoother */
+.VPSwitchAppearance {
+  transition: transform 0.5s ease;
+}
+.VPSwitchAppearance:hover {
+  transform: scale(1.05);
+}
+
+.post-list {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.post-item {
+  padding: 1rem 1.25rem;
+  border-radius: 0.9rem;
+  border: 1px solid rgba(163, 26, 255, 0.4);
+  background: radial-gradient(circle at top left, rgba(163, 26, 255, 0.16), transparent 60%);
+}
+
+.post-date {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.post-title {
+  margin: 0.15rem 0 0.4rem;
+}
+
+.post-excerpt {
+  margin: 0;
+}
+
+.post-empty {
+  margin-top: 2rem;
+  opacity: 0.8;
+}
+.post-empty a {
+  color: var(--vp-c-brand-2);
+  text-decoration: underline;
+}
