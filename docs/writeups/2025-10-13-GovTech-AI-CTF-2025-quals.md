@@ -34,7 +34,7 @@ but since this was a LLM-less attempt... let's just say I wasted a lot of time o
 
 ### Trying Unsupervised Learning
 
-![](../assets/images/GovTechAICTF-2025/stridesafe-pictures.png)
+![](../assets/Images/GovTechAICTF-2025/stridesafe-pictures.png)
 
 As mentioned above, there were no image labels. So my first instinct was to perform a quick PCA + K-Means clustering to see if the images could be grouped into 2 distinct clusters (people vs bicycles/PMDs).
 ```python
