@@ -74,6 +74,29 @@ a:hover {
   position: relative;
 }
 
+/* Page title (h1) styling */
+#title {
+  font-size: 3rem;
+  font-weight: 700;
+  background: linear-gradient(
+    135deg,
+    #A31AFF 0%,
+    #E2A5FF 50%,
+    #A31AFF 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+  transition: filter 0.3s ease;
+}
+
+#title :hover {
+  filter: drop-shadow(0 0 12px rgba(163, 26, 255, 0.5));
+}
+
 .VPDoc h2::before {
   content: '';
   position: absolute;

@@ -6,8 +6,6 @@ title: Blog
 import { data as posts } from './blog.data.ts'
 </script>
 
-# Blog
-
 Welcome to my blog! Here I share my thoughts on various topics including technology, programming, and personal experiences.
 
 <div v-if="posts.length === 0" class="post-empty">

@@ -20,7 +20,13 @@ router.onAfterRouteChange = () => setupZoom()
 </script>
 
 <template>
-  <Layout />
+  <Layout>
+    <template #doc-before>
+      <h1 v-if="$frontmatter.title" id="title">
+        {{ $frontmatter.title }}
+      </h1>
+    </template>
+  </Layout>
 </template>
 
 <style>
