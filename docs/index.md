@@ -7,17 +7,18 @@ hero:
   tagline: "A Deep Learning and CTF Enthusiast's Personal Site"
   actions:
     - theme: brand
-      text: Markdown Examples
-      link: /markdown-examples
+      text: CTF Writeups
+      link: /writeups
     - theme: alt
-      text: API Examples
-      link: /api-examples
+      text: Blog Posts
+      link: /blog
+
+features:
+  # - title: Feature A
+  #   details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  # - title: Feature B
+  #   details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  # - title: Feature C
+  #   details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
 ---
 
-<!-- features:
-- title: Feature A
-  details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-- title: Feature B
-  details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-- title: Feature C
-  details: Lorem ipsum dolor sit amet, consectetur adipiscing elit -->
