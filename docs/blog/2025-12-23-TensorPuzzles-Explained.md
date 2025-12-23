@@ -93,7 +93,7 @@ and has the cool side-effect of allowing for fascinating ways to write our usual
 ## Puzzle Solutions
 Here are my solutions to each of the puzzles, along with explanations.
 
-## Puzzle 1 (ones)
+### Puzzle 1 (ones)
 We're asked to take in an integer `i` and return a tensor of shape `(i, )` filled with ones.
 
 By using the fact that scalars are 0-dimensional arrays, we use `arange` to create an array of shape `(i, )`,
@@ -106,7 +106,7 @@ def ones(i: int) -> TT["i"]:
     return arange(i) * 0 + 1
 ```
 
-## Puzzle 2 (sum)
+### Puzzle 2 (sum)
 
 We're asked to take in a 1-dimensional tensor `a` of shape `(i, )` and return the sum of its elements as a tensor of shape `(1, )`.
 
@@ -123,7 +123,7 @@ def sum(a: TT["i"]) -> TT[1]:
     return ones(len(a)) @ a[:, None]
 ```
 
-## Puzzle 3 (outer)
+### Puzzle 3 (outer)
 
 This puzzle is somewhat interesting.
 Though it is quite literally just asking for the outer product of two vectors `a` and `b`,
@@ -154,7 +154,7 @@ def outer(a: TT["i"], b: TT["j"]) -> TT["i", "j"]:
 The interpretation here is that we convert `a` from a row vector of shape `(i, )` to a column vector of shape `(i, 1)`,
 and let broadcasting take over the elementwise multiplication with `b` of shape `(j, )` to form the output of shape `(i, j)`.
 
-## Puzzle 4 (diag)
+### Puzzle 4 (diag)
 This puzzle asks us to take a square matrix `a` of shape `(i, i)` and return the elements along its principal diagonal as a 1-dimensional tensor of shape `(i, )`.
 
 So it wants $\left(\begin{array}{ccc} a_{11} & ... & a_{1i} \\ \vdots & \ddots & \vdots \\ a_{i1} & ... & a_{ii} \end{array}\right) \mapsto \left(\begin{array}{c} a_{11} \\ a_{22} \\ ... \\ a_{ii} \end{array}\right)$.
@@ -167,7 +167,7 @@ def diag(a: TT["i", "i"]) -> TT["i"]:
     return a[..., arange(a.shape[-2]), arange(a.shape[-1])]
 ```
 
-## Puzzle 5 (eye)
+### Puzzle 5 (eye)
 This puzzle gives us an integer `j` and asks us to return the identity matrix of shape `(j, j)`.
 
 Based on what we have so far, we are only capable of generating 1D arrays using `arange` and `ones`. So how do we create a 2D identity matrix?
@@ -186,7 +186,7 @@ resulting in a boolean matrix where `True` values only exist along the principal
 Lastly, `0` is added to coerce the boolean values to integers (`True` to `1` and `False` to `0`).
 (Technically, you can also use `where(..., 1, 0)`. But this is shorter ;))
 
-## Puzzle 6 (triu)
+### Puzzle 6 (triu)
 
 Similarly to the previous puzzle, this one asks us to return the upper triangular matrix of shape `(j, j)`.
 
@@ -199,7 +199,7 @@ def triu(j: int) -> TT["j", "j"]:
 ```
 and everything follows as in [`eye`](#puzzle-5-eye).
 
-## Puzzle 7 (cumsum)
+### Puzzle 7 (cumsum)
 This puzzle wants us to compute the running sum of a 1-dimensional tensor `a` of shape `(i, )`.
 
 There are many ways to define the running sum, but the most interesting one is the matrix product with a lower-triangular matrix of ones:
@@ -223,7 +223,7 @@ def cumsum(a: TT["i"]) -> TT["i"]:
 ```
 of which Solution 1 is technically shorter :)))
 
-## Puzzle 8 (diff)
+### Puzzle 8 (diff)
 
 This puzzle wants us to compute the discrete difference between consecutive elements of a 1-dimensional tensor `a` of shape `(i, )`.
 
@@ -248,7 +248,7 @@ def diff(a: TT["i"], i: int) -> TT["i"]:
 That is to say, the second matrix is constructed by checking where the row indices equal the column indices plus one, 
 and then negating the resulting boolean matrix. (Unfortunately subtracting a boolean matrix is not supported, so we multiply by `-1` instead.)
 
-## Puzzle 9 (vstack)
+### Puzzle 9 (vstack)
 This puzzle wants us to vertically stack two 1-dimensional tensors `a` and `b` of shapes `(i, )` and `(j, )` respectively.
 
 This can be done by broadcasting a `where` operation over a 1D arange of length `2` (adding a trailing dimension at the back).
@@ -259,7 +259,7 @@ def vstack(a: TT["i"], b: TT["i"]) -> TT[2, "i"]:
     return where(arange(2)[:, None] == 0, a, b)
 ```
 
-## Puzzle 10 (roll)
+### Puzzle 10 (roll)
 This puzzle wants us to take a 1D tensor `a` of shape `(i, )` and roll it by 1 position to the left.
 In math notation:
 $$
@@ -273,7 +273,7 @@ def roll(a: TT["i"], i: int) -> TT["i"]:
     return a[(arange(i) + 1) % i]
 ```
 
-## Puzzle 11 (flip)
+### Puzzle 11 (flip)
 This puzzle wants us to take a 1D tensor `a` of shape `(i, )` and reverse its elements.
 
 While a matrix product could very easily achieve this, indexing is allowed... so...
@@ -283,7 +283,7 @@ def flip(a: TT["i"], i: int) -> TT["i"]:
     return a[-arange(i) - 1]
 ```
 
-## Puzzle 12 (compress)
+### Puzzle 12 (compress)
 **This is easily the most challenging puzzle of the entire set, and is the WHOLE reason I even decided to write this explainer.**
 It asks us to take a masking array `g` and a 1D array `v` (both of shape `(i, )`), 
 and return a 1D array of shape `(v, )` containing only the elements of `v` where the corresponding element in `g` is `True`.
@@ -344,7 +344,7 @@ def compress(g: TT["i", bool], v: TT["i"], i:int) -> TT["i"]:
     return v @ where(g[:, None], eye(i)[(cumsum(g + 0) - 1)], 0)
 ```
 
-## Puzzle 13 (pad_to)
+### Puzzle 13 (pad_to)
 Strangely enough, this puzzle wants us to **PAD** / (or truncate) a tensor `a` of shape `(i, )` to a target length `j`.
 
 I didn't think you could (or would want to) do this with broadcasting, but apparently you can (with ANOTHER special matrix product).
@@ -368,7 +368,7 @@ def pad_to(a: TT["i"], i: int, j: int) -> TT["j"]:
     return a @ where(arange(i)[:, None] == arange(j), 1, 0)
 ```
 
-## Puzzle 14 (sequence_mask)
+### Puzzle 14 (sequence_mask)
 This puzzle gives us a 2D tensor `values` of shape `(i, j)`, as well as a 1D tensor `lengths` of shape `(i, )`.
 It wants us to apply the length mask across each row of `values`, such that only the first `lengths[k]` elements of row `k` are retained, and the rest are zeroed out.
 
@@ -381,7 +381,7 @@ def sequence_mask(values: TT["i", "j"], length: TT["i", int]) -> TT["i", "j"]:
 
 There is no real need to explain since it is kind of like [`eye`](#puzzle-5-eye) and [`triu`](#puzzle-6-triu).
 
-## Puzzle 15 (bincount)
+### Puzzle 15 (bincount)
 This puzzle wants us to basically count the occurrences of each integer in a 1D tensor `a` of shape `(i, )`,
 where all integers in `a` are guaranteed to be in the range `[0, j)`.
 
@@ -393,7 +393,7 @@ def bincount(a: TT["i", int], j: int) -> TT["j"]:
     return ones(len(a)) @ eye(j)[a]
 ```
 
-## Puzzle 16 (scatter_add)
+### Puzzle 16 (scatter_add)
 I have literally never seen an operation like this before.
 
 We are given 2 1D arrays: `values` and `link` (both of shape `(i, )`), and we are to return a 1D array of shape `(j, )`
@@ -407,7 +407,7 @@ def scatter_add(values: TT["i"], link: TT["i", int], j: int) -> TT["j"]:
     return values @ eye(j)[link]
 ```
 
-## Puzzle 17 (flatten)
+### Puzzle 17 (flatten)
 Finally, something sane.
 This puzzle wants us to flatten a 2D tensor `a` of shape `(i, j)` into a 1D tensor of shape `(i * j, )`.
 
@@ -418,7 +418,7 @@ def flatten(a: TT["i", "j"], i: int, j: int) -> TT["i*j"]:
     return a[arange(i * j) // j, arange(i * j) % j]
 ```
 
-## Puzzle 18 (linspace)
+### Puzzle 18 (linspace)
 This puzzle wants us to generate `i` evenly spaced numbers between `start` and `end` (inclusive).
 I mean... it **IS** called `linspace` after all...
 
@@ -430,7 +430,7 @@ def linspace(start: float, end: float, i: int) -> TT["i"]:
     return i + ((j - i) / max(1, n - 1)) * arange(n) 
 ```
 
-## Puzzle 19 (heaviside)
+### Puzzle 19 (heaviside)
 
 Look, Sasha was so nice to provide us with the mathematical definition of the [Heaviside step function](https://numpy.org/doc/stable/reference/generated/numpy.heaviside.html):
 $$
@@ -444,7 +444,7 @@ def heaviside(a: TT["i"], b: float) -> TT["i"]:
     return where(a == 0, b, (a > 0) + 0)
 ```
 
-## Puzzle 20 (repeat_1d)
+### Puzzle 20 (repeat_1d)
 This puzzle wants us to repeat each element in a 1D tensor `a` of shape `(i, )` exactly `d` times to form a matrix of shape `(d, i)`.
 
 We can use broadcasting shenanigans to bail us out again.
@@ -455,7 +455,7 @@ def repeat_1d(a: TT["i"], d: int) -> TT["d", "i"]:
     return arange(d)[:, None] * 0 + a
 ```
 
-## Puzzle 21 (bucketize)
+### Puzzle 21 (bucketize)
 Last one!
 
 Finally, we are made to **discretize** a 1D tensor `v` of shape `(i, )` such that each element can be approximated by finitely many buckets defined by the 1D tensor `boundaries` of shape `(j, )`, and then count the number of elements in `v` that fall into each bucket.

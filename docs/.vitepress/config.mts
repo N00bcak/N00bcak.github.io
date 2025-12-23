@@ -20,7 +20,10 @@ export default defineConfig({
       { text: 'CTF Writeups', link: '/writeups' },
       { text: 'Blog', link: '/blog' }
     ],
-
+    outline: {
+      level: [2, 3], // or 'deep' for all levels
+      label: ''
+    },
     socialLinks: [
       { icon: 'github', link: 'https://github.com/N00bcak' }
     ]
