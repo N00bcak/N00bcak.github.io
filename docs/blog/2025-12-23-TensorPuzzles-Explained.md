@@ -298,7 +298,7 @@ where $t_1, t_2, ..., t_k$ are the indices where `g` is `True` with $i < j \impl
 
 We can ALSO conceptualize this multiplication in row-major order as follows, which is what I used in the final implementation:
 $$
-\text{compress}(g, v) = \left(\begin{array}{ccccc} v_1 & v_2 & v_3 & ... & v_i \end{array}\right)\left(\begin{array}{c} \mathbf{I}^i_{t_1} \\ \mathbf{I}^i_{t_2} \\ \vdots \\ \mathbf{I}^i_{t_k} \\ \mathbf{0} \\ \vdots \\ \mathbf{0} \end{array}\right)
+\text{compress}(g, v) = \left(\begin{array}{ccccc} v_1 & v_2 & v_3 & ... & v_i \end{array}\right)\left(\begin{array}{c} \mathbf{I}^i_{t_1} \\ \hline \mathbf{I}^i_{t_2} \\ \hline \vdots \\ \hline \mathbf{I}^i_{t_k} \\ \hline \mathbf{0} \\ \hline \vdots \\ \hline \mathbf{0} \end{array}\right)
 $$
 
 It was, of course, MUCH harder to actually **construct** this matrix, because we cannot exactly `concatenate` columns or anything like that.
