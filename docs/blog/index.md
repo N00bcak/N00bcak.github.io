@@ -21,13 +21,11 @@ Welcome to my blog! Here I share my thoughts on various topics including technol
     <p v-if="post.displayDate" class="post-date">
       {{ post.displayDate }}
     </p>
-
     <h2 class="post-title">
       <a :href="post.url">
         {{ post.title }}
       </a>
     </h2>
-
     <div
       v-if="post.excerptHtml"
       class="post-excerpt"
