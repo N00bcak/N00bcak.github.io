@@ -94,13 +94,13 @@ Usually this is not an issue if you choose a larger public exponent `e`, because
 
 But `e`=5 in this context, so there's a good chance we can easily recover it. 
 
-In order to recover the original message, we simply rearrange the equation $$\eqref{eq:two}$$ to get:
+In order to recover the original message, we simply rearrange the equation $\eqref{eq:two}$ to get:
 
 $$\begin{equation} \label{eq:three}
 \sqrt[e]{c - k \cdot N} = m
 \end{equation}$$
 
-Or rather, since we know from $$\eqref{eq:one}$$ that the `c` given to us is smaller than `N`,
+Or rather, since we know from $\eqref{eq:one}$ that the `c` given to us is smaller than `N`,
 
 $$\begin{equation} \label{eq:four}
 \sqrt[e]{c + k \cdot N} = m
@@ -145,7 +145,7 @@ And we get:
 ### Flag!
 `Cyberthon{f0rg0t_t0_p4d!}`
 
-p.s. welp1.0 is the exact same thing but $$k=0$$.
+p.s. welp1.0 is the exact same thing but $k=0$.
 
 ## Encraptor 1.0
 

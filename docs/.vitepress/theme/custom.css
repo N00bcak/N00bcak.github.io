@@ -1,21 +1,42 @@
 /* docs/.vitepress/theme/custom.css */
+
+/* Recursive Nerd Font — define each face separately so weight/style work */
 @font-face {
-  font-family: 'RecursiveNerd'; /* Choose a name for your font */
-  src: url('./fonts/RecMonoCasualNerdFont-Regular.ttf') format('truetype'),
-        url('./fonts/RecMonoCasualNerdFont-Bold.ttf') format('truetype'),
-        url('./fonts/RecMonoCasualNerdFont-Italic.ttf') format('truetype'),
-        url('./fonts/RecMonoCasualNerdFont-BoldItalic.ttf') format('truetype'),
-        ;
-  font-weight: normal;
+  font-family: 'RecursiveNerd';
+  src: url('./fonts/RecMonoCasualNerdFont-Regular.ttf') format('truetype');
+  font-weight: 400;
   font-style: normal;
+  font-display: swap;
 }
+@font-face {
+  font-family: 'RecursiveNerd';
+  src: url('./fonts/RecMonoCasualNerdFont-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'RecursiveNerd';
+  src: url('./fonts/RecMonoCasualNerdFont-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'RecursiveNerd';
+  src: url('./fonts/RecMonoCasualNerdFont-BoldItalic.ttf') format('truetype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
 /* GLOBAL THEME TOKENS */
 :root {
   /* Brand / accent color — your violet */
   --vp-c-brand-1: #A31AFF;
-  --vp-c-brand-2: #A31AFF;
-  --vp-c-brand-3: #A31AFF;
-  
+  --vp-c-brand-2: #C861FF;
+  --vp-c-brand-3: #E2A5FF;
+
   --vp-font-family-base: "RecursiveNerd", ui-monospace, SFMono-Regular, Menlo,
     Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --vp-font-family-mono: "RecursiveNerd", ui-monospace, SFMono-Regular, Menlo,
@@ -39,10 +60,34 @@ html.dark {
   --vp-c-brand-2: #C861FF; /* a bit lighter for hover states */
   --vp-c-brand-3: #E2A5FF;
 
+  /* Button Colors */
+  --vp-button-brand-bg: var(--vp-c-brand-1);
+  --vp-button-brand-hover-bg: var(--vp-c-brand-2);
+  --vp-button-brand-text: var(--vp-c-text-2);
+  --vp-button-brand-hover-text: var(--vp-c-text-1);
+
+  --vp-button-alt-bg: var(--vp-c-brand-1);
+  --vp-button-alt-hover-bg: var(--vp-c-brand-2);
+  --vp-button-alt-text: var(--vp-c-text-2);
+  --vp-button-alt-hover-text: var(--vp-c-text-1);
+
   /* Softer text contrast to avoid eye strain on pure black */
   --vp-c-text-1: #e5e5ff;
-  --vp-c-text-2: #b3b3cc;
-  --vp-c-text-3: #808099;
+  --vp-c-text-2: #c7c7de;
+  --vp-c-text-3: #9a9ab3;
+
+  --vp-code-block-bg: #0b0b12;
+  --vp-code-bg: rgba(163, 26, 255, 0.14);
+}
+
+/* Disable programming ligatures so !=, ->, => etc. don't turn into symbols */
+* {
+  font-variant-ligatures: none !important;
+  font-feature-settings: "liga" 0, "calt" 0, "dlig" 0 !important;
+}
+
+.VPButton {
+  color: var(--vp-c-brand-3);
 }
 
 /* TYPOGRAPHY TWEAKS */
@@ -59,13 +104,21 @@ body {
 /* Links pick up violet accent */
 a {
   text-decoration: none;
-  color: var(--vp-c-brand-2);
+  color: var(--vp-c-brand-1);
   transition: color 0.15s ease, text-shadow 0.15s ease;
 }
 
+html.dark a {
+  color: var(--vp-c-brand-2);
+}
+
 a:hover {
+  color: var(--vp-c-brand-2);
+  text-shadow: 0 0 8px rgba(163, 26, 255, 0.35);
+}
+
+html.dark a:hover {
   color: var(--vp-c-brand-3);
-  text-shadow: 0 0 8px rgba(163, 26, 255, 0.55);
 }
 
 /* Headings with a subtle accent bar */
@@ -80,21 +133,33 @@ a:hover {
   font-weight: 700;
   background: linear-gradient(
     135deg,
-    #A31AFF 0%,
-    #E2A5FF 50%,
-    #A31AFF 100%
+    var(--vp-c-brand-1) 0%,
+    var(--vp-c-brand-2) 50%,
+    var(--vp-c-brand-1) 100%
   );
   background-clip: text;
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
   letter-spacing: -0.02em;
   margin-bottom: 1.5rem;
   line-height: 1.2;
   transition: filter 0.3s ease;
 }
 
-#title :hover {
+/* Fix selector: removed space so hover applies to the #title element */
+#title:hover {
   filter: drop-shadow(0 0 12px rgba(163, 26, 255, 0.5));
+}
+/* Selection colors */
+::selection, ::-moz-selection {
+  appearance: none;
+  background-color: #e7e7ff;
+  color: var(--vp-c-brand-1);
+}
+
+html.dark ::selection, html.dark ::-moz-selection {
+  appearance: none;
+  background-color: #9f9fb3;
+  color: var(--vp-c-brand-1);
 }
 
 .VPDoc h2::before {
@@ -111,8 +176,8 @@ a:hover {
     #E2A5FF
   );
 }
-
 /* CODE BLOCKS */
+.vp-doc pre,
 .VPDoc pre {
   border-radius: 10px;
   border: 1px solid rgba(163, 26, 255, 0.35);
@@ -123,21 +188,52 @@ a:hover {
     background-color 0.2s ease;
 }
 
-html.dark .VPDoc pre {
-  background: radial-gradient(circle at top left, #1a0828 0, #050505 50%);
+/* Also target VitePress’ language wrapper */
+html.dark .vp-doc div[class*="language-"],
+html.dark .VPDoc div[class*="language-"] {
+  background: var(--vp-code-block-bg);
+  border-radius: 10px;
 }
 
+/* Ensure the actual <pre> gets a readable dark surface */
+html.dark .vp-doc pre,
+html.dark .VPDoc pre {
+  color: var(--vp-c-text-2);
+  background: var(--vp-code-block-bg);
+}
+
+/* Ensure nested code doesn't re-darken */
+html.dark .vp-doc pre code,
+html.dark .VPDoc pre code {
+  color: inherit;
+  background: transparent;
+}
+
+.vp-doc pre:hover,
 .VPDoc pre:hover {
   border-color: rgba(226, 165, 255, 0.7);
   box-shadow: 0 0 18px rgba(163, 26, 255, 0.35);
 }
 
 /* INLINE CODE */
+.vp-doc code,
 .VPDoc code {
   font-family: var(--vp-font-family-mono);
   background-color: rgba(163, 26, 255, 0.08);
   border-radius: 4px;
   padding: 0.1em 0.3em;
+}
+
+html.dark .vp-doc code,
+html.dark .VPDoc code {
+  color: var(--vp-c-brand-2) !important;
+}
+
+/* Stronger inline-code contrast in dark mode */
+html.dark .vp-doc :not(pre) > code,
+html.dark .VPDoc :not(pre) > code {
+  background-color: var(--vp-code-bg);
+  border: 1px solid rgba(163, 26, 255, 0.18);
 }
 
 /* NAVBAR TWEAKS */
@@ -189,7 +285,26 @@ html.dark .VPDoc pre {
   margin-top: 2rem;
   opacity: 0.8;
 }
+
 .post-empty a {
-  color: var(--vp-c-brand-2);
+  color: var(--vp-c-brand-1);
   text-decoration: underline;
 }
+
+/* MATHJAX STYLING */
+mjx-container, mjx-math {
+  color: var(--vp-c-text-1);
+}
+
+/* Purple accent for SVG math */
+mjx-container[jax="SVG"], mjx-container[jax="SVG"] a[href^=\#mjx]{
+  color: var(--vp-c-brand-1) !important;
+  fill: var(--vp-c-brand-1) !important;
+  opacity: 1 !important;
+}
+html.dark mjx-container[jax="SVG"], html.dark mjx-container[jax="SVG"] a[href^=\#mjx]{
+  color: var(--vp-c-brand-3) !important;
+  fill: var(--vp-c-brand-3) !important;
+  opacity: 1 !important;
+}
+

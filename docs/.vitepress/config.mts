@@ -1,5 +1,10 @@
 import { defineConfig } from 'vitepress'
 import lightbox from 'vitepress-plugin-lightbox'
+import mathjax3 from 'markdown-it-mathjax3'
+
+const customElements = [
+  'mjx-container',
+]
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -21,17 +26,27 @@ export default defineConfig({
     ]
   },
   markdown: {
-    math: true,
     theme: {
       light: 'github-light',
       dark: 'dracula',
     },
+    emoji: { shortcuts: {}},
     lineNumbers: true,
     config: (md) => {
       // enable the lightbox plugin
       md.use(lightbox, {
         // optional: plugin options, can leave empty for defaults
-      })
+      });
+      md.use(mathjax3, {
+        tex: { tags: 'ams' } // or 'all'
+      });
     }
-  }
+  },
+  vue: {
+    template: {
+      compilerOptions: {
+        isCustomElement: (tag) => customElements.includes(tag),
+      },
+    },
+  },
 })
