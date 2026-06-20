@@ -1,7 +1,8 @@
 {
   "devDependencies": {
+    "markdown-it-footnote": "^4.0.0",
     "markdown-it-mathjax3": "^4.3.2",
-    "vitepress": "^2.0.0-alpha.15",
+    "vitepress": "^2.0.0-alpha.17",
     "vitepress-plugin-lightbox": "^1.0.3"
   },
   "scripts": {
