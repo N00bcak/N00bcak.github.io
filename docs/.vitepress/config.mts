@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitepress'
 import lightbox from 'vitepress-plugin-lightbox'
 import mathjax3 from 'markdown-it-mathjax3'
+import markdownItFootnote from 'markdown-it-footnote'
 
 const customElements = [
   'mjx-container',
@@ -43,6 +44,8 @@ export default defineConfig({
       md.use(mathjax3, {
         tex: { tags: 'ams' } // or 'all'
       });
+
+      md.use(markdownItFootnote);
     }
   },
   vue: {
