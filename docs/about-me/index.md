@@ -20,6 +20,9 @@ Thank you I appreciate it. uwu
 * I used to be a part of Sieberrsec. Please check out their [writeup repository](https://github.com/IRS-Cybersec/ctfdump)!
 
 ## Deep Learning Research
+Check out some of my independent research projects below!
+* [Exploring Lagrange Relaxation for Efficient LLM RL](../blog/2026-03-15-Exploring-Lagrange-Relaxation-For-Efficient-LLM-RL.md) - 2026
+
 Check out some of the publications I contributed to below!
 * [GEM: A Gym for Agentic LLMs](https://arxiv.org/abs/2510.01051) - arXiv, 2025
 * [Explaining Adversarial Vulnerability With A Data Sparsity Hypothesis](https://www.sciencedirect.com/science/article/abs/pii/S0925231222000819) - Neurocomputing Journal, 2022, Volume 495
