@@ -49,6 +49,21 @@
   scroll-behavior: smooth;
 }
 
+/* Widen desktop blog/doc pages for code, math, and image-heavy posts. */
+@media (min-width: 1280px) {
+  .VPDoc.VPDoc:not(.has-sidebar) .container {
+    max-width: 1320px;
+  }
+
+  .VPDoc.VPDoc:not(.has-sidebar) .content {
+    max-width: 960px;
+  }
+
+  .VPDoc.VPDoc.has-aside .content-container {
+    max-width: 860px;
+  }
+}
+
 /* DARK MODE OVERRIDES */
 html.dark {
   /* Jet black background */
@@ -125,6 +140,34 @@ html.dark a:hover {
 .VPDoc h1,
 .VPDoc h2 {
   position: relative;
+}
+
+/* Markdown heading scale: h1/h2/h3/h4/h5/h6 = 28/24/22/20/18/18. */
+.vp-doc h1 {
+  font-size: 28px;
+  line-height: 36px;
+}
+
+.vp-doc h2 {
+  font-size: 24px;
+  line-height: 32px;
+}
+
+.vp-doc h3 {
+  font-size: 22px;
+  line-height: 30px;
+}
+
+.vp-doc h4 {
+  font-size: 20px;
+  line-height: 28px;
+}
+
+.vp-doc h5,
+.vp-doc h6 {
+  margin: 20px 0 0;
+  font-size: 18px;
+  line-height: 26px;
 }
 
 /* Page title (h1) styling */
@@ -307,4 +350,3 @@ html.dark mjx-container[jax="SVG"], html.dark mjx-container[jax="SVG"] a[href^=\
   fill: var(--vp-c-brand-3) !important;
   opacity: 1 !important;
 }
-

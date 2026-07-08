@@ -6,9 +6,7 @@ title: CTF Writeups
 import { data as posts } from './writeups.data.ts'
 </script>
 
-
-I park most of my CTF notes and post-mortems here – the good runs, the disasters,
-and the “why did I only see this after the CTF ended?” moments.
+Here I talk about CTFs (writeups as participant/author, reflections on the CTF scene, etc.).
 
 <div v-if="posts.length === 0" class="post-empty">
   <p>No writeups live here yet.</p>

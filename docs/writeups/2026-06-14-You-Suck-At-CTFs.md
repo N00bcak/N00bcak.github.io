@@ -105,7 +105,7 @@ Surprisingly, this is **far from impossible**, and applies even when clankers[^1
     - Unfortunately this might be a bit more logistically difficult, but the fun moments where you see players outsmarting each other and outmaneuvering each other are worth it, in my opinion.
     - Yes. Holding Attack-Defence CTFs is one such strategy, although I don't play nearly enough AD CTFs to know whether this has all the desirable qualities of a more general statement like "pit players against each other".
 
-3. **Do not confuse anti-CTF-player with anti-clanker[^1]"
+3. **Do not confuse anti-CTF-player with anti-clanker[^1]**
 
 In trying to correct for the new clanker-filled[^1] CTF scene, it is tempting to try and make challenges more and more complex so that clankers[^1] have a harder time in solving them, but **there is a fine line between making a challenge harder for clankers[^1] and making it harder for players**. Crossing it (which is all too easy to accidentally do) kills player enjoyment and fuels negative sentiment about the state of CTFs, which is counterproductive.
 
