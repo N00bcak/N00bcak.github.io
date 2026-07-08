@@ -952,6 +952,7 @@ a locked door, there would be a massive corridor of reward-laden rooms...
 ```
 
 Perceived Difficulty: 4/5 (I expected this to be on par with Jurgen's Revenge)
+
 Actual Difficulty: 5/5 (For some reason nobody solved it. And by that, I mean no clanker solved it. Interesting.)
 
 *Note: During the actual CTF, I discovered that the clanker betrayed me and completely stripped the model inference code out, which made it harder to reverse engineer the model. Sorry to anyone affected (though it seems like Claude Opus and Codex were pretty good at recovering the model anyway)!*
@@ -1298,6 +1299,7 @@ I managed to crash one of his GPUs and dump the model and gradient of one traini
 ```
 
 Difficulty: 3/5 (I thought this was relatively easy given the sheer number of solves in quals.)
+
 Actual Difficulty: 5/5 (No solves = automatic 5/5 star no drama).
 
 #### Reconnaissance
@@ -1481,7 +1483,7 @@ Difficulty: 3/5 (A bit more tedious than the previous one, but should still be p
 
 Actual Difficulty: 5/5 (No solves = automatic 5/5 star no drama).
 
-### Reconnaissance
+#### Reconnaissance
 
 We are given:
 - `architecture.py` containing the aforementioned ticket classifier (`TicketMLP`).
