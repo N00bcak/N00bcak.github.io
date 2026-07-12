@@ -40,7 +40,14 @@ export default defineConfig({
       label: ''
     },
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/N00bcak' }
+      { 
+        icon: 'github', 
+        link: 'https://github.com/N00bcak' 
+      },
+      {
+        icon: 'gmail',
+        link: 'mailto:workcybeh@gmail.com'
+      }
     ]
   },
   markdown: {

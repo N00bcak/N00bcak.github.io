@@ -13,7 +13,7 @@ Better late than never, they say... so I'm going to document my 16-month late so
 
 **From Jane Street's writeup: Not a zip, I read everything above "The Problem" though.**
 
-**From AI agents like Codex/Claude Code: To deal with bytecode fumbling and speed up bruteforcing? Tes. To solve autonomously? No.**
+**From AI agents like Codex/Claude Code: To deal with bytecode fumbling and speed up bruteforcing? Yes. To solve autonomously? No.**
 
 <!-- 
 Generally, 
