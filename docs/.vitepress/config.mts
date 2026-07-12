@@ -10,6 +10,20 @@ const customElements = [
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: "N00bcak's Purple Cave",
+  head: [
+    [
+      'script',
+      { async: '', src: 'https://www.googletagmanager.com/gtag/js?id=VENZWYNPB8' }
+    ],
+    [
+      'script',
+      {},
+      `window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'VENZWYNPB8');`
+    ]
+  ],
   description: "Blogging Things When I Feel Like It",
   appearance: true, // enable dark mode toggle
   base: '/',
