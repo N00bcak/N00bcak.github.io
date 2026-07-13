@@ -1148,7 +1148,7 @@ torch.Size([1, 3, 56, 56])
 ```
 
 If you're having trouble visualizing, I yoinked this from the website (focus on the `encode -> compute state -> decode` part):
-<img src="../assets/files/if_models_could_dream/dreamer_rollouts.gif" alt="Dreamer Rollouts"/>
+<img src="../assets/files/GreyCTF26/if_models_could_dream/dreamer_rollouts.gif" alt="Dreamer Rollouts"/>
 
 So can we get the flag now?
 
@@ -1279,7 +1279,7 @@ save_output(frames)
 ```
 
 That script produces the following video:
-<video src="../assets/files/if_models_could_dream/solve_trajectory.mp4" controls></video>
+<video src="../assets/files/GreyCTF26/if_models_could_dream/solve_trajectory.mp4" controls></video>
 
 From which you can read the flag (it is encoded in binary, as mentioned in the challenge description):
 ```
@@ -1661,7 +1661,7 @@ Really, the solution only appeared when I asked GPT Pro to do this specifically:
 5. Attempt to solve the other middle face.
 6. At this point, either your cube is damaged or it is solved.
 
-Here's [its final solution](../assets/files/rubikscube/solve_gpt.zip). It works... with a guaranteed move count of 7226 moves, 3000 average.
+Here's [its final solution](../assets/files/GreyCTF26/rubikscube/solve_gpt.zip). It works... with a guaranteed move count of 7226 moves, 3000 average.
 
 I'm just as surprised as you are.
 
