@@ -1,7 +1,16 @@
 import { defineConfig } from 'vitepress'
-import lightbox from 'vitepress-plugin-lightbox'
-import mathjax3 from 'markdown-it-mathjax3'
 import markdownItFootnote from 'markdown-it-footnote'
+import { existsSync, readdirSync, rmSync } from 'node:fs'
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+const configDir = dirname(fileURLToPath(import.meta.url))
+const usedPublicFonts = new Set([
+  'RecMonoCasualNerdFont-Regular.ttf',
+  'RecMonoCasualNerdFont-Bold.ttf',
+  'RecMonoCasualNerdFont-Italic.ttf',
+  'RecMonoCasualNerdFont-BoldItalic.ttf',
+])
 
 const customElements = [
   'mjx-container',
@@ -27,6 +36,21 @@ export default defineConfig({
   description: "Blogging Things When I Feel Like It",
   appearance: true, // enable dark mode toggle
   base: '/',
+  vite: {
+    plugins: [{
+      name: 'prune-unused-public-fonts',
+      closeBundle() {
+        const outputFonts = resolve(configDir, 'dist/fonts')
+        if (!existsSync(outputFonts)) return
+
+        for (const filename of readdirSync(outputFonts)) {
+          if (filename.startsWith('RecMono') && !usedPublicFonts.has(filename)) {
+            rmSync(resolve(outputFonts, filename))
+          }
+        }
+      },
+    }],
+  },
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
@@ -57,16 +81,18 @@ export default defineConfig({
     },
     emoji: { shortcuts: {}},
     lineNumbers: true,
+    math: {
+      tex: { tags: 'ams' },
+    },
     config: (md) => {
-      // enable the lightbox plugin
-      md.use(lightbox, {
-        // optional: plugin options, can leave empty for defaults
-      });
-      md.use(mathjax3, {
-        tex: { tags: 'ams' } // or 'all'
-      });
+      const defaultImageRenderer = md.renderer.rules.image
 
-      md.use(markdownItFootnote);
+      md.renderer.rules.image = (tokens, idx, options, env, self) => {
+        tokens[idx].attrSet('data-zoomable', '')
+        return defaultImageRenderer!(tokens, idx, options, env, self)
+      }
+
+      md.use(markdownItFootnote)
     }
   },
   vue: {

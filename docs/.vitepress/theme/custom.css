@@ -3,28 +3,28 @@
 /* Recursive Nerd Font — define each face separately so weight/style work */
 @font-face {
   font-family: 'RecursiveNerd';
-  src: url('./fonts/RecMonoCasualNerdFont-Regular.ttf') format('truetype');
+  src: url('/fonts/RecMonoCasualNerdFont-Regular.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'RecursiveNerd';
-  src: url('./fonts/RecMonoCasualNerdFont-Bold.ttf') format('truetype');
+  src: url('/fonts/RecMonoCasualNerdFont-Bold.ttf') format('truetype');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'RecursiveNerd';
-  src: url('./fonts/RecMonoCasualNerdFont-Italic.ttf') format('truetype');
+  src: url('/fonts/RecMonoCasualNerdFont-Italic.ttf') format('truetype');
   font-weight: 400;
   font-style: italic;
   font-display: swap;
 }
 @font-face {
   font-family: 'RecursiveNerd';
-  src: url('./fonts/RecMonoCasualNerdFont-BoldItalic.ttf') format('truetype');
+  src: url('/fonts/RecMonoCasualNerdFont-BoldItalic.ttf') format('truetype');
   font-weight: 700;
   font-style: italic;
   font-display: swap;
@@ -220,6 +220,17 @@ html.dark ::selection, html.dark ::-moz-selection {
   );
 }
 /* CODE BLOCKS */
+.language-mermaid.mermaid-rendered {
+  overflow-x: auto;
+  background: transparent;
+  text-align: center;
+}
+
+.language-mermaid.mermaid-rendered svg {
+  max-width: 100%;
+  height: auto;
+}
+
 .vp-doc pre,
 .VPDoc pre {
   border-radius: 10px;
