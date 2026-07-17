@@ -1941,7 +1941,7 @@ Which was never beaten thereafter. :P yippee?
 
 ## Afterword
 
-Given [the very special times we live in now](https://n00bcak.github.io/writeups/2026-06-14-You-Suck-At-CTFs.html), I took special care to be 100\% involved in the designing stage of the challenges, and tried really hard to make sure **every challenge / solution pair**:
+Given [the very special times we live in now](./2026-06-14-You-Suck-At-CTFs.md), I took special care to be 100\% involved in the designing stage of the challenges, and tried really hard to make sure **every challenge / solution pair**:
 - **required long and sustained effort to chain together a solve** (i.e. so I would give clankers a run for their money)
 - **required minimal guessing** (except where it was a "skill-check" i.e. an expert would know there were actually very few possibilities to check, but where a novice would have a hard time)
 

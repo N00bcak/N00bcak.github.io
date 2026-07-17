@@ -11,8 +11,8 @@ Thank you I appreciate it. uwu
 * I also study Mathematics and foreign languages (German, French, Spanish, Russian etc.) as hobbies.
 
 ## What will I find here?
-* You will find my [blog posts](https://n00bcak.github.io/blog/) where I write about Deep Learning and other interesting things, primarily.
-* I'm also doing [writeups](https://n00bcak.github.io/writeups/) for CTFs, where I write about my thought process and reflections about writing / solving challenges.
+* You will find my [blog posts](../blog/) where I write about Deep Learning and other interesting things, primarily.
+* I'm also doing [writeups](../writeups/) for CTFs, where I write about my thought process and reflections about writing / solving challenges.
 
 ## CTF Involvement
 * I'm currently a member of [NUS Greyhats](https://nusgreyhats.org/), where I specialize in AI Cybersecurity and Cryptography.

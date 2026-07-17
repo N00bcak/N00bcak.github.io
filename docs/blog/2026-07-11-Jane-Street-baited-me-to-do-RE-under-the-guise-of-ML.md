@@ -116,7 +116,7 @@ tensor([[-0.5518, -2.5157, -1.0090,  ...,  0.4208,  1.9332,  1.4526],
         [ 0.2687, -0.5510, -0.7095,  ...,  0.8352,  2.0452,  5.1439]])
 '''
 ```
-You should probably recognize that this is a pretty big leap of faith, which [I don't like](https://n00bcak.github.io/writeups/2026-06-14-You-Suck-At-CTFs.html). Too bad, we're not playing a CTF, live with it.
+You should probably recognize that this is a pretty big leap of faith, which [I don't like](../writeups/2026-06-14-You-Suck-At-CTFs.md). Too bad, we're not playing a CTF, live with it.
 
 
 ### Basic Model Information
