@@ -202,13 +202,14 @@ Two questions remain, of course:
 #### Measuring the Common Language
 
 To do so, we can **borrow a few concepts from freshman linear algebra**:
-- Firstly, **define** $\mathbf{W}_{in}$ as the weight of the first block and $\mathbf{W}_{out}$ as the weight of the second block.
+- Firstly, **define** block dimension $d_b$, hidden dimension $d_h$, $\mathbf{W}_{in} \in \mathbb{R}^{d_h \times d_b}$ as the weight of the first block and $\mathbf{W}_{out} \in \mathbb{R}^{d_b \times d_h}$ as the weight of the second block.
     - This is because we are checking how $\mathbf{W}_{in}\mathbf{x}$ aligns with the latent subspace of $\mathbf{W}_{out}$, which we will denote as $\text{sim}(\mathbf{W}_{in}, \mathbf{W}_{out})$.
-- We can use [Singular Value Decomposition](https://en.wikipedia.org/wiki/Singular_value_decomposition) to extract the left and right singular eigenvectors of each weight matrix, and test how well they align with each other. 
+- We can use [(reduced) Singular Value Decomposition](https://en.wikipedia.org/wiki/Singular_value_decomposition) to extract the left and right singular eigenvectors of each weight matrix, and test how well they align with each other.
+    - That is, $\mathbf{W}_{in} = \mathbf{U}_{in} \mathbf{\Sigma}_{in} \mathbf{V}_{in}^T$ and $\mathbf{W}_{out} = \mathbf{U}_{out} \mathbf{\Sigma}_{out} \mathbf{V}_{out}^T$, where $\mathbf{U}_{in}, \in \mathbb{R}^{d_h \times d_b}$, $\mathbf{V}_{in}, \mathbf{\Sigma}_{in} \in \mathbb{R}^{d_b \times d_b}$, $\mathbf{U}_{out}, \mathbf{\Sigma}_{out} \in \mathbb{R}^{d_b \times d_b}$, and $\mathbf{V}_{out} \in \mathbb{R}^{d_h \times d_b}$, wherein $\mathbf{\Sigma}_{in}$ and $\mathbf{\Sigma}_{out}$ contain singular values in **descending order**.
     - Further still, we can weight the influence of "effective" dimensions using the singular values, yielding the final metric
-    $$\text{sim}(\mathbf{W}_{in}, \mathbf{W}_{out}) = \sum_{i = 1, j = 1}^{d, d} \sigma_{in,i}^2 \sigma_{out,j}^2 \cos^2 \theta_{ij} = \sum_{i = 1, j = 1}^{d, d} \sigma_{in,i}^2 \sigma_{out,j}^2  \left(\frac{\mathbf{v}_{out, j} \cdot \mathbf{u}_{in, i}}{\|\mathbf{v}_{out, j}\| \|\mathbf{u}_{in, i}\|}\right)^2$$
-    where $\sigma_{in,i}$ and $\sigma_{out,j}$ are the singular values of the input and output matrices respectively, and $\theta_{ij}$ is the angle between the $i$-th left singular vector of $\mathbf{W}_{out}$ and the $j$-th right singular vector of $\mathbf{W}_{in}$.
-    - It can be proven this is maximized only when the singular vectors of the input and output matrices are aligned, which is exactly what we want to measure. [Proof is given here, and I am ashamed to confess I went by vibes when using this metric](#appendix-svd-align-metric-proof).
+    $$\text{sim}(\mathbf{W}_{in}, \mathbf{W}_{out}) = \sum_{i = 1, j = 1}^{d_b, d_b} \sigma_{in,i}^2 \sigma_{out,j}^2 \cos^2 \theta_{ij} = \sum_{i = 1, j = 1}^{d_b, d_b} \sigma_{in,i}^2 \sigma_{out,j}^2  \left(\frac{\mathbf{v}_{out, j} \cdot \mathbf{u}_{in, i}}{\|\mathbf{v}_{out, j}\| \|\mathbf{u}_{in, i}\|}\right)^2$$
+    where $\sigma_{in,i}$ and $\sigma_{out,j}$ are the singular values of the input and output matrices respectively, and $\theta_{ij}$ is the angle between the $i$-th left singular vector of $\mathbf{W}_{out}$ and the $j$-th right singular vector of $\mathbf{W}_{in}$. 
+    - It can be proven this is maximized only when the singular vectors of the input and output matrices are aligned, which is exactly what we want to measure. [Proof is given here, and I am ashamed to confess I went by vibes when using this metric](#appendix-svd-alignment-metric-proof).
         - Though in fairness to me, proving this would have been unimportant. It doesn't answer the main question of whether maximizing this metric even yields the correct pairings, which is what I was more concerned about.
 - Alternatively, we could be more direct in our approach and directly compute the [Gram matrices](https://en.wikipedia.org/wiki/Gram_matrix) of the input and output weight matrices in Euclidean inner product space, and measure how well they align with each other. 
     - This yields the final metric
@@ -222,10 +223,6 @@ Of course, these metrics are not **correct** in that they will **DEFINITELY** re
 - But we didn't make any assumptions beyond "gradient descent is used to train the network", so... there **SHOULDN'T** be any weird failure modes other than "the metric just isn't good enough"...
 - Then again, our question is very ill-defined to begin with, so it **would** be rather difficult to prove that **ANY** metric is definitively good enough.
     - We can only pray that our metric allows us to **somewhat cleanly separate** the correct pairing, from all other incorrect ones.
-
-[^1]: I didn't know when solving, but there [does exist a paper](https://arxiv.org/pdf/1806.00900) which develops this idea into a flow invariant, which looks weirdly similar to the fingerprint I ended up developing (if you assume the constant value is small relative to the Gram matrices).
-
-[^2]: It turns out this is identical to the SVD alignment metric. [Proof given here](#appendix-gramian-align-metric-proof).
 
 #### Pairing the Weights Together
 
@@ -272,7 +269,7 @@ Let's do a sanity check for the 2nd best pairing:
 # Get second best pairing by deleting used connections one by one
 
 optim_gram_cost = gram_alignments[gram_pair_rows, gram_pair_cols].sum()
-new_best_gram_cost = np.inf
+new_best_gram_cost = -np.inf
 
 for in_idx, out_idx, alignment in gram_pairings:
     new_gram_alignments = gram_alignments.copy()
@@ -281,7 +278,7 @@ for in_idx, out_idx, alignment in gram_pairings:
     new_gram_pair_rows, new_gram_pair_cols = linear_sum_assignment(-new_gram_alignments)
     new_gram_cost = gram_alignments[new_gram_pair_rows, new_gram_pair_cols].sum()
 
-    if new_gram_cost < new_best_gram_cost:
+    if new_gram_cost > new_best_gram_cost:
         new_best_gram_cost = new_gram_cost
 
 print(f"Original optimal gram cost: {optim_gram_cost:.4f}")
@@ -290,8 +287,8 @@ print(f"Difference: {optim_gram_cost - new_best_gram_cost:.4f}")
 '''
 Output:
 Original optimal gram cost: 18.4547
-Second best gram cost: 18.0958
-Difference: 0.3590
+Second best gram cost: 18.4436
+Difference: 0.0111
 '''
 ```
 
@@ -594,3 +591,71 @@ But I guess that's just how real-world problems are sometimes. You will **NEVER*
 In that sense, I kind of appreciate a puzzle like this, and the diverse array of solutions that people devised to solve it. It was a very fun and educational experience, and I hope you enjoyed reading about it as much as I enjoyed solving it.
 
 But now, onto the next puzzle (if it even exists).
+
+## Appendix: SVD Alignment Metric Proof
+
+**Claim.**
+The similarity metric
+$$ \operatorname{sim}(\mathbf W_{\mathrm{in}},\mathbf W_{\mathrm{out}}) =
+\sum_{i=1, j = 1}^{d_b, d_b}
+\sigma_{\mathrm{in},i}^{2}\sigma_{\mathrm{out},j}^{2}
+\cos^2\theta_{ij} =
+
+\sum_{i=1, j=1}^{d_b, d_b}
+\sigma_{\mathrm{in},i}^{2}\sigma_{\mathrm{out},j}^{2}
+\left(
+\frac{
+\mathbf v_{\mathrm{out},j}\cdot \mathbf u_{\mathrm{in},i}
+}{
+\|\mathbf v_{\mathrm{out},j}\| \|\mathbf u_{\mathrm{in},i}\|
+}
+\right)^2
+$$
+is maximized **if and only if**, for every $i$,
+$$\mathbf v_{\mathrm{out},i}=\pm \mathbf u_{\mathrm{in},i},$$
+provided that the singular values of both matrices are positive, distinct, and ordered from largest to smallest.[^3]
+
+Furthermore, the maximum value is
+$$
+\operatorname{sim}(\mathbf W_{\mathrm{in}},\mathbf W_{\mathrm{out}}) \leq
+\sum_{i=1}^{d_b}
+\sigma_{\mathrm{in},i}^{2}
+\sigma_{\mathrm{out},i}^{2}.
+$$
+
+**Proof.** Let $\mathbf{a} = (\sigma_{\mathrm{in},1}^2, \ldots, \sigma_{\mathrm{in},d_b}^2)$ and $\mathbf{b} = (\sigma_{\mathrm{out},1}^2, \ldots, \sigma_{\mathrm{out},d_b}^2)$. As explained in the main text, $\mathbf{a}$ and $\mathbf{b}$ are assumed to have positive entries arranged in descending order.
+
+By also defining $\mathbf{P} \in \mathbb{R}^{d_b \times d_b}$ such that $\displaystyle \mathbf{P}_{ji} = (\cos^2\theta_{ij}) = \left(\frac{\mathbf{v}_{\mathrm{out},j} \cdot \mathbf{u}_{\mathrm{in},i}}{\|\mathbf{v}_{\mathrm{out},j}\| \|\mathbf{u}_{\mathrm{in},i}\|}\right)^2$, we can rewrite the similarity metric as
+
+$$
+\operatorname{sim}(\mathbf W_{\mathrm{in}},\mathbf W_{\mathrm{out}}) =
+\sum_{i=1}^{d_b} \sum_{j=1}^{d_b} b_j P_{ji} a_i = \mathbf{b}^T \mathbf{P} \mathbf{a}
+$$
+
+Notice then that as $\{\mathbf{u}_{\mathrm{in},i}\}$ and $\{\mathbf{v}_{\mathrm{out},j}\}$ are **orthonormal** sets (**but not bases of the same space**)[^5] 
+$$\sum_{i=1}^{d_b} \mathbf{P}_{ji} = \sum_{i=1}^{d_b} \frac{(\mathbf{v}_{\mathrm{out},j} \cdot \mathbf{u}_{\mathrm{in},i})^2}{\|\mathbf{v}_{\mathrm{out},j}\|^2 \|\mathbf{u}_{\mathrm{in},i}\|^2} = \left\|\sum_{i=1}^{d_b} (\mathbf{v}_{\mathrm{out},j} \cdot \mathbf{u}_{\mathrm{in},i}) \mathbf{u}_{\mathrm{in},i}  \right\|^2 = \|\mathbf{v}_{\mathrm{out},j} - \mathbf{r}_j\|^2 \leq 1$$
+where $\mathbf{v}_{\mathrm{out},j}$ is being orthogonally decomposed into $\mathbf{v}_{out, j} = \sum_{i=1}^{d_b} (\mathbf{v}_{\mathrm{out},j} \cdot \mathbf{u}_{\mathrm{in},i}) \mathbf{u}_{\mathrm{in},i} + \mathbf{r}_j$, and we get the last inequality by Pythagoras' theorem.
+
+By a similar logic, $\sum_{j=1}^{d_b} \mathbf{P}_{ji} \leq 1$, establishing that $\mathbf{P}$ is a **doubly sub-stochastic matrix**.
+
+There's **a very handy theorem**[^5] due to [Leon Mirsky](https://link.springer.com/article/10.1007/BF01240767) (and attested to [here](https://arxiv.org/pdf/1803.00435)) which states that for any doubly sub-stochastic matrix $\mathbf{P}$, there exists a set of [sub-permutation matrices](https://arxiv.org/pdf/1803.00435) $\{\Pi_i\}_{i = 1}^{N}$ and non-negative weights $\{\lambda_i\}_{i=1}^{N}$ satisfying $\sum_{i=1}^{N} \lambda_i = 1$ such that $$\mathbf{b}^T \mathbf{P} \mathbf{a} = \sum_{i=1}^{N} \lambda_i \mathbf{b}^T (\Pi_i \mathbf{a}) \leq \max_{\Pi_i} \mathbf{b}^T \Pi_i \mathbf{a}$$
+
+It follows, as none of the entries in $\mathbf{a}$ or $\mathbf{b}$ are negative, that some permutation matrix $\mathbf{Q}$ exists (consider patching in the zero rows/columns of the sub-permutation matrices) such that
+
+$$\max_{\Pi_i} \mathbf{b}^T \Pi_i \mathbf{a} \leq \mathbf{b}^T \mathbf{Q} \mathbf{a}$$
+
+The rearrangement inequality then tells us that $\mathbf{b}^T \mathbf{Q} \mathbf{a}$ is maximized when $\mathbf{Q}$ is the identity matrix. That is,
+$\mathbf{b}^T \mathbf{P} \mathbf{a}$ is maximized when $\mathbf{P}$ is the identity matrix, which occurs if and only if $\mathbf{v}_{\mathrm{out},i} = \pm \mathbf{u}_{\mathrm{in},i}$ for all $i$.
+- Of course, because the singular values are distinct, $\mathbf{Q}$ is the **UNIQUE** maximizing permutation matrix.
+
+In this case, it follows quite naturally that the maximum value of the similarity metric is
+$\mathbf{b}^T \mathbf{a} = \sum_{i=1}^{d_b} \sigma_{\mathrm{in},i}^{2} \sigma_{\mathrm{out},i}^{2}$, as desired. $\blacksquare$
+
+[^1]: I didn't know when solving, but there [does exist a paper](https://arxiv.org/pdf/1806.00900) which develops this idea into a flow invariant, which looks weirdly similar to the fingerprint I ended up developing (if you assume the constant value is small relative to the Gram matrices).
+
+[^2]: It turns out this is similar to the SVD alignment metric, which you can verify by checking that the SVD alignment metric reduces to $\|\mathbf{W}_{out}\mathbf{W}_{in}\|_F^2$, whereas this metric reduces to $\frac{\|\mathbf{W}_{out}\mathbf{W}_{in}\|_F^2}{\|\mathbf{W}_{out}^T \mathbf{W}_{out}\|_F \|\mathbf{W}_{in} \mathbf{W}_{in}^T\|_F}$. Both give the same correct pairing of blocks though. :P
+
+[^3]: For random real matrices the singular values are almost surely distinct anyways... I hope.
+
+
+[^5]: GPT-5.6 Sol caught this for me and patched the original proof which uses **double stochasticity** of $\mathbf{P}$ into the [Birkhoff–von Neumann theorem](https://en.wikipedia.org/wiki/Doubly_stochastic_matrix#Birkhoff%E2%80%93von_Neumann_theorem) to show that $\mathbf{P}$ is a convex combination of permutation matrices. That is not true because our matrices do **NOT** denote orthonormal bases but simply orthonormal sets. Phew!
